@@ -20,26 +20,36 @@ I have chosen **not** to commit to the repository all the Jekyll accoutrements.
 In any event, even if they were present, you would still wind up having to run
 Jekyll to re-build and serve the site, each time you want to preview it.
 
-To preview changes locally, you will need
+To preview changes locally, you will need to run these commands
 
-You need to have ZZ
+```
+$ gem install github-pages
+$ bundle exec jekyll serve
+```
 
-gem install github-pages
+To get all the tools on my Mac (gem, bundle, jekyll), I used homebrew.
 
-bundle exec jekyll serve
+## Including Math Equations
 
+I am not sure I have found the easiest solution here. I have read that MathJax may be
+better but it seemed to require a bit more configuration than had time to play and
+what I tried here seemed to work. The code snipit below demonstrates an example...
 
-
-The pages are crafted using GitHub markdown.
-Once changes are pushed, GitHub runs Jekyll to generate the html pages from the Markdown.
-
-In order to preview changes locally, before committing, you need to have Jekyll locally.
-
-
-
-Testing an equation...
+```
+![equation](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20Q%7D%7B%5Cpartial%20t%7D%20%3D%20%5Cfrac%7B%5Cpartial%20s%7D%7B%5Cpartial%20t%7D)
+```
 
 ![equation](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20Q%7D%7B%5Cpartial%20t%7D%20%3D%20%5Cfrac%7B%5Cpartial%20s%7D%7B%5Cpartial%20t%7D)
+
+Everything after the question-mark charcter at the end of `latex?` and before the closing right-paranthesis
+is the a URL-encoded form of the latex commands to generate the equation. Here are the steps...
+
+1. Create the latex for the equation
+2. URL-encode it using something like, [url-encode-decode](http://www.url-encode-decode.com)
+3. Replace all instances of `+` that step 2 inserted to represent spaces with `%20`
+4. Paste the resulting, possibly very long, string between `?` and enclosing `)` in the above.
+
+# GitHub Style Primer
 
 You can use the [editor on GitHub](https://github.com/xsdk-project/HandsOnLessons/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
