@@ -49,7 +49,19 @@ is the a URL-encoded form of the latex commands to generate the equation. Here a
 3. Replace all instances of `+` that step 2 inserted to represent spaces with `%20`
 4. Paste the resulting, possibly very long, string between `?` and enclosing `)` in the above.
 
-# GitHub Style Primer
+## Each Hands On Example
+
+I think it would be best put all content related to each hands-on example we develop here
+into its own separate directory. That means all images, example codes, markdown pages, etc.
+Then, we can have a sepate page (or page hierarchy) that indexes the examples.
+
+I know Jekyll has a built-in concept of a `posts` object. Thats because Jekyll is designed
+around the notion of supporting blogging. It may make sense to handle each hands-on kinda
+sorta like a `post` in Jekyll. But, I think that also means that content related to each
+lesson gets scattered across multiple directories (at least given the **default**) way that
+Jekyll seems to handle `posts`.
+
+## GitHub Style Primer
 
 You can use the [editor on GitHub](https://github.com/xsdk-project/HandsOnLessons/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 

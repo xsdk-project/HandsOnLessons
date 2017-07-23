@@ -1,10 +1,13 @@
 ## Welcome to HandsOnLessons
 
+
 Hosted here are a series of increasingly sophisticated _hands-on_ lessons aimed at helping
 users of all experience levels learn to use a variety of scientifc software packages for
 solving complex numerical problems. We begin with custom, hand-coded solutions to the
 homogeneous, one dimensional heat equation demonstarting basic numerical and software engineeriing
 issues such as accruacy, stability, time to solution, memory and flops required.
+
+[Go to the Lessons](lessons/lessons.md)
 
 We slowly build upon
 these simple, early examples introducing additional complexities such as inhomogenieties,
