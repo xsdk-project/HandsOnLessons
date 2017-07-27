@@ -1,5 +1,28 @@
 # Hand Coded Solution of the 1D Heat Equation
 
+**Questions** | **Objectives** | **Key Points**
+-------------------------
+
+
+What is the FTCS algorithm for numerical solution of the heat equation?
+How does thermal diffusivity effect time to solution?
+What is stability of the numerical algorithm?
+What is the difference between an explicit and implicit method?
+How does choice impact time to solution, memory, accuracy, stability?
+Objectives (e.g. What new skills, knowledge experience will learners gain in this lesson)
+
+Understand how choices in numerical solution method impact such things as…
+time to solution (e.g. time-performance)
+memory usage (e.g. space-performance)
+accuracy and stability of solution
+Understand how non-trivial problems become intractible with hand-coded solutions
+Understand how to interpret performance data gathered from PAPI
+Key Points (e.g. What should learners take-away from this lesson)
+
+There are often trade-offs in algorithm behavior
+Complex problems/situations are not easy to hand-code
+
+
 In this lesson, we use a simple, hand-coded, C application to solve
 a few different variations of the one dimensional heat equation as
 shown here...
