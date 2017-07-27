@@ -1,35 +1,30 @@
-# Hand Coded Solution of the 1D Heat Equation
+# Hand Coded 1D Heat Equation
 
-**Questions** | **Objectives** | **Key Points**
--------------------------
+## Overview (15 mins)
 
+```
+Questions                  |Objectives                           |Key Points
+---------------------------|-------------------------------------|-------------------------------------
+What is discretization?    |Observe trade-offs in algorithms     |Even simple cases are hard to code
+What is the FTCS algorithm?|Understand performance metrics       |
+What is stability?         |Understand value of software packages|
+```
 
-What is the FTCS algorithm for numerical solution of the heat equation?
-How does thermal diffusivity effect time to solution?
-What is stability of the numerical algorithm?
-What is the difference between an explicit and implicit method?
-How does choice impact time to solution, memory, accuracy, stability?
-Objectives (e.g. What new skills, knowledge experience will learners gain in this lesson)
-
-Understand how choices in numerical solution method impact such things as…
-time to solution (e.g. time-performance)
-memory usage (e.g. space-performance)
-accuracy and stability of solution
-Understand how non-trivial problems become intractible with hand-coded solutions
-Understand how to interpret performance data gathered from PAPI
-Key Points (e.g. What should learners take-away from this lesson)
-
-There are often trade-offs in algorithm behavior
-Complex problems/situations are not easy to hand-code
-
+## The problem being solved
 
 In this lesson, we use a simple, hand-coded, C application to solve
 a few different variations of the one dimensional heat equation as
 shown here...
 
+![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)
+
 ![](simple_1d_heat.png)
 
-## Step 1: Compiling The Application
+## The Example Source Code
+
+[heat.c](./heat.c)
+
+### Compiling The Application
 
 If the application is already compiled for you, proceed to step 2
 
