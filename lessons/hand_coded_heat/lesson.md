@@ -1,13 +1,13 @@
 # Hand Coded 1D Heat Equation
 
-## Overview (15 mins)
+## At A Glance (15 mins)
 
 ```
-Questions                  |Objectives                           |Key Points
----------------------------|-------------------------------------|-------------------------------------
-What is discretization?    |Observe trade-offs in algorithms     |Even simple cases are hard to code
-What is the FTCS algorithm?|Understand performance metrics       |
-What is stability?         |Understand value of software packages|
+Questions                 |Objectives                           |Key Points
+--------------------------|-------------------------------------|-------------------------------------
+What is a numerical alg.? |Understand performance metrics       |Numerical algs. involve signficant SQE
+What is discretization?   |Understand algorithmic trade-offs    |Software packages simplify dev. & use
+What is stability?        |Understand value of software packages|
 ```
 
 ## The problem being solved

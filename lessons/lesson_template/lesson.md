@@ -1,6 +1,6 @@
 # Lesson Title
 
-## Overview (Expected # minutes to complete)
+## At A Glance (Expected # minutes to complete)
 
 **Note**: GitHub Markdown tables are very limited! To do this section of questions,
 objectives and key points properly, we need to use more features of Jekyll then I

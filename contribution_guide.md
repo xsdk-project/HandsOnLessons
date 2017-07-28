@@ -9,7 +9,7 @@ technologies...
 * [Markdown](https://guides.github.com/features/mastering-markdown/)
 (or [Textile](https://www.promptworks.com/textile)),
 * YAML [Front Matter](http://jekyllrb.com/docs/frontmatter/) page configuration code
-* [Liquid](https://shopify.github.io/liquid/) content filtering and page construction instructions
+* [Liquid](https://shopify.github.io/liquid/) content filtering and page construction code
 
 The Jekyll engine reads source `.md` files and, optionally, a number of
 other CSS, HTML (and other Web technology code snipits and accoutrements) stored in
@@ -17,9 +17,9 @@ supporting files and directories in the repository (when necessary) and builds t
 site html files.
 
 On a GitHub Pages site, this process happens automatically upon each new commit of
-files to the site's repository. GitHub re-generates the site and the changes go live
-immediately. See below about how to preview changes to the site before committing
-them.
+files to the site's repository. GitHub uses Jekyll to re-generate the site and the
+changes go live shortly thereafter. See below about how to preview changes to the
+site before committing them.
 
 Within the repository, a single source `.md` file will contain not only Markdown
 content, but may also contain, optionally, a YAML code block at the beginning of
@@ -30,7 +30,7 @@ to filter, merge and combine content snipits into a generated page.
 
 So far, we are not using either YAML Front Matter or Liquid here to build our
 site. We may eventually decide we might need to do that and it would be fine
-but there isn't anything yet that has indicated we have an need for that. I
+but there isn't anything yet that has indicated we have a need for that. I
 mention this because we can easily get much more sophisticated than we are
 currently in managing and hosting this content.
 
@@ -44,21 +44,22 @@ just takes a bit more time because GitHub/Jekyll backend may be delayed a
 minute or two in re-generating the site. And, it also means your changes
 are always going live.
 
-This site is a GitHub pages site using a GitHub [supported](https://pages.github.com/themes/) Jekyll theme backend.
-This means you compose content in GitHub Markdown and when you commit changes to
-GitHub, Jekyll generates the html pages for the site automatically. But, it also
+This site is a GitHub pages site using a GitHub [supported](https://pages.github.com/themes/)
+Jekyll theme backend. This means you compose content in GitHub Markdown and when you commit
+changes to GitHub, Jekyll generates the html pages for the site automatically. But, it also
 means its a bit harder for you to preview, locally, your changes before committing.
 
-But, if we don't like the current theme we're using [Cayman](https://pages-themes.github.io/cayman/), we can easily change
+But, if we don't like the current theme we're using,
+[Cayman](https://pages-themes.github.io/cayman/), we can easily change
 it by going to the repository's settings page on github, scrolling down to the
 GitHub Pages section and hitting the `Change Theme` button and then selecting
 another theme. Note, there are only a handful of themes supported by GitHub this
-way (e.g. easily switchable). However, that does not mean we cannot choose from
-another UNsupported theme. There are hundreds of [Jekyll themes](http://jekyllthemes.org) available and we
-should probably spend some more time to find best. Using an UNsupported theme simply 
-means that we'd have to buy into committing all the Jekyll accoutrements to our
-repo and, as a result, cannot as easily switch the theme later if we don't like it.
-
+way (e.g. easily switchable via the `Change Theme` button). However, that does not
+mean we cannot choose from another UNsupported theme. There are hundreds of
+[Jekyll themes](http://jekyllthemes.org) available and we should probably spend
+some more time to find best. Using an UNsupported theme simply means that we'd have
+to buy into committing all the Jekyll accoutrements to our repo and, as a result,
+it is not as easy to switch the theme later if we don't like it.
 
 To permit the site to be easily switched to another GitHub supported Jekyll theme,
 I have chosen **not** to commit to the repository all the Jekyll accoutrements.
@@ -95,10 +96,12 @@ is the a URL-encoded form of the latex commands to generate the equation. Here a
 
 ## Adding a Hands On Example
 
-1. Add a new directory to `../lessons/<new-example-name>`
-1. Add a new line to `../lessons/lessons.md` for the new example
-1. Copy `../lessons/lesson_template/lesson.md` to `../lessons/<new-example-name>`.
+1. Add a new directory to `./lessons/<new-example-name>`
+1. Add a new line to `./lessons/lessons.md` for the new example
+1. Copy `./lessons/lesson_template/lesson.md` to `./lessons/<new-example-name>`.
 1. Edit/revise the copied `lesson.md` file to create the new lesson
+1. You can link to images, source code files that you plase in `./lessons/<new-example-name>`
+   using standard Markdown links.
 
 I think it would be best put all content related to each hands-on example we develop here
 into its own separate directory. That means all images, example codes, markdown pages, etc.
@@ -110,8 +113,10 @@ sorta like a `post` in Jekyll. But, I think that also means that content related
 lesson gets scattered across multiple directories (at least given the **default**) way that
 Jekyll seems to handle `posts`.
 
-
 ## GitHub Style Primer
+
+This section is just a copy of boilerplat content from GitHub Pages template
+about how to use Markdown, etc. I have kept it here for convenience.
 
 You can use the [editor on GitHub](https://github.com/xsdk-project/HandsOnLessons/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
