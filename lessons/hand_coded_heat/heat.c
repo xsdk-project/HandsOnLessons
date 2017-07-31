@@ -5,83 +5,115 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#ifdef HAVE_PAPI
-#include "papi.h"
+#ifdef HAVE_FEENABLEEXCEPT
+#define _GNU_SOURCE
+#include <fenv.h>
+#if 0
+#include "fe-handling-example.c"
+#endif
 #endif
 
-int const Nt_max = 5000;
-int const Nx_max = 1000;
+int const Nt_max = 50000;
+int const Nx_max = 10000;
 
+int noout = 0;
 int savi = 0;
+int outi = 100;
 int save = 0;
-char *alg = "ftcs";
-char *prec = "double";
-char *ic = "const(1)";
+char const *alg = "ftcs";
+char const *prec = "double";
+char const *ic = "const(1)";
 double alpha = 0.2;
 double dt = 0.004;
 double eps = 1e-6;
 double dx = 0.1;
 double bc0 = 0;
 double bc1 = 1;
+int maxi = 5000;
 
-double *curr, *last, *res_history, *exact, *error_history;
+double *curr=0, *last=0, *res_history=0, *exact=0, *error_history=0;
+double *cn_Amat = 0;
 
 int Nx = (int) (1/0.1+1.5);
 
+static void
+r83_np_fa(int n, double *a)
+/*
+  Licensing: This code is distributed under the GNU LGPL license. 
+  Modified: 30 May 2009 Author: John Burkardt
+  Modified by Mark C. Miller, July 23, 2017
+*/
+{
+    int i;
 
-float real_time, proc_time,mflops;
-long long flpops;
-float ireal_time, iproc_time, imflops;
-long long iflpops;
-int retval;
+    for ( i = 1; i <= n-1; i++ )
+    {
+        assert ( a[1+(i-1)*3] != 0.0 );
+        /*
+          Store the multiplier in L.
+        */
+        a[2+(i-1)*3] = a[2+(i-1)*3] / a[1+(i-1)*3];
+        /*
+          Modify the diagonal entry in the next column.
+        */
+        a[1+i*3] = a[1+i*3] - a[2+(i-1)*3] * a[0+i*3];
+    }
+
+    assert( a[1+(n-1)*3] != 0.0 );
+}
 
 static void
 initialize(void)
 {
-    curr = (double *) malloc(Nx_max * sizeof(double));
-    last = (double *) malloc(Nx_max * sizeof(double));
-    exact = (double *) malloc(Nx_max * sizeof(double));
-    res_history = (double *) malloc(Nt_max * sizeof(double));
-    error_history = (double *) malloc(Nt_max * sizeof(double));
-
-#ifdef HAVE_PAPI
-    if ((retval=PAPI_library_init(PAPI_VER_CURRENT)) != PAPI_VER_CURRENT)
-    {   
-        printf("Init failed with retval: %d\n", retval);
-        exit(1);
-    }
-    if((retval=PAPI_flops(&ireal_time,&iproc_time,&iflpops,&imflops)) < PAPI_OK)
+    curr = (double *) calloc(Nx, sizeof(double));
+    last = (double *) calloc(Nx, sizeof(double));
+    if (save)
     {
-        printf("Could not initialise PAPI_flops \n");
-        printf("Your platform may not support floating point operation event.\n");
-        printf("retval: %d\n", retval);
-        exit(1);
+        exact = (double *) calloc(Nx, sizeof(double));
+        res_history = (double *) calloc(maxi, sizeof(double));
+        error_history = (double *) calloc(maxi, sizeof(double));
     }
+
+    assert(strncmp(alg, "ftcs", 4)==0 ||
+           strncmp(alg, "upwind15", 8)==0 ||
+           strncmp(alg, "crankn", 6)==0);
+
+#ifdef HAVE_FEENABLEEXCEPT
+    feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW);
 #endif
-}
 
-typedef struct {
-    unsigned long size,resident,share,text,lib,data,dt;
-} statm_t;
+    if (!strncmp(alg, "crankn", 6))
+    {
+        /*
+          We do some additional initialization work for Crank-Nicolson.
+          The matrix A does not change with time.  We can set it once,
+          factor it once, and solve repeatedly.
+        */
+        int i;
+        double w = alpha * dt / dx / dx;
 
-void read_off_memory_status(statm_t *result)
-{
-  unsigned long dummy;
-  const char* statm_path = "/proc/self/statm";
+        cn_Amat = ( double * ) malloc ( 3 * Nx * sizeof ( double ) );
 
-  FILE *f = fopen(statm_path,"r");
-  if(!f){
-    perror(statm_path);
-    abort();
-  }
-  if(7 != fscanf(f,"%ld %ld %ld %ld %ld %ld %ld",
-    &result->size,&result->resident,&result->share,&result->text,&result->lib,&result->data,&result->dt))
-  {
-    perror(statm_path);
-    abort();
-  }
-  fclose(f);
+        cn_Amat[0+0*3] = 0.0;
+        cn_Amat[1+0*3] = 1.0;
+        cn_Amat[0+1*3] = 0.0;
+
+        for ( i = 1; i < Nx - 1; i++ )
+        {
+            cn_Amat[2+(i-1)*3] =           - w;
+            cn_Amat[1+ i   *3] = 1.0 + 2.0 * w;
+            cn_Amat[0+(i+1)*3] =           - w;
+        }
+        
+        cn_Amat[2+(Nx-2)*3] = 0.0;
+        cn_Amat[1+(Nx-1)*3] = 1.0;
+        cn_Amat[2+(Nx-1)*3] = 0.0;
+
+        /*
+          Factor the matrix.
+        */
+        r83_np_fa(Nx, cn_Amat);
+    }
 }
 
 #define HANDLE_ARG(VAR, TYPE, STYLE, HELP) \
@@ -95,19 +127,25 @@ void read_off_memory_status(statm_t *result)
         if (strncmp(argv[i], #VAR"=", len)) \
             continue; \
         assert(valid_style); \
-        if      (style[1] == 'd') /* int */ \
-            *((int*) valp) = (int) strtol(argv[i]+len,0,10); \
-        else if (style[1] == 'g') /* double */ \
-            *((double*) valp) = (double) strtod(argv[i]+len,0); \
-        else if (style[1] == 's') /* char* */ \
-            *((char**) valp) = (char*) strdup(argv[i]+len); \
-        else \
-        { \
-        } \
+	if (strlen(argv[i]+len)) \
+        {\
+            if      (style[1] == 'd') /* int */ \
+                *((int*) valp) = (int) strtol(argv[i]+len,0,10); \
+            else if (style[1] == 'g') /* double */ \
+                *((double*) valp) = (double) strtod(argv[i]+len,0); \
+            else if (style[1] == 's') /* char* */ \
+                *((char**) valp) = (char*) strdup(argv[i]+len); \
+        }\
     }\
     if (help) \
-        fprintf(stderr, "        %s=<%s> %s (" #STYLE ")\n", \
-            #VAR, #TYPE, #HELP, VAR);\
+    {\
+        char tmp[256]; \
+        int len = snprintf(tmp, sizeof(tmp), "        %s=" #STYLE, \
+            #VAR, VAR);\
+        snprintf(tmp, sizeof(tmp), "%s (%s)", #HELP, #TYPE); \
+        fprintf(stderr, "        %s=" #STYLE "%*s\n", \
+            #VAR, VAR, 80-len, tmp);\
+    }\
     else \
         fprintf(stderr, "    %s="#STYLE"\n", \
             #VAR, VAR);\
@@ -129,17 +167,20 @@ process_args(int argc, char **argv)
         fprintf(stderr, "    ./heat <arg>=<value> <arg>=<value>...\n");
     }
 
-    HANDLE_ARG(alpha, double, %g, alpha (what is this));
+    HANDLE_ARG(prec, char*, %s, precision half|float|double|quad);
+    HANDLE_ARG(alpha, double, %g, material thermal diffusivity);
     HANDLE_ARG(dx, double, %g, x-incriment (1/dx->int));
     HANDLE_ARG(dt, double, %g, t-incriment);
-    HANDLE_ARG(alg, char*, %s, algorithm);
-    HANDLE_ARG(eps, double, %g, convergence criterion);
     HANDLE_ARG(bc0, double, %g, bc @ x=0: u(0,t));
     HANDLE_ARG(bc1, double, %g, bc @ x=1: u(1,t));
     HANDLE_ARG(ic, char*, %s, ic @ t=0: u(x,0));
+    HANDLE_ARG(alg, char*, %s, algorithm ftcs|upwind15|crankn);
+    HANDLE_ARG(eps, double, %g, convergence criterion);
+    HANDLE_ARG(maxi, int, %d, max. number of time iterations);
     HANDLE_ARG(savi, int, %d, save every i-th solution step);
-    HANDLE_ARG(save, int, %d, compute/save error in every saved solution);
-    HANDLE_ARG(prec, char*, %s, precision half|float|double);
+    HANDLE_ARG(save, int, %d, save error in every saved solution);
+    HANDLE_ARG(outi, int, %d, output progress every i-th solution step);
+    HANDLE_ARG(noout, int, %d, disable all file outputs);
 
     if (help)
     {
@@ -155,7 +196,6 @@ process_args(int argc, char **argv)
 #define TFINAL -2
 #define RESIDUAL -3
 #define ERROR -4
-#define EXACT -5
 static void
 write_array(int t, int n, double dx, double const *a)
 {
@@ -163,8 +203,10 @@ write_array(int t, int n, double dx, double const *a)
     char fname[32];
     FILE *outf;
 
+    if (noout) return;
+
     if (t == TSTART)
-        snprintf(fname, sizeof(fname), "heat_soln_initial.curve");
+        snprintf(fname, sizeof(fname), "heat_soln_00000.curve");
     else if (t == TFINAL)
         snprintf(fname, sizeof(fname), "heat_soln_final.curve");
     else if (t == RESIDUAL)
@@ -174,9 +216,9 @@ write_array(int t, int n, double dx, double const *a)
     else
     {
         if (a == exact)
-            snprintf(fname, sizeof(fname), "heat_exact_%03d.curve", t);
+            snprintf(fname, sizeof(fname), "heat_exact_%05d.curve", t);
         else
-            snprintf(fname, sizeof(fname), "heat_soln_%03d.curve", t);
+            snprintf(fname, sizeof(fname), "heat_soln_%05d.curve", t);
     }
     
     outf = fopen(fname,"w");
@@ -237,12 +279,13 @@ set_initial_condition(int n, double *a, double dx, char const *ic)
     write_array(TSTART, Nx, dx, a);
 }
 
-static void
+static void 
 compute_exact_solution(int n, double *a, double dx, char const *ic,
     double alpha, double t, double bc0, double bc1)
 {
     int i;
     double x;
+    
     if (bc0 == 0 && bc1 == 0 && !strncmp(ic, "sin(Pi*x)", 9))
     {
         for (i = 0, x = 0; i < n; i++, x+=dx)
@@ -331,6 +374,42 @@ solution_update_upwind15(int n, double *curr, double const *last,
                   +f0*(12*k2 -10*k  +4)*last[i  ];
 }
 
+static void 
+r83_np_sl ( int n, double const *a_lu, double const *b, double *x)
+    /* Licensing: This code is distributed under the GNU LGPL license. 
+       Modified: 30 May 2009 Author: John Burkardt
+       Modified by Mark C. Miller, miller86@llnl.gov, July 23, 2017
+    */
+{
+    int i;
+
+    for ( i = 0; i < n; i++ )
+        x[i] = b[i];
+
+    /* Solve L * Y = B.  */
+    for ( i = 1; i < n; i++ )
+        x[i] = x[i] - a_lu[2+(i-1)*3] * x[i-1];
+
+    /* Solve U * X = Y.  */
+    for ( i = n; 1 <= i; i-- )
+    {
+        x[i-1] = x[i-1] / a_lu[1+(i-1)*3];
+        if ( 1 < i )
+            x[i-2] = x[i-2] - a_lu[0+(i-1)*3] * x[i-1];
+    }
+}
+
+static void
+solution_update_crankn(int n, double *curr, double const *last,
+    double alpha, double dx, double dt,
+    double bc_0, double bc_1)
+{
+    /* Do the solve */
+    r83_np_sl (n, cn_Amat, last, curr);
+    curr[0] = bc0;
+    curr[n-1] = bc1;
+}
+
 int finalize(int ti, int nt_max, double res)
 {
     int retval = 0;
@@ -345,43 +424,15 @@ int finalize(int ti, int nt_max, double res)
         printf("Converged to %8.4g in %d iterations\n", res, ti);
     }
 
-#ifdef HAVE_PAPI /* [ */
-    {   
-        PAPI_dmem_info_t dmem;
-
-
-        if((retval=PAPI_flops( &real_time, &proc_time, &flpops, &mflops))<PAPI_OK)
-        {    
-            printf("retval: %d\n", retval);
-            retval = 1;
-        }
-
-        if ((retval=PAPI_get_dmem_info(&dmem))<PAPI_OK)
-        {   
-            printf("get_dmem_info failed with retval: %d\n", retval);
-            retval = 1;
-        }
-        else
-        {   
-            printf("Memory Info:\n");
-            printf("\tMem Size:     %lld\n",dmem.size);
-            /*printf("\tMem Resident:\t\t%lld\n",dmem.resident);*/
-            printf("\tMem Heap:     %lld\n",dmem.heap);
-        }
-        printf("Timing Info:\n");
-        printf("\tReal_time:    %g\n", real_time);
-        printf("\tProc_time:    %g\n", proc_time);
-        printf("Flops Info:\n");
-        printf("\tTotal flpops: %lld\n", flpops);
-        printf("\tMFLOPS:       %g\n", mflops);
-    }
-#endif /* ] HAVE_PAPI */
-
     free(curr);
     free(last);
-    free(exact);
-    free(res_history);
-    free(error_history);
+    if (exact) free(exact);
+    if (res_history) free(res_history);
+    if (error_history) free(error_history);
+    if (cn_Amat) free(cn_Amat);
+    if (strncmp(alg, "ftcs", 4)) free((void*)alg);
+    if (strncmp(prec, "double", 6)) free((void*)prec);
+    if (strncmp(ic, "const(1)", 8)) free((void*)ic);
 
     return retval;
 }
@@ -392,47 +443,58 @@ int main(int argc, char **argv)
     double error;
     FILE *outf;
 
-    initialize();
-
     process_args(argc, argv);
 
     double residual = eps;
     Nx = (int) (1/dx+1.5);
     dx = 1.0/(Nx-1);
 
+    initialize();
+
     /* Initial condition */
     set_initial_condition(Nx, last, dx, ic);
 
     /* Iterate until residual is small or hit max iterations */
-    for (ti = 0; residual >= dt*eps && ti < Nt_max; ti++)
+    for (ti = 0; residual >= dt*eps && ti < maxi; ti++)
     {
         if (!strcmp(alg, "ftcs"))
             solution_update_ftcs(Nx, curr, last, alpha, dx, dt, bc0, bc1);
         else if (!strcmp(alg, "upwind15"))
             solution_update_upwind15(Nx, curr, last, alpha, dx, dt, bc0, bc1);
+        else if (!strcmp(alg, "crankn"))
+            solution_update_crankn(Nx, curr, last, alpha, dx, dt, bc0, bc1);
 
-        if (save)
+        if (ti>0 && save)
         {
             compute_exact_solution(Nx, exact, dx, ic, alpha, ti*dt, bc0, bc1);
             if (savi && ti%savi==0)
                 write_array(ti, Nx, dx, exact);
         }
 
-        if (savi && ti%savi==0)
+        if (ti>0 && savi && ti%savi==0)
             write_array(ti, Nx, dx, curr);
 
         residual = l2_norm(Nx, curr, last);
-        res_history[ti] = residual;
         if (save)
+        {
+            res_history[ti] = residual;
             error_history[ti] = l2_norm(Nx, curr, exact);
+        }
 
         copy(Nx, last, curr);
+
+        if (outi && ti%outi==0)
+        {
+            printf("Iteration %04d: last change l2=%g\n", ti, residual);
+        }
     }
 
     write_array(TFINAL, Nx, dx, curr);
-    write_array(RESIDUAL, ti, dt, res_history);
     if (save)
+    {
+        write_array(RESIDUAL, ti, dt, res_history);
         write_array(ERROR, ti, dt, error_history);
+    }
 
-    return finalize(ti, Nt_max, residual);
+    return finalize(ti, maxi, residual);
 }

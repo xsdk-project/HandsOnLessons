@@ -67,6 +67,6 @@ Here, re-emphasize the lesson objectives and key points.
 Its fine to go into greater detail about questions or objectives this lesson
 did not fully cover.
 
-### Other References
+### Further Reading
 
 Include links to other online sources you might want to include.
