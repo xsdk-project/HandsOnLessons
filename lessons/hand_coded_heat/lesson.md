@@ -143,7 +143,7 @@ plotted images to zoom in to full resolution.
 |[<img src="basic0001.png" width="300">](basic0001.png)|[<img src="basic0002.png" width="300">](basic0002.png)|[<img src="basic0002.png" width="300">](basic0002.png)|
 
 Now, in viewing the results, we can see that the _grid_ or _mesh_ (circles and lines
-in the plots, above, in this example is rather coarse. Suppose we would like to have
+in the plots, above) in this example is rather coarse. Suppose we would like to have
 10x finer spatial resolution instead of _dx=0.1_, change _dx=0.01_.
 
 ### Run 2 Finer Spatial Resolution
@@ -364,7 +364,6 @@ go faster by increasing the timestep?
 ### Run 6 Bigger Time-Step with [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
 
 ```
-[mcmiller@cooleylogin1 ~/tmp]$ make crankn_faster
 ./heat alpha= dx=0.01 dt=0.008 bc0= bc1= ic= alg=crankn eps= maxi= savi=25 save= outi=50
     prec=double
     alpha=0.2
@@ -413,18 +412,19 @@ to be concerned with in the behavior or numerical algorithms such as time
 and space performance and stability.
 
 A simple examination of the C code, [heat.c](./heat.c) demonstrates that in spite of
-the over-simplification have done here, developing the code necessary to
-impliment numerical algorithms and, in particular, to understand their behavior
-is non-trivial. It can get quite complex very quickly. Consider issues with larger
-objects, requiring scalable parallel solutions, higher spatial dimensions, unusual
+numerous simplification we have made here, developing the code necessary to
+impliment numerical algorithms and, in particular, to provide significant flexibility
+in the methods of solution and to understand and control their behavior is non-trivial.
+Code development complexity can get quite complex very quickly. Consider issues with larger
+objects requiring scalable parallel solutions, higher spatial dimensions, unusual
 shapes requiring either unstructured or adaptive meshing, higher order and different
 types of numerical schemes.
 
 This one of the key values of _numerical packages_. Many of the details of these
-issues have been resolved and _vetted_ within the scientific computing community.
-Numerical packages can help to simplify the development of highly sophisticated
-scientific computing applications and provide a much more solid and flexible
-foundation than custom code.
+issues have been resolved and _vetted_ within the scientific computing community
+within these pacakges. Numerical packages can help to simplify the development of
+highly sophisticated scientific computing applications and provide a much more solid
+and flexible foundation than custom code.
 
 ## Further Reading
 
@@ -472,6 +472,11 @@ for _steady state_, ![](http://latex.codecogs.com/gif.latex?t%5Cgg0), is
 a simple linear interpolation between temperature values at the ends...
 
 ![](http://latex.codecogs.com/gif.latex?u%28x%2Ct%29%20%3D%20x%7Bbc0%7D%2B%281-x%29%7Bbc1%7D%2C%20t%5Cgg0)
+
+### CPDS-Heat
+
+[There is a GitHub site which appears to have custom codes for solving 1D/2D heat
+equation with a variety of algorithms and with MPI, OpenMP and Cuda](https://github.com/joaomlneto/cpds-heat)
 
 ### Solving One-Dimensional PDEs with Microsoft Excel
 

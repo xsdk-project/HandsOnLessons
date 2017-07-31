@@ -36,6 +36,66 @@ double *cn_Amat = 0;
 
 int Nx = (int) (1/0.1+1.5);
 
+/*
+ * Utilities 
+ */
+static double
+l2_norm(int n, double const *a, double const *b)
+{
+    int i;
+    double sum = 0;
+    for (i = 0; i < n; i++)
+    {
+        double diff = a[i] - b[i];
+        sum += diff * diff;
+    }
+    return sum;
+}
+
+static void
+copy(int n, double *dst, double const *src)
+{
+    int i;
+    for (i = 0; i < n; i++)
+        dst[i] = src[i];
+}
+
+#define TSTART -1
+#define TFINAL -2
+#define RESIDUAL -3
+#define ERROR -4
+static void
+write_array(int t, int n, double dx, double const *a)
+{
+    int i;
+    char fname[32];
+    FILE *outf;
+
+    if (noout) return;
+
+    if (t == TSTART)
+        snprintf(fname, sizeof(fname), "heat_soln_00000.curve");
+    else if (t == TFINAL)
+        snprintf(fname, sizeof(fname), "heat_soln_final.curve");
+    else if (t == RESIDUAL)
+        snprintf(fname, sizeof(fname), "residual.curve");
+    else if (t == ERROR)
+        snprintf(fname, sizeof(fname), "error.curve");
+    else
+    {
+        if (a == exact)
+            snprintf(fname, sizeof(fname), "heat_exact_%05d.curve", t);
+        else
+            snprintf(fname, sizeof(fname), "heat_soln_%05d.curve", t);
+    }
+    
+    outf = fopen(fname,"w");
+    for (i = 0; i < n; i++)
+        fprintf(outf, "%8.4g %8.4g\n", i*dx, a[i]);
+    fclose(outf);
+}
+
+
 static void
 r83_np_fa(int n, double *a)
 /*
@@ -192,41 +252,6 @@ process_args(int argc, char **argv)
 
 }
 
-#define TSTART -1
-#define TFINAL -2
-#define RESIDUAL -3
-#define ERROR -4
-static void
-write_array(int t, int n, double dx, double const *a)
-{
-    int i;
-    char fname[32];
-    FILE *outf;
-
-    if (noout) return;
-
-    if (t == TSTART)
-        snprintf(fname, sizeof(fname), "heat_soln_00000.curve");
-    else if (t == TFINAL)
-        snprintf(fname, sizeof(fname), "heat_soln_final.curve");
-    else if (t == RESIDUAL)
-        snprintf(fname, sizeof(fname), "residual.curve");
-    else if (t == ERROR)
-        snprintf(fname, sizeof(fname), "error.curve");
-    else
-    {
-        if (a == exact)
-            snprintf(fname, sizeof(fname), "heat_exact_%05d.curve", t);
-        else
-            snprintf(fname, sizeof(fname), "heat_soln_%05d.curve", t);
-    }
-    
-    outf = fopen(fname,"w");
-    for (i = 0; i < n; i++)
-        fprintf(outf, "%8.4g %8.4g\n", i*dx, a[i]);
-    fclose(outf);
-}
-
 static void
 set_initial_condition(int n, double *a, double dx, char const *ic)
 {
@@ -314,27 +339,6 @@ compute_exact_solution(int n, double *a, double dx, char const *ic,
         for (i = 0, x = 0; i < n; i++, x+=dx)
             a[i] = bc0 + (bc1-bc0)*x;
     }
-}
-
-static double
-l2_norm(int n, double const *a, double const *b)
-{
-    int i;
-    double sum = 0;
-    for (i = 0; i < n; i++)
-    {
-        double diff = a[i] - b[i];
-        sum += diff * diff;
-    }
-    return sum;
-}
-
-static void
-copy(int n, double *dst, double const *src)
-{
-    int i;
-    for (i = 0; i < n; i++)
-        dst[i] = src[i];
 }
 
 static void
