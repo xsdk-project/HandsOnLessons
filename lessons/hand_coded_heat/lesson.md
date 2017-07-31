@@ -59,8 +59,9 @@ Examples...
 
 ### Using Make to Orchestrate Runs
 
-As an aside, we are using a make and a [makefile](./makefile.txt) to help orchestrate the runs here
-because we are actually running the example code multiple times with different
+As an aside, we are using make and a [makefile](./makefile.txt) here to help orchestrate
+the runs and to help simplify other tasks such as visualizing results. This is because
+we are actually running the example code multiple times with different
 arguments and tools to obtain various performance details.
 
 ### Run 1: Basic Heat Problem
@@ -68,9 +69,15 @@ arguments and tools to obtain various performance details.
 The following command will run the basic heat equation using the
 [_explicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods)
 [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme)
-numerical algorithm method with bc0 set to 0, bc1 set to 1 and initial condition
-set to a constant of 1. In an _explicit_ method, the solution at _any_ point, _x_,
+numerical algorithm method.
+In an _explicit_ method, the solution at _any_ point, _x_,
 can be computed _entirely_ from knowledge of the values at previous times.
+In this example, we have bc0 set to 0, bc1 set to 1 and initial condition
+set to a constant of 1 as visualized in the plot of the time-zero setup below.
+
+|<img src="basic0000.png" width="400">|
+
+To run the application to solve this problem, the command is...
 
 ```
 ./heat alpha= dx=0.1 dt=0.004 bc0=0 bc1=1 ic="const(1)" alg=ftcs eps=1e-6 maxi=5000 savi=100
@@ -124,8 +131,19 @@ Memory used        = 176 bytes
 
 Note the total number of iterations, floating point operation count and memory used.
 
-Now, the _grid_ or _mesh_ in this example is rather coarse.
-Suppose we would like to have 10x finer spatial resolution.
+To visualize a short animation of the results this example, you can use the command
+
+```
+make PROB=basic view
+```
+
+Some of the intermediate results are plotted below.
+
+|<img src="basic0001.png" width="300">|<img src="basic0002.png" width="300">|<img src="basic0002.png" width="300">|
+
+Now, in viewing the results, we can see that the _grid_ or _mesh_ (circles and lines
+in the plots, above, in this example is rather coarse. Suppose we would like to have
+10x finer spatial resolution instead of _dx=0.1_, change _dx=0.01_.
 
 ### Run 2 Finer Spatial Resolution
 
@@ -449,3 +467,10 @@ for _steady state_, ![](http://latex.codecogs.com/gif.latex?t%5Cgg0), is
 a simple linear interpolation between temperature values at the ends...
 
 ![](http://latex.codecogs.com/gif.latex?u%28x%2Ct%29%20%3D%20x%7Bbc0%7D%2B%281-x%29%7Bbc1%7D%2C%20t%5Cgg0)
+
+### Solving One-Dimensional PDEs with Microsoft Excel
+
+[Microsoft Excel can be used as a powerful way to play with and visualize
+results from _explicit_ numerical algorithms.](http://www.math.ubc.ca/~costanza/HeatEqTutorial.html)
+
+[An example Excel spreadsheet is available.](1d_heat_equation.xlsx)
