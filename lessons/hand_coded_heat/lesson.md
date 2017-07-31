@@ -65,10 +65,12 @@ arguments and tools to obtain various performance details.
 
 ### Run 1: Basic Heat Problem
 
-The following command will run the basic heat equation using the explicit
+The following command will run the basic heat equation using the
+[_explicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods)
 [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme)
 numerical algorithm method with bc0 set to 0, bc1 set to 1 and initial condition
-set to a constant of 1.
+set to a constant of 1. In an _explicit_ method, the solution at _any_ point, _x_,
+can be computed _entirely_ from knowledge of the values at previous times.
 
 ```
 ./heat alpha= dx=0.1 dt=0.004 bc0=0 bc1=1 ic="const(1)" alg=ftcs eps=1e-6 maxi=5000 savi=100
@@ -289,9 +291,12 @@ better with a different algorithm.
 
 ### Run 5 Switch to Implicit Method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method))
 
-In this run, we switch the algorithm to an _implicit_ method known as the
+In this run, we switch the algorithm to an
+[_implicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods) method known as the
 [_Crank-Nicolson_](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
-method.
+method. In an _implicit_ method, the solution at any point, _x_, is a linear system of
+equations involving other points, _x_, at the current time as well as solution(s) from 
+previous times. So, each time step involves the solution of a linear system of equations.
 
 ```
 ./heat alpha= dx=0.01 dt= bc0= bc1= ic= alg=crankn eps= maxi= savi=50 save= outi=
@@ -328,7 +333,8 @@ Look at how quickly this algorithm converges. Here we've used only 975755 flops.
 is only about 4x as many flops as the [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme)
 algorithm used on the **coarse** mesh!! On
 the other hand, look at how much additional memory this algorithm required. This is
-the memory required to store a _banded_ matrix for the implicit solve. It is about
+the memory required to store a _banded_ matrix for the
+[implicit](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods) solve. It is about
 3x as much memory (for main diagonal and two sub-diagonals) over the FTCS method.
 
 Can we make [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
