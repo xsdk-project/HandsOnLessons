@@ -378,6 +378,10 @@ Here, we have increased the timestep by 2x and yet the
 [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method) method
 converged to similar tolerance in about 1/2 as many floating point operations.
 
+The [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method) method
+is known to be unconditionally stable. Does that mean we can make time-step
+arbitrarily large?
+
 ## Out-Brief
 
 We have demonstrated the use of a simple, hand-coded C application to solve
