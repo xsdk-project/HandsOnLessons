@@ -137,9 +137,10 @@ To visualize a short animation of the results this example, you can use the comm
 make PROB=basic view
 ```
 
-Some of the intermediate results are plotted below.
+Some of the intermediate results are plotted below. Note: you can click on any of these
+plotted images to zoom in to full resolution.
 
-|<img src="basic0001.png" width="300">|<img src="basic0002.png" width="300">|<img src="basic0002.png" width="300">|
+|[<img src="basic0001.png" width="300">](basic0001.png)|[<img src="basic0002.png" width="300">](basic0002.png)|[<img src="basic0002.png" width="300">](basic0002.png)|
 
 Now, in viewing the results, we can see that the _grid_ or _mesh_ (circles and lines
 in the plots, above, in this example is rather coarse. Suppose we would like to have
@@ -293,6 +294,8 @@ Floating point ops = 11249034
 Memory used        = 1616 bytes
 ```
 
+|[<img src="hr_smalldt_long0002.png" width="300">](hr_smalldt_long0002.png)|[<img src="hr_smalldt_long0003.png" width="300">](hr_smalldt_long0003.png)|[<img src="hr_smalldt_long0004.png" width="300">](hr_smalldt_long0004.png)|
+
 Ok, after going to a finer spatial resolution, the algorithm went unstable. To correct
 that, we shrunk the time-step and the algorithm failed to converge to desired tolerance
 in 5000 iterations.  Now, we've increased the maximum number of iterations and we finally
@@ -391,6 +394,8 @@ Integer ops        = 5431250
 Floating point ops = 518349
 Memory used        = 4047 bytes
 ```
+
+|[<img src="hr_crankn0000.png" width="300">](hr_crankn0000.png)|[<img src="hr_crankn0001.png" width="300">](hr_crankn0001.png)|[<img src="hr_crankn0002.png" width="300">](hr_crankn0002.png)|
 
 Here, we have increased the timestep by 2x and yet the
 [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method) method
