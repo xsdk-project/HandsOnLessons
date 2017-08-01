@@ -57,12 +57,17 @@ Examples...
     ./heat alpha=0.5 bc0=5 bc1=10 ic="random(12345,4)"
 ```
 
-### Using Make to Orchestrate Runs
+### Additional Information
 
 As an aside, we are using make and a [makefile](./makefile.txt) here to help orchestrate
 the runs and to help simplify other tasks such as visualizing results. This is because
 we are actually running the example code multiple times with different
-arguments and tools to obtain various performance details.
+arguments and tools to obtain various performance details. Other notes...
+
+    * You can click on any of the small images plotted here to zoom in to full resolution.
+    * After each run, there are questions posed. The answers are _hidden_ in the white
+      space just under the question. To reveal the answers, double click in that region.
+
 
 ### Run 1: Basic Heat Problem
 
@@ -142,8 +147,7 @@ To visualize a short animation of the results this example, you can use the comm
 make PROB=basic view
 ```
 
-Some of the intermediate results are plotted below. Note: you can click on any of these
-plotted images to zoom in to full resolution.
+Some of the intermediate results are plotted below.
 
 |[<img src="basic0001.png" width="300">](basic0001.png)|[<img src="basic0002.png" width="300">](basic0002.png)|[<img src="basic0002.png" width="300">](basic0002.png)|
 
@@ -193,9 +197,9 @@ FTCS is known to be stable only for values of
 
 ![](http://latex.codecogs.com/gif.latex?%5Calpha%20%5Cfrac%7B%5CDelta%20t%7D%7B%7B%5CDelta%20x%7D%5E2%7D%20%5Cle%20%5Cfrac%7B1%7D%7B2%7D)
 
-> What can we do to correct for the instability?
+> **What can we do to correct for the instability?**
 
-<font color="white">We can naively correct for this by shrinking the time-step. Lets try a dt of 0.001</font>
+|<font color="white">We can naively correct for this by shrinking the time-step. Lets try a dt of 0.001</font>|
 
 ---
 
@@ -245,10 +249,9 @@ Memory used        = 1616 bytes
 
 Note the **Did not converge**. The solution has yet to converge to the desired tolerance.
 
-> What can we do to correct for lack of convergence?
+> **What can we do to correct for lack of convergence?**
 
-<font color="white">In order to correct for that, we need to let it run longer.
-Lets try a maximum of 20,000 iterations</font>
+|<font color="white">In order to correct for that, we need to let it run longer.  Lets try a maximum of 20,000 iterations</font>|
 
 ---
 
@@ -327,21 +330,17 @@ finer spatial resolution.
 
 Note the difference in memory between this and run 1 of 176 vs 1616 bytes.
 
-> Why is the memory almost 10x as much?
+> **Why is the memory almost 10x as much?**
 
-<font color="white">The additional memory accounts for the fact that the
-coarse mesh has 11 nodes (and 10 zones) and the fine mesh has 101 nodes
-(and 100 zones). This is expected because we are solving a spatially bigger
-problem. </font>
+|<font color="white">The additional memory accounts for the fact that the coarse mesh has 11 nodes (and 10 zones) and the fine mesh has 101 nodes (and 100 zones). This is expected because we are solving a spatially bigger problem. </font>|
 
-> How many more flops are required?
+> **How many more flops are required?**
 
-<font color="white">On the coarse mesh, 255769 flops were used. On the fine
-mesh, 11249034. The fine mesh required ~43x more floating point work.</font>
+|<font color="white">On the coarse mesh, 255769 flops were used. On the fine mesh, 11249034. The fine mesh required ~43x more floating point work.</font>|
 
-> Is there a better algorithm?
+> **Is there a better algorithm?**
 
-<font color="white">Yes, but we we need to switch to an implicit method</font>
+|<font color="white">Yes, but we we need to switch to an implicit method</font>|
 
 ---
 
@@ -409,17 +408,14 @@ Note the amount of memory and flops for
 [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
 to converge.
 
-> Why is there more memory?
+> **Why is there more memory?**
 
-<font color="white">This is the memory required to store a banded matrix for the
-implicit solve. It is about 3x as much memory (for main diagonal and two sub-diagonals)
-over the FTCS method.</font>
+|<font color="white">This is the memory required to store a banded matrix for the implicit solve. It is about 3x as much memory (for main diagonal and two sub-diagonals) over the FTCS method.</font>|
 
-> Can we make [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
-go faster by increasing the timestep?
+> **Can we make [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
+go faster by increasing the timestep?**
 
-<font color="white">Yes, lets try dt=0.008, which is twice the size of the timestep
-used in the coarse mesh for the FTCS algorithm</font>
+|<font color="white">Yes, lets try dt=0.008, which is twice the size of the timestep used in the coarse mesh for the FTCS algorithm</font>|
 
 ---
 
@@ -463,14 +459,13 @@ Here, we have increased the timestep and yet the
 converged to similar tolerance as in run 4, in just 428 iterations and using
 21x _fewer_ flops.
 
-> Why were we able to increase the timestep?
+> **Why were we able to increase the timestep?**
 
-<font color="white">The Crank-Nicolson is known to be unconditionally stable.</font>
+|<font color="white">The Crank-Nicolson is known to be unconditionally stable.</font>|
 
-> Does that mean we can make time-step arbitrarily large?
+> **Does that mean we can make time-step arbitrarily large?**
 
-
-<font color="white">This is an exercise left to the learner.</font>
+|<font color="white">This is an exercise left to the learner.</font>|
 
 ## Out-Brief
 
