@@ -73,14 +73,14 @@ use a Markdown table and raw html...
 
 |<img src="basic0000.png" width="200">|<img src="basic0000.png" width="400">|
 
-![Gif Animations](animated_basic_heat.gif)
-
 **Note:** You can create [gif animations](https://www.tjhsst.edu/~dhyatt/supercomp/n401a.html)
 with ImageMagick tool available on most systems as `convert` command as in...
 
 ```
 convert -delay 20 -loop 0 image*.<ext> animation.gif
 ```
+
+![Gif Animations](animated_basic_heat.gif)
 
 Alternatively, you can upload videos to YouTube and embed them here 
 
