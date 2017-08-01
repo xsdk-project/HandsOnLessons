@@ -35,16 +35,26 @@ below. Maybe include the equation being solved as well.
 ## The Example Source Code
 
 Describe the application, its command-line arguments, have a link to view the actual source code
+or, if you prefer, include snipits of the source code here in a code-highlighted box as below
 
-Maybe include information on how to compile here too.
+```c++
+Geometry::~Geometry()
+{
+   for (int i = 0; i < NumGeom; i++)
+   {
+      delete PerfGeomToGeomJac[i];
+      delete GeomVert[i];
+   }
+}
+```
 
 ## Running the Example
 
-### Run 1
+### Run 1 (Problem Name)
 
 Give the command-line to run the example
 
-#### Expected Behavior
+#### Expected Behavior/Output
 
 Include here what learner should expect to happen
 
@@ -54,11 +64,79 @@ Include here what learner should expect to happen
 
 #### Examining Results
 
-Include here commands, tools to view/examine results from the run
+Include here examples of either plots or data you expect learners to observe.
 
-### Run 2
+![An Image](basic0000.png)
+
+Or, if you need to control the size, or have multiple images next to each other
+use a Markdown table and raw html...
+
+|<img src="basic0000.png" width="200">|<img src="basic0000.png" width="400">|
+
+![Gif Animations](animated_basic_heat.gif)
+
+**Note:** You can create [gif animations](https://www.tjhsst.edu/~dhyatt/supercomp/n401a.html)
+with ImageMagick tool available on most systems as `convert` command as in...
+
+```
+convert -delay 20 -loop 0 image*.<ext> animation.gif
+```
+
+Alternatively, you can upload videos to YouTube and embed them here 
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bsSFYrDXK0k" frameborder="0" allowfullscreen></iframe>
+
+#### Questions
+
+> **Question #1?** (triple-click box below to reveal answer)
+
+|<font color="white">Answer to Question #1</font>|
+
+> **Question #2?** (triple-click box below to reveal answer)
+
+|<font color="white">Answer to Question #2</font>|
+
+---
+
+### Run 2 (Problem Name)
+
+#### Expected Behavior/Output
+
+#### Examining Results
+
+Include here examples of either plots or data you expect learners to observe.
+
+#### Questions
+
+> **Question #1?** (triple-click box below to reveal answer)
+
+|<font color="white">Answer to Question #1</font>|
+
+> **Question #2?** (triple-click box below to reveal answer)
+
+|<font color="white">Answer to Question #2</font>|
+
+---
 
 ### Run 3
+
+#### Expected Behavior/Output
+
+#### Examining Results
+
+Include here examples of either plots or data you expect learners to observe.
+
+#### Questions
+
+> **Question #1?** (triple-click box below to reveal answer)
+
+|<font color="white">Answer to Question #1</font>|
+
+> **Question #2?** (triple-click box below to reveal answer)
+
+|<font color="white">Answer to Question #2</font>|
+
+---
 
 ## Out-Brief
 

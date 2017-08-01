@@ -66,8 +66,7 @@ arguments and tools to obtain various performance details. Other notes...
 
 * You can click on any of the small images plotted here to zoom in to full resolution.
 * After each run, there are questions posed. The answers are _hidden_ in the white
-  space just under the question. To reveal the answers, double click in that region.
-
+  space just under the question. To reveal the answers, triple click in that region.
 
 ### Run 1: Basic Heat Problem
 
