@@ -64,9 +64,9 @@ the runs and to help simplify other tasks such as visualizing results. This is b
 we are actually running the example code multiple times with different
 arguments and tools to obtain various performance details. Other notes...
 
-    * You can click on any of the small images plotted here to zoom in to full resolution.
-    * After each run, there are questions posed. The answers are _hidden_ in the white
-      space just under the question. To reveal the answers, double click in that region.
+* You can click on any of the small images plotted here to zoom in to full resolution.
+* After each run, there are questions posed. The answers are _hidden_ in the white
+  space just under the question. To reveal the answers, double click in that region.
 
 
 ### Run 1: Basic Heat Problem
@@ -196,6 +196,12 @@ FTCS is known to be stable only for values of
 ![](http://latex.codecogs.com/gif.latex?%5Calpha) such that...
 
 ![](http://latex.codecogs.com/gif.latex?%5Calpha%20%5Cfrac%7B%5CDelta%20t%7D%7B%7B%5CDelta%20x%7D%5E2%7D%20%5Cle%20%5Cfrac%7B1%7D%7B2%7D)
+
+The instability observed appears as...
+
+|[<img src="highres0000.png" width="300">](highres0000.png)|[<img src="highres0001.png" width="300">](highres0001.png)|
+
+Note the Y-axis range in these two plots. It gets out of control!
 
 > **What can we do to correct for the instability?**
 
