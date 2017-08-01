@@ -53,8 +53,8 @@ Usage:
         outi=100                  output progress every i-th solution step (int)
         noout=0                                   disable all file outputs (int)
 Examples...
-    ./heat Nx=51 dt=0.002 alg=ftcs
-    ./heat Nx=51 bc0=5 bc1=10
+    ./heat dx=0.01 dt=0.002 alg=ftcs
+    ./heat alpha=0.5 bc0=5 bc1=10 ic="random(12345,4)"
 ```
 
 ### Using Make to Orchestrate Runs
@@ -77,15 +77,18 @@ set to a constant of 1 as visualized in the plot of the time-zero setup below.
 
 |<img src="basic0000.png" width="400">|
 
-To run the application to solve this problem, the command is...
+The help output, above, shows the application's default values for all
+command-line arguments. In the exercises below, we pass command-line
+arguments only for the cases where we need non-default values. One of
+these, the `savi=<int>` and `outi=<int>` arguments are useful in controlling
+how much output is created to the terminal or to output files.
+
+To run the `heat` application with specified boundary and initial conditions
+and with [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme) numerical algorithm,
+run the `heat` application like so...
 
 ```
-./heat alpha= dx=0.1 dt=0.004 bc0=0 bc1=1 ic="const(1)" alg=ftcs eps=1e-6 maxi=5000 savi=100
-```
-
-The following output is observed...
-
-```
+./heat savi=100
     prec=double
     alpha=0.2
     dx=0.1
@@ -129,6 +132,8 @@ Floating point ops = 255769
 Memory used        = 176 bytes
 ```
 
+In the above output, we see the application ran for 2270 iterations before
+the output converged to a point that it did not change significantly. 
 Note the total number of iterations, floating point operation count and memory used.
 
 To visualize a short animation of the results this example, you can use the command
@@ -144,12 +149,19 @@ plotted images to zoom in to full resolution.
 
 Now, in viewing the results, we can see that the _grid_ or _mesh_ (circles and lines
 in the plots, above) in this example is rather coarse. Suppose we would like to have
-10x finer spatial resolution instead of _dx=0.1_, change _dx=0.01_.
+a 10x finer spatial resolution instead of _dx=0.1_, change _dx=0.01_.
+
+---
 
 ### Run 2 Finer Spatial Resolution
 
+Since a value for _dx_ other than _0.1_ is different from the _default_ value,
+we specify it on the command-line. Also, since we expect this run to pretty
+quickly run into difficulties, we set `savi=10` so that we can get a better
+idea of what is happening early on in the algorithm
+
 ```
-./heat alpha= dx=0.01 dt= bc0= bc1= ic= alg= eps= maxi= savi=10 save= outi=
+./heat dx=0.01 savi=10
     prec=double
     alpha=0.2
     dx=0.01
@@ -167,24 +179,30 @@ in the plots, above) in this example is rather coarse. Suppose we would like to 
 Iteration 0000: last change l2=1
 Iteration 0100: last change l2=1.63884e+142
 Iteration 0200: last change l2=1.74264e+288
-/bin/sh: line 8: 318217 Floating point exception(core dumped) ../heat alpha= dx=0.01 dt= bc0= bc1= ic="" alg= eps= maxi= savi=10 save= outi=
+/bin/sh: line 8: 318217 Floating point exception(core dumped)
 Integer ops        = 4202002
 Floating point ops = 472837
 Memory used        = 1616 bytes
 ```
 
 Note the **Floating point exception(core dumped)**.
-What happend? We have hit an _instability_ in the [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme) algorithm.
-It is known to be stable only when 
+What happend? We have hit an _instability_ in the
+[FTCS](https://en.wikipedia.org/wiki/FTCS_scheme) algorithm.
+FTCS is known to be stable only for values of
+![](http://latex.codecogs.com/gif.latex?%5Calpha) such that...
 
 ![](http://latex.codecogs.com/gif.latex?%5Calpha%20%5Cfrac%7B%5CDelta%20t%7D%7B%7B%5CDelta%20x%7D%5E2%7D%20%5Cle%20%5Cfrac%7B1%7D%7B2%7D)
 
-We can naively correct for this by shrinking the time-step. Lets try a _dt_ of 0.001
+> What can we do to correct for the instability?
+
+<font color="white">We can naively correct for this by shrinking the time-step. Lets try a dt of 0.001</font>
+
+---
 
 ### Run 3 Decrease Time Step To 0.001
 
 ```
-./heat alpha= dx=0.01 dt=0.001 bc0= bc1= ic= alg= eps= maxi= savi=250 save= outi=250
+./heat alpha= dx=0.01 dt=0.001 savi=250 outi=250
     prec=double
     alpha=0.2
     dx=0.01
@@ -226,13 +244,18 @@ Memory used        = 1616 bytes
 ```
 
 Note the **Did not converge**. The solution has yet to converge to the desired tolerance.
-In order to correct for that, we need to let it run longer. Lets try a maximum of 20,000
-iterations
+
+> What can we do to correct for lack of convergence?
+
+<font color="white">In order to correct for that, we need to let it run longer.
+Lets try a maximum of 20,000 iterations</font>
+
+---
 
 ### Run 4 Increase Maximum Iterations
 
 ```
-./heat alpha= dx=0.01 dt=0.001 bc0= bc1= ic= alg= eps= maxi=20000 savi=250 save= outi=250
+./heat dx=0.01 dt=0.001 maxi=20000 savi=250 outi=250
     prec=double
     alpha=0.2
     dx=0.01
@@ -303,12 +326,24 @@ have a good result from [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme) algori
 finer spatial resolution.
 
 Note the difference in memory between this and run 1 of 176 vs 1616 bytes.
-This is the difference between a _mesh_ of 11 nodes (and 10 zones) and a
-mesh of 101 nodes (and 100 zones). This is expected. But, also note
-the difference in total number of floating point operations to get equivalent
-result on finer mesh...255769 for the coarse mesh and 11249034 for the 10x fine
-mesh. That is a cost of 43x the floating point work!!! Lets see if we can do
-better with a different algorithm.
+
+> Why is the memory almost 10x as much?
+
+<font color="white">The additional memory accounts for the fact that the
+coarse mesh has 11 nodes (and 10 zones) and the fine mesh has 101 nodes
+(and 100 zones). This is expected because we are solving a spatially bigger
+problem. </font>
+
+> How many more flops are required?
+
+<font color="white">On the coarse mesh, 255769 flops were used. On the fine
+mesh, 11249034. The fine mesh required ~43x more floating point work.</font>
+
+> Is there a better algorithm?
+
+<font color="white">Yes, but we we need to switch to an implicit method</font>
+
+---
 
 ### Run 5 Switch to Implicit Method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method))
 
@@ -320,51 +355,78 @@ equations involving other points, _x_, at the current time as well as solution(s
 previous times. So, each time step involves the solution of a linear system of equations.
 
 ```
-./heat alpha= dx=0.01 dt= bc0= bc1= ic= alg=crankn eps= maxi= savi=50 save= outi=
+./heat dx=0.01 dt=0.001 alg=crankn savi=100
     prec=double
     alpha=0.2
     dx=0.01
-    dt=0.004
+    dt=0.001
     bc0=0
     bc1=1
     ic=const(1)
     alg=crankn
     eps=1e-06
     maxi=5000
-    savi=50
+    savi=100
     save=0
     outi=100
     noout=0
 Iteration 0000: last change l2=1
-Iteration 0100: last change l2=0.000272086
-Iteration 0200: last change l2=5.43757e-05
-Iteration 0300: last change l2=1.12768e-05
-Iteration 0400: last change l2=2.3395e-06
-Iteration 0500: last change l2=4.85357e-07
-Iteration 0600: last change l2=1.00693e-07
-Iteration 0700: last change l2=2.089e-08
-Iteration 0800: last change l2=4.33389e-09
-Converged to 3.944e-09 in 807 iterations
-Integer ops        = 7495923
-Floating point ops = 975755
+Iteration 0100: last change l2=0.000142313
+Iteration 0200: last change l2=5.00808e-05
+Iteration 0300: last change l2=2.70171e-05
+Iteration 0400: last change l2=1.6885e-05
+Iteration 0500: last change l2=1.1109e-05
+Iteration 0600: last change l2=7.43199e-06
+Iteration 0700: last change l2=4.99822e-06
+Iteration 0800: last change l2=3.3669e-06
+Iteration 0900: last change l2=2.26916e-06
+Iteration 1000: last change l2=1.52955e-06
+Iteration 1100: last change l2=1.03107e-06
+Iteration 1200: last change l2=6.95046e-07
+Iteration 1300: last change l2=4.68537e-07
+Iteration 1400: last change l2=3.15845e-07
+Iteration 1500: last change l2=2.12914e-07
+Iteration 1600: last change l2=1.43527e-07
+Iteration 1700: last change l2=9.67531e-08
+Iteration 1800: last change l2=6.52222e-08
+Iteration 1900: last change l2=4.39669e-08
+Iteration 2000: last change l2=2.96385e-08
+Iteration 2100: last change l2=1.99796e-08
+Iteration 2200: last change l2=1.34684e-08
+Iteration 2300: last change l2=9.07921e-09
+Iteration 2400: last change l2=6.12038e-09
+Iteration 2500: last change l2=4.12581e-09
+Iteration 2600: last change l2=2.78125e-09
+Iteration 2700: last change l2=1.87486e-09
+Iteration 2800: last change l2=1.26386e-09
+Converged to 9.976e-10 in 2861 iterations
+Integer ops        = 18791227
+Floating point ops = 3455398
 Memory used        = 4047 bytes
 ```
 
-Look at how quickly this algorithm converges. Here we've used only 975755 flops. That
-is only about 4x as many flops as the [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme)
-algorithm used on the **coarse** mesh!! On
-the other hand, look at how much additional memory this algorithm required. This is
-the memory required to store a _banded_ matrix for the
-[implicit](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods) solve. It is about
-3x as much memory (for main diagonal and two sub-diagonals) over the FTCS method.
+Note the amount of memory and flops for 
+[Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
+to converge.
 
-Can we make [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
+> Why is there more memory?
+
+<font color="white">This is the memory required to store a banded matrix for the
+implicit solve. It is about 3x as much memory (for main diagonal and two sub-diagonals)
+over the FTCS method.</font>
+
+> Can we make [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
 go faster by increasing the timestep?
+
+<font color="white">Yes, lets try dt=0.008, which is twice the size of the timestep
+used in the coarse mesh for the FTCS algorithm</font>
+
+---
 
 ### Run 6 Bigger Time-Step with [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
 
 ```
-./heat alpha= dx=0.01 dt=0.008 bc0= bc1= ic= alg=crankn eps= maxi= savi=25 save= outi=50
+./heat dx=0.01 dt=0.008 alg=crankn savi=25 outi=50
     prec=double
     alpha=0.2
     dx=0.01
@@ -396,13 +458,19 @@ Memory used        = 4047 bytes
 
 |[<img src="hr_crankn0000.png" width="300">](hr_crankn0000.png)|[<img src="hr_crankn0001.png" width="300">](hr_crankn0001.png)|[<img src="hr_crankn0002.png" width="300">](hr_crankn0002.png)|
 
-Here, we have increased the timestep by 2x and yet the
+Here, we have increased the timestep and yet the
 [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method) method
-converged to similar tolerance in about 1/2 as many floating point operations.
+converged to similar tolerance as in run 4, in just 428 iterations and using
+21x _fewer_ flops.
 
-The [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method) method
-is known to be unconditionally stable. Does that mean we can make time-step
-arbitrarily large?
+> Why were we able to increase the timestep?
+
+<font color="white">The Crank-Nicolson is known to be unconditionally stable.</font>
+
+> Does that mean we can make time-step arbitrarily large?
+
+
+<font color="white">This is an exercise left to the learner.</font>
 
 ## Out-Brief
 
@@ -467,7 +535,18 @@ _exact_ solution that can be written down as a mathematical formula.
 These cases are attractive because they allow us to assess the accuracy of
 our implementation of any numerical algorithm. 
 
-For example, the analytic solution, _u(x,t)_,
+For example, for the case of _bc0=0_, _bc1=0_, _ic=const(U0)_, the analytic
+solution **for all time, _t_**, is given by...
+
+![](http://latex.codecogs.com/gif.latex?%5Csum%5Climits_%7Bn%3D1%7D%5E%5Cinfty%20%5Cfrac%7B%7BU%7D_0%281-%28-1%29%5En%29%7D%7Bn%5Cpi%7D%5Csin%28%7B%7Bn%7D%5Cpi%7Bx%7D%7D%29%29%5Cexp%7B-%5Calpha%7Bn%7D%7Bx%7D%5E2%7Bt%7D%7D)
+
+Similarly, for the case of _bc0=0_, _bc1=0_,
+_ic=![](http://latex.codecogs.com/gif.latex?%7BU_0%7D%5Csin%28%7B%5Cpi%7D%7Bx%7D%29)
+the analytic solution **for all time, _t_**, is given by...
+
+![](http://latex.codecogs.com/gif.latex?%7BU_0%7D%5Csin%28%7B%7B%5Cpi%7D%7Bx%7D%7D%29%5Cexp%5E%7B-%5Calpha%7B%5Cpi%7D%5E2%7Bt%7D%7D)
+
+The analytic solution, _u(x,t)_,
 for _steady state_, ![](http://latex.codecogs.com/gif.latex?t%5Cgg0), is
 a simple linear interpolation between temperature values at the ends...
 
