@@ -4,14 +4,14 @@
 
 
 ```
-Questions                  |Objectives                          |Key Points
----------------------------|------------------------------------|--------------------------
+uestions                  |Objectives                           |Key Points
+--------------------------|----------- -------------------------|--------------------------
 Why multigrid over CG for |Understand multigrid concept         |Faster convergence,
 large problems?           |                                     |better scalability
-Why a structured solver   |Understand importance of suitable    |Higher efficiency, 
-for a structured problem? |data structures                      |faster solve times
 Why use more aggressive   |Understand need for low complexities |Lower memory use, faster
 coarsening for AMG?       |                                     |times, but more iterations
+Why a structured solver   |Understand importance of suitable    |Higher efficiency, 
+for a structured problem? |data structures                      |faster solve times
 ```
 
 ## The problem being solved
@@ -419,11 +419,14 @@ sys 1.34
 
 ## Out-Brief
 
-Here, re-emphasize the lesson objectives and key points.
+We investigated why multigrid methods are preferrable over generic solvers like conjugate gradient for large suitable PDE problems.
+Additional improvements can be achieved when using them as preconditioners for Krylov solvers like conjugate gradient.
+For unstructured multigrid solvers, it is important to keep complexities low, since large complexitites lead to slow solve times and require much memory.
+For structured problems, solvers that take advantage of the structure of the problem are more efficient than unstructured solvers.
 
-Its fine to go into greater detail about questions or objectives this lesson
-did not fully cover.
 
 ### Further Reading
 
-Include links to other online sources you might want to include.
+To learn more about algebraic multigrid, see https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/CiSE_2006_amg_220851.pdf
+
+More information on hypre can be found at https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods 
