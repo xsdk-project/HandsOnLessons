@@ -10,493 +10,531 @@ What is discretization?   |Understand algorithmic trade-offs    |Software packag
 What is stability?        |Understand value of software packages|
 ```
 
-## The problem being solved
+## A Real-World Heat Problem
 
-In this lesson, we use a simple, hand-coded, C application to solve
-a few different variations of a one dimensional heat conduction
-problem through a homogeneous wall of unit thickness.
+In this lesson, we demonstrate the design and use of a hand-coded
+(e.g. does not use any software packages) C-language application to
+model _heat_ conduction through a wall as pictured here...
 
-|<img src="simple_1d_heat.png" width="600">|<img src="animated_basic_heat.gif" width="400">|
+|[<img src="simple_1d_heat.png" width="400">](simple_1d_heat.png)|[<img src="spikes_animated.gif" width="400">](spikes_animated.gif)
 
-* The left boundary at x=0, is held at some constant temperature, bc0, for all time.
-* The right boundary at x=1, is held at some constant temperature, bc1, for all time.
-* Various initial conditions, u(x) at t=0, may be specified.
+### Governing Equations
 
-We will run the example code with various input parameters and observe the results
-as _Curve_ plots in [VisIt](https://visit.llnl.gov) such as the one pictured here
+In general, heat [conduction](https://en.wikipedia.org/wiki/Thermal_conduction) is goverened
+by the partial differential (PDE)...
 
-## The Example Source Code
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%5Cnabla%5E2u)|(1)|
 
-[heat.c](./heat.c)
+where _u_ is the temperature within the wall at spatial positions, _x_, and times, _t_,
+![](http://latex.codecogs.com/gif.latex?%5Calpha) is the _thermal diffusivity_
+of the material(s) comprising the wall and ![](http://latex.codecogs.com/gif.latex?%5Cnabla%5E2)
+is the [Laplace Operator](https://en.wikipedia.org/wiki/Laplace_operator).
+This equation is known as the _Diffusion Equation_ and also the
+[_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation)
 
-### Getting help
+---
+
+### Simplifying Assumptions
+
+To make the problem tractible for this lesson, we make some simplifying assumptions...
+
+1. The thermal diffusivity, ![](http://latex.codecogs.com/gif.latex?%5Calpha),
+   is constant for all _space_ and _time_.
+1. The only heat _source_ is from the initial and/or boundary conditions.
+1. We will deal only with the _one dimensional_ problem in _cartesian coordinates_.
+
+In this case, the PDE we need to develop an application to solve simplifies to...
+
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)|(2)|
+
+---
+
+### Scienitifc Inquiries
+
+We want the application we develop to be useful in various scientific inquries
+such as...
+
+1. Will the temperature at _x=A_ exceed a given value?
+1. How does the maximum temperature in the wall change with time?
+1. What time will temperature fluxuations of frequency, _f_ fall below threshold?
+
+To answer questions such as these, the application needs to be designed so that it can
+properly model _time varying_ or _transient_ behavior of heat conduction and not just
+[_thermal equilibrium_](https://en.wikipedia.org/wiki/Thermal_equilibrium).
+
+---
+
+### Some Key Design Choices
+
+1. Do we care only about the _steady state_ or do we also care about
+   the _time varying_ or _transient_ solution?
+1. The PDE in equation 2 is a _continuous_ equation in two
+   [_independent variables_](https://en.wikipedia.org/wiki/Partial_differential_equation)
+   _x_ and _t_? How will we [_discretize_](https://en.wikipedia.org/wiki/Discretization)
+   the PDE such that its solution can be implemented in a computer program?
+1. How do we develop the software so that enhancing it to accomodate more complex
+   situations later is easy?
+
+## The Application Source Code
+
+### FTCS Discretization
+
+Consider discretizing, independently, the left and right hand sides of
+equation 2. For the left hand side, we can approximate the first derivative
+of _u_ with respect to time, _t_, by the equation...
+
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%5CBigr%7C_%7Bt_%7Bk%2B1%7D%7D%20%5Capprox%20%5Cfrac%7Bu_i%5E%7Bk%2B1%7D-u_i%5Ek%7D%7B%5CDelta%20t%7D)|(3)|
+
+As well, we can approximate the right-hand side of equation 2 with
+the second derivative of _u_ with respect to space, _x_, by the equation...
+
+|![](http://latex.codecogs.com/gif.latex?%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D%5CBigr%7C_%7Bx_i%7D%20%5Capprox%20%5Calpha%20%5Cfrac%7Bu_%7Bi-1%7D%5Ek-2u_i%5Ek%2Bu_%7Bi%2B1%7D%5Ek%7D%7B%5CDelta%20x%5E2%7D)|(4)|
+
+Setting equations 4 and 5 equal to each other and re-arranging terms, we
+arrive at the following update scheme for producing the temperatures at
+the next time, _k+1_, from temperatures at the current time, _k_, as
+
+|![](http://latex.codecogs.com/gif.latex?u_i%5E%7Bk%2B1%7D%20%3D%20ru_%7Bi%2B1%7D%5Ek%2B%281-2r%29u_i%5Ek%2Bru_%7Bi-1%7D%5Ek)|(6)|
+
+where ![](http://latex.codecogs.com/gif.latex?r%3D%5Calpha%5Cfrac%7B%5CDelta%20t%7D%7B%5CDelta%20x%5E2%7D)
+Note that all the values on the left hand side of equation 6 are for time, _k-1_, the
+solution from a _previously known_ time-step. Such a method is known as an _explicit_
+numerical method. Explicit methods have some nice properties
+
+* They are easy to implement.
+* They typically require minimal memory.
+* They are easy to parallelize.
+
+The code to implement this numerical method is shown below.
+
+```c
+static void
+solution_update_ftcs(int n,
+    double *curr, double const *last,
+    double alpha, double dx, double dt,
+    double bc_0, double bc_1)
+{
+    double const r = alpha * dt / (dx * dx);
+
+    /* Impose boundary conditions for solution indices i==0 and i==n-1 */
+    curr[0  ] = bc_0;
+    curr[n-1] = bc_1;
+
+    /* Update the solution using FTCS algorithm */
+    for (int i = 1; i < n-1; i++)
+        curr[i] = r*last[i+1] + (1-2*r)*last[i] + r*last[i-1];
+}
+```
+
+The FTCS update method is implemented around line 360 in the example application, [heat.c](heat.c.numbered).
+
+### Getting Help
 
 At any point, you can get help regarding various options the
 application supports like so...
 
 ```
-./[mcmiller@cooleylogin1 ~/tmp]$ ./heat --help
+$ ./heat --help
 Usage:
     ./heat <arg>=<value> <arg>=<value>...
         prec=double                     precision half|float|double|quad (char*)
         alpha=0.2                          material thermal diffusivity (double)
         dx=0.1                                  x-incriment (1/dx->int) (double)
         dt=0.004                                            t-incriment (double)
+        maxt=2                           max. time to run simulation to (double)
         bc0=0                                          bc @ x=0: u(0,t) (double)
         bc1=1                                          bc @ x=1: u(1,t) (double)
         ic=const(1)                                     ic @ t=0: u(x,0) (char*)
         alg=ftcs                          algorithm ftcs|upwind15|crankn (char*)
-        eps=1e-06                                 convergence criterion (double)
-        maxi=5000                           max. number of time iterations (int)
         savi=0                               save every i-th solution step (int)
         save=0                          save error in every saved solution (int)
         outi=100                  output progress every i-th solution step (int)
         noout=0                                   disable all file outputs (int)
 Examples...
-    ./heat dx=0.01 dt=0.002 alg=ftcs
-    ./heat alpha=0.5 bc0=5 bc1=10 ic="random(12345,4)"
+    ./heat dx=0.01 dt=0.0002 alg=ftcs
+    ./heat dx=0.1 bc0=5 bc1=10 ic="spikes(5,5)"
 ```
 
-### Additional Information
+### Run 1
 
-As an aside, we are using make and a [makefile](./makefile.txt) here to help orchestrate
-the runs and to help simplify other tasks such as visualizing results. This is because
-we are actually running the example code multiple times with different
-arguments and tools to obtain various performance details. Other notes...
+Lets use this method to model the time-evolution of heat from the initial
+condition pictured here...
 
-* You can click on any of the small images plotted here to zoom in to full resolution.
-* After each run, there are questions posed. The answers are _hidden_ in the white
-  space just under the question. To reveal the answers, triple click in that region.
+|[<img src="spikes0000.png" width="400">](spikes0000.png)|
 
-### Run 1: Basic Heat Problem
-
-The following command will run the basic heat equation using the
-[_explicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods)
-[FTCS](https://en.wikipedia.org/wiki/FTCS_scheme)
-numerical algorithm method.
-In an _explicit_ method, the solution at _any_ point, _x_,
-can be computed _entirely_ from knowledge of the values at previous times.
-In this example, we have bc0 set to 0, bc1 set to 1 and initial condition
-set to a constant of 1 as visualized in the plot of the time-zero setup below.
-
-|<img src="basic0000.png" width="400">|
-
-The help output, above, shows the application's default values for all
-command-line arguments. In the exercises below, we pass command-line
-arguments only for the cases where we need non-default values. One of
-these, the `savi=<int>` and `outi=<int>` arguments are useful in controlling
-how much output is created to the terminal or to output files.
-
-To run the `heat` application with specified boundary and initial conditions
-and with [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme) numerical algorithm,
-run the `heat` application like so...
+out to a maximum time of 2 seconds.
 
 ```
-./heat savi=100
+make basic_spikes
+./heat bc1=0 ic="spikes(10,2,10,9)" savi=25
     prec=double
     alpha=0.2
     dx=0.1
     dt=0.004
+    maxt=2
     bc0=0
-    bc1=1
-    ic=const(1)
+    bc1=0
+    ic=spikes(10,2,10,9)
     alg=ftcs
-    eps=1e-06
-    maxi=5000
-    savi=100
+    savi=25
     save=0
     outi=100
     noout=0
-Iteration 0000: last change l2=1
-Iteration 0100: last change l2=1.19031e-05
-Iteration 0200: last change l2=4.33838e-06
-Iteration 0300: last change l2=2.3795e-06
-Iteration 0400: last change l2=1.53328e-06
-Iteration 0500: last change l2=1.06203e-06
-Iteration 0600: last change l2=7.59145e-07
-Iteration 0700: last change l2=5.49851e-07
-Iteration 0800: last change l2=4.00416e-07
-Iteration 0900: last change l2=2.92232e-07
-Iteration 1000: last change l2=2.13464e-07
-Iteration 1100: last change l2=1.55983e-07
-Iteration 1200: last change l2=1.13997e-07
-Iteration 1300: last change l2=8.33166e-08
-Iteration 1400: last change l2=6.08948e-08
-Iteration 1500: last change l2=4.45075e-08
-Iteration 1600: last change l2=3.25303e-08
-Iteration 1700: last change l2=2.37762e-08
-Iteration 1800: last change l2=1.7378e-08
-Iteration 1900: last change l2=1.27015e-08
-Iteration 2000: last change l2=9.28346e-09
-Iteration 2100: last change l2=6.78525e-09
-Iteration 2200: last change l2=4.95931e-09
-Converged to 3.995e-09 in 2270 iterations
-Integer ops        = 4135142
-Floating point ops = 255769
-Memory used        = 176 bytes
+Iteration 0000: last change l2=7.04
+Iteration 0100: last change l2=0.00021002
+Iteration 0200: last change l2=4.25035e-05
+Iteration 0300: last change l2=8.81977e-06
+Iteration 0400: last change l2=1.83059e-06
+Iteration 0500: last change l2=3.8597e-07
+Integer ops        = 3285657
+Floating point ops = 50310
+Memory used        = 194 bytes
 ```
 
-In the above output, we see the application ran for 2270 iterations before
-the output converged to a point that it did not change significantly. 
-Note the total number of iterations, floating point operation count and memory used.
+Take note of number of flops and memory used so we can compare these
+metrics to other runs later.
 
-To visualize a short animation of the results this example, you can use the command
+> **Are the results correct? How would we assess that?**
 
-```
-make PROB=basic view
-```
+|<font color="white">Writing custom code often also requires additional work to vett the results obained whereas relying upon mature community adopted software packages often means results those packages produce have already been well vetted in many regimes of interest.</font>|
 
-Some of the intermediate results are plotted below.
+> **Will I get the same results on other platforms, compilers, math libraries? Is
+the code we've written portable enough to even support that?**
 
-|[<img src="basic0001.png" width="300">](basic0001.png)|[<img src="basic0002.png" width="300">](basic0002.png)|[<img src="basic0002.png" width="300">](basic0002.png)|
-
-Now, in viewing the results, we can see that the _grid_ or _mesh_ (circles and lines
-in the plots, above) in this example is rather coarse. Suppose we would like to have
-a 10x finer spatial resolution instead of _dx=0.1_, change _dx=0.01_.
+|<font color="white">Maybe. In this overly simplified 500-line exmaple program, its concievable we can get numerically identical results on numerous different platforms, compilers and math libraries. However, imagine trying to do that with applications requiring highly sophisticated numerical algorithms and involvin hundreds of thousands of lines of code. The advantage of using matture numerical packages is that many of these details have already been solved for you.</font>|
 
 ---
 
-### Run 2 Finer Spatial Resolution
+### Run 2
 
-Since a value for _dx_ other than _0.1_ is different from the _default_ value,
-we specify it on the command-line. Also, since we expect this run to pretty
-quickly run into difficulties, we set `savi=10` so that we can get a better
-idea of what is happening early on in the algorithm
+Now, suppose the science question(s) we need to answer requires that we do
+a better job _resolving_ the _transient_ local temperature _minimum_ that
+occurs at early time around _x=0.6_ as shown below from time 0.1 seconds.
+
+|[<img src="spikes0001.png" width="400">](spikes0001.png)|
+
+To do this, we can try to increase the spatial resolution. Lets try dx=0.01.
 
 ```
-./heat dx=0.01 savi=10
+[mcmiller@cooleylogin2 ~/tmp]$ make hr_spikes
+./heat dx=0.01 bc1=0 ic="spikes(10,20,10,90)" savi=10
     prec=double
     alpha=0.2
     dx=0.01
     dt=0.004
+    maxt=2
     bc0=0
-    bc1=1
-    ic=const(1)
+    bc1=0
+    ic=spikes(10,20,10,90)
     alg=ftcs
-    eps=1e-06
-    maxi=5000
     savi=10
     save=0
     outi=100
     noout=0
-Iteration 0000: last change l2=1
-Iteration 0100: last change l2=1.63884e+142
-Iteration 0200: last change l2=1.74264e+288
-/bin/sh: line 8: 318217 Floating point exception(core dumped)
-Integer ops        = 4202002
-Floating point ops = 472837
-Memory used        = 1616 bytes
+Iteration 0000: last change l2=76800
+Iteration 0100: last change l2=1.38688e+302
+/bin/sh: line 8: 835744 Floating point exception
+Integer ops        = 4392943
+Floating point ops = 455350
+Memory used        = 1636 bytes
 ```
 
-Note the **Floating point exception(core dumped)**.
-What happend? We have hit an _instability_ in the
-[FTCS](https://en.wikipedia.org/wiki/FTCS_scheme) algorithm.
-FTCS is known to be stable only for values of
-![](http://latex.codecogs.com/gif.latex?%5Calpha) such that...
-
-![](http://latex.codecogs.com/gif.latex?%5Calpha%20%5Cfrac%7B%5CDelta%20t%7D%7B%7B%5CDelta%20x%7D%5E2%7D%20%5Cle%20%5Cfrac%7B1%7D%7B2%7D)
-
-The instability observed appears as...
-
-|[<img src="highres0000.png" width="300">](highres0000.png)|[<img src="highres0001.png" width="300">](highres0001.png)|
+|[<img src="hr_spikes0000.png" width="300">](hr_spikes0000.png)|[<img src="hr_spikes0001.png" width="300">](hr_spikes0001.png)|[<img src="hr_spikes0002.png" width="300">](hr_spikes0002.png)|
 
 Note the Y-axis range in these two plots. It gets out of control!
 
+> **What do you think happened?**
+
+|<font color="white">This goes back to our original design choice in the method of discretization.  That choice may not be appropriate for all of the science questions we want our application to be able to answer. In particular, the FTCS algorithm is known to have stability issues for certain combinations dt and dx.</font>|
+
 > **What can we do to correct for the instability?**
 
-|<font color="white">We can naively correct for this by shrinking the time-step. Lets try a dt of 0.001</font>|
+|<font color="white">We can naively correct for this by shrinking the time-step.</font>|
 
 ---
 
-### Run 3 Decrease Time Step To 0.001
+### Run 3
+
+The [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme) algorithm
+is known to be stable only for values of _r_ in equation 6 less than
+or equal to 1/2. Given a spatial resolution, _dx_, of _0.01_, this
+means our time-step size now needs to be less than or equal to 0.00025.
+Lets run with a value of _dt_ of 0.0001.
 
 ```
-./heat alpha= dx=0.01 dt=0.001 savi=250 outi=250
+$ make hr_spikes_smalldt
+./heat dx=0.01 dt=0.0001 bc1=0 ic="spikes(10,20,10,90)" savi=500
     prec=double
     alpha=0.2
     dx=0.01
-    dt=0.001
+    dt=0.0001
+    maxt=2
     bc0=0
-    bc1=1
-    ic=const(1)
+    bc1=0
+    ic=spikes(10,20,10,90)
     alg=ftcs
-    eps=1e-06
-    maxi=5000
-    savi=250
-    save=0
-    outi=250
-    noout=0
-Iteration 0000: last change l2=1
-Iteration 0250: last change l2=1.59787e-05
-Iteration 0500: last change l2=5.6456e-06
-Iteration 0750: last change l2=3.07239e-06
-Iteration 1000: last change l2=1.99502e-06
-Iteration 1250: last change l2=1.42523e-06
-Iteration 1500: last change l2=1.07788e-06
-Iteration 1750: last change l2=8.43739e-07
-Iteration 2000: last change l2=6.74081e-07
-Iteration 2250: last change l2=5.44943e-07
-Iteration 2500: last change l2=4.43518e-07
-Iteration 2750: last change l2=3.62338e-07
-Iteration 3000: last change l2=2.96643e-07
-Iteration 3250: last change l2=2.43145e-07
-Iteration 3500: last change l2=1.99424e-07
-Iteration 3750: last change l2=1.63624e-07
-Iteration 4000: last change l2=1.34278e-07
-Iteration 4250: last change l2=1.10207e-07
-Iteration 4500: last change l2=9.04564e-08
-Iteration 4750: last change l2=7.42481e-08
-Did not converge: residual = 6.099e-08 after 5000 iterations
-Integer ops        = 16358485
-Floating point ops = 5511563
-Memory used        = 1616 bytes
-```
-
-Note the **Did not converge**. The solution has yet to converge to the desired tolerance.
-
-> **What can we do to correct for lack of convergence?**
-
-|<font color="white">In order to correct for that, we need to let it run longer.  Lets try a maximum of 20,000 iterations</font>|
-
----
-
-### Run 4 Increase Maximum Iterations
-
-```
-./heat dx=0.01 dt=0.001 maxi=20000 savi=250 outi=250
-    prec=double
-    alpha=0.2
-    dx=0.01
-    dt=0.001
-    bc0=0
-    bc1=1
-    ic=const(1)
-    alg=ftcs
-    eps=1e-06
-    maxi=20000
-    savi=250
-    save=0
-    outi=250
-    noout=0
-Iteration 0000: last change l2=1
-Iteration 0250: last change l2=1.59787e-05
-Iteration 0500: last change l2=5.6456e-06
-Iteration 0750: last change l2=3.07239e-06
-Iteration 1000: last change l2=1.99502e-06
-Iteration 1250: last change l2=1.42523e-06
-Iteration 1500: last change l2=1.07788e-06
-Iteration 1750: last change l2=8.43739e-07
-Iteration 2000: last change l2=6.74081e-07
-Iteration 2250: last change l2=5.44943e-07
-Iteration 2500: last change l2=4.43518e-07
-Iteration 2750: last change l2=3.62338e-07
-Iteration 3000: last change l2=2.96643e-07
-Iteration 3250: last change l2=2.43145e-07
-Iteration 3500: last change l2=1.99424e-07
-Iteration 3750: last change l2=1.63624e-07
-Iteration 4000: last change l2=1.34278e-07
-Iteration 4250: last change l2=1.10207e-07
-Iteration 4500: last change l2=9.04564e-08
-Iteration 4750: last change l2=7.42481e-08
-Iteration 5000: last change l2=6.09451e-08
-Iteration 5250: last change l2=5.00262e-08
-Iteration 5500: last change l2=4.10637e-08
-Iteration 5750: last change l2=3.3707e-08
-Iteration 6000: last change l2=2.76683e-08
-Iteration 6250: last change l2=2.27115e-08
-Iteration 6500: last change l2=1.86427e-08
-Iteration 6750: last change l2=1.53029e-08
-Iteration 7000: last change l2=1.25614e-08
-Iteration 7250: last change l2=1.0311e-08
-Iteration 7500: last change l2=8.46379e-09
-Iteration 7750: last change l2=6.9475e-09
-Iteration 8000: last change l2=5.70286e-09
-Iteration 8250: last change l2=4.68119e-09
-Iteration 8500: last change l2=3.84256e-09
-Iteration 8750: last change l2=3.15416e-09
-Iteration 9000: last change l2=2.58909e-09
-Iteration 9250: last change l2=2.12526e-09
-Iteration 9500: last change l2=1.74452e-09
-Iteration 9750: last change l2=1.43199e-09
-Iteration 10000: last change l2=1.17545e-09
-Converged to 9.998e-10 in 10206 iterations
-Integer ops        = 30217136
-Floating point ops = 11249034
-Memory used        = 1616 bytes
-```
-
-|[<img src="hr_smalldt_long0002.png" width="300">](hr_smalldt_long0002.png)|[<img src="hr_smalldt_long0003.png" width="300">](hr_smalldt_long0003.png)|[<img src="hr_smalldt_long0004.png" width="300">](hr_smalldt_long0004.png)|
-
-Ok, after going to a finer spatial resolution, the algorithm went unstable. To correct
-that, we shrunk the time-step and the algorithm failed to converge to desired tolerance
-in 5000 iterations.  Now, we've increased the maximum number of iterations and we finally
-have a good result from [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme) algorithm a
-finer spatial resolution.
-
-Note the difference in memory between this and run 1 of 176 vs 1616 bytes.
-
-> **Why is the memory almost 10x as much?**
-
-|<font color="white">The additional memory accounts for the fact that the coarse mesh has 11 nodes (and 10 zones) and the fine mesh has 101 nodes (and 100 zones). This is expected because we are solving a spatially bigger problem. </font>|
-
-> **How many more flops are required?**
-
-|<font color="white">On the coarse mesh, 255769 flops were used. On the fine mesh, 11249034. The fine mesh required ~43x more floating point work.</font>|
-
-> **Is there a better algorithm?**
-
-|<font color="white">Yes, but we we need to switch to an implicit method</font>|
-
----
-
-### Run 5 Switch to Implicit Method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method))
-
-In this run, we switch the algorithm to an
-[_implicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods) method known as the
-[_Crank-Nicolson_](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
-method. In an _implicit_ method, the solution at any point, _x_, is a linear system of
-equations involving other points, _x_, at the current time as well as solution(s) from 
-previous times. So, each time step involves the solution of a linear system of equations.
-
-```
-./heat dx=0.01 dt=0.001 alg=crankn savi=100
-    prec=double
-    alpha=0.2
-    dx=0.01
-    dt=0.001
-    bc0=0
-    bc1=1
-    ic=const(1)
-    alg=crankn
-    eps=1e-06
-    maxi=5000
-    savi=100
+    savi=500
     save=0
     outi=100
     noout=0
-Iteration 0000: last change l2=1
-Iteration 0100: last change l2=0.000142313
-Iteration 0200: last change l2=5.00808e-05
-Iteration 0300: last change l2=2.70171e-05
-Iteration 0400: last change l2=1.6885e-05
-Iteration 0500: last change l2=1.1109e-05
-Iteration 0600: last change l2=7.43199e-06
-Iteration 0700: last change l2=4.99822e-06
-Iteration 0800: last change l2=3.3669e-06
-Iteration 0900: last change l2=2.26916e-06
-Iteration 1000: last change l2=1.52955e-06
-Iteration 1100: last change l2=1.03107e-06
-Iteration 1200: last change l2=6.95046e-07
-Iteration 1300: last change l2=4.68537e-07
-Iteration 1400: last change l2=3.15845e-07
-Iteration 1500: last change l2=2.12914e-07
-Iteration 1600: last change l2=1.43527e-07
-Iteration 1700: last change l2=9.67531e-08
-Iteration 1800: last change l2=6.52222e-08
-Iteration 1900: last change l2=4.39669e-08
-Iteration 2000: last change l2=2.96385e-08
-Iteration 2100: last change l2=1.99796e-08
-Iteration 2200: last change l2=1.34684e-08
-Iteration 2300: last change l2=9.07921e-09
-Iteration 2400: last change l2=6.12038e-09
-Iteration 2500: last change l2=4.12581e-09
-Iteration 2600: last change l2=2.78125e-09
-Iteration 2700: last change l2=1.87486e-09
-Iteration 2800: last change l2=1.26386e-09
-Converged to 9.976e-10 in 2861 iterations
-Integer ops        = 18791227
-Floating point ops = 3455398
-Memory used        = 4047 bytes
+Iteration 0000: last change l2=48
+Iteration 0100: last change l2=0.000169428
+Iteration 0200: last change l2=3.60231e-05
+Iteration 0300: last change l2=1.35141e-05
+Iteration 0400: last change l2=6.83466e-06
+Iteration 0500: last change l2=4.08578e-06
+.
+.
+.
+Iteration 19800: last change l2=2.52461e-11
+Iteration 19900: last change l2=2.42688e-11
+Iteration 20000: last change l2=2.33386e-11
+Integer ops        = 56755439
+Floating point ops = 18165900
+Memory used        = 1636 bytes
 ```
 
-Note the amount of memory and flops for 
-[Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
-to converge.
+|[<img src="hr_spikes_smalldt0000.png" width="300">](hr_spikes_smalldt0000.png)|[<img src="hr_spikes_smalldt0001.png" width="300">](hr_spikes_smalldt0001.png)|[<img src="hr_spikes_smalldt0002.png" width="300">](hr_spikes_smalldt0002.png)
 
-> **Why is there more memory?**
+> **Where do you estimate the local minimum occurs?**
 
-|<font color="white">This is the memory required to store a banded matrix for the implicit solve. It is about 3x as much memory (for main diagonal and two sub-diagonals) over the FTCS method.</font>|
+|<font color="white">It appears to occur between 0.56 and 0.57.</font>|
 
-> **Can we make [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
-go faster by increasing the timestep?**
+> **Why did this run use more memory?**
 
-|<font color="white">Yes, lets try dt=0.008, which is twice the size of the timestep used in the coarse mesh for the FTCS algorithm</font>|
+|<font color="white">It is a more finely resolved mesh.</font>|
+
+> **How many more flops were required?**
+
+|<font color="white">18165900 on this more finely resolved mesh vs. 50310 on the coarse mesh. Thats 361x more flops!</font>|
+
+> **The solution changes vary slowly at late time. Do we need to use the same small timestep for all iterations?**
+
+|<font color="white">Not necessarily. But, how would you go about changing our application so that it could robustly adapt the timestep to changing conditions of the solution?<font>|
+
+> **Can we achieve solution of similar quality with fewer flops?**
+
+|<font color="white">Maybe. But, we probably need to consider a different discretization. Do we really want to have to support multiple different numerical methods in our application? Yet another advantage of using community adopted numerical packages is that such packages often provide a great deal of flexibility in choice of algorithm.</font>|
 
 ---
 
-### Run 6 Bigger Time-Step with [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)
+## [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method) Discretization
+
+Using the [Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method) discretization,
+we arrive at the following discretization of equation 2...
+
+![](http://latex.codecogs.com/gif.latex?-ru_%7Bi%2B1%7D%5E%7Bk%2B1%7D%2B%281%2B2r%29u_i%5E%7Bk%2B1%7D-ru_%7Bi-1%7D%5E%7Bk%2B1%7D%20%3D%20ru_%7Bi%2B1%7D%5Ek%2B%281-2r%29u_i%5Ek%2Bru_%7Bi-1%7D%5Ek)|(7)|
+
+where ![](http://latex.codecogs.com/gif.latex?r%3D%20%5Calpha%20%5Cfrac%7B%5CDelta%20t%7D%7B2%20%5CDelta%20x%5E2%7D)
+
+In equation 7, discrete values in the solution depend not only on
+values from the previous solution iteration but also on each other
+in the current iteration. This means each iteration in the solution
+involves solving a linear system of equations defined by equation 7.
+Such methods are known as
+[_implicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods) methods.
+In this case, the system of equations is [_tri-diagonal_](https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm)
+so it is easier to implement than a general matrix solve but is nonetheless,
+more involved.
+
+The code to implement this method is more involved because it involves 
+doing a tri-diagonal solve.
+
+```c
+/* Author: John Burkardt, 30May09 */
+static void
+init_and_factor_A_matrix(int n, double *a_lu,
+    double alpha, double dt, double dx)
+{
+    int i;
+    double r = alpha * dt / dx / dx / 2;
+
+    a_lu[0+0*3] = 0.0;
+    a_lu[1+0*3] = 1.0;
+    a_lu[0+1*3] = 0.0;
+
+    for ( i = 1; i < Nx - 1; i++ )
+    {
+        a_lu[2+(i-1)*3] =           - r;
+        a_lu[1+ i   *3] = 1.0 + 2.0 * r;
+        a_lu[0+(i+1)*3] =           - r;
+    }
+
+    a_lu[2+(Nx-2)*3] = 0.0;
+    a_lu[1+(Nx-1)*3] = 1.0;
+    a_lu[2+(Nx-1)*3] = 0.0;
+
+    /* Factor the matrix.  */
+    for ( i = 1; i <= n-1; i++ )
+    {
+        /* Store the multiplier in L.  */
+        a_lu[2+(i-1)*3] = a_lu[2+(i-1)*3] / a_lu[1+(i-1)*3];
+
+        /* Modify the diagonal entry in the next column.  */
+        a_lu[1+i*3] = a_lu[1+i*3] - a_lu[2+(i-1)*3] * a_lu[0+i*3];
+    }
+}
+
+static void r83_np_sl(int n,
+    double const *a_lu, double const *last, double *curr)
+{
+    int i;
+
+    for ( i = 0; i < n; i++ )
+        curr[i] = last[i];
+
+    /* Solve L * Y = B.  */
+    for ( i = 1; i < n; i++ )
+        curr[i] = curr[i] - a_lu[2+(i-1)*3] * curr[i-1];
+
+    /* Solve U * X = Y.  */
+    for ( i = n; 1 <= i; i-- )
+    {
+        curr[i-1] = curr[i-1] / a_lu[1+(i-1)*3];
+        if ( 1 < i )
+            curr[i-2] = curr[i-2] - a_lu[0+(i-1)*3] * curr[i-1];
+    }
+
+    /* Impose boundary conditions */
+    curr[0  ] = bc0;
+    curr[n-1] = bc1;
+}
+```
+
+Here, we have code that sets up and LU factors the initial matrix.
+Then, the LU factored matrix is used on each solution iteration
+to solve for the new temperatures.
+
+### Run 4 (original dt=0.004)
 
 ```
-./heat dx=0.01 dt=0.008 alg=crankn savi=25 outi=50
+$ make hr_spikes_crankn
+./heat alpha= dx=0.01 bc1=0 ic="spikes(10,20,10,90)" alg=crankn savi=10
+    prec=double
+    alpha=0.2
+    dx=0.01
+    dt=0.004
+    maxt=2
+    bc0=0
+    bc1=0
+    ic=spikes(10,20,10,90)
+    alg=crankn
+    savi=10
+    save=0
+    outi=100
+    noout=0
+Iteration 0000: last change l2=148.274
+Iteration 0100: last change l2=2.09991e-05
+Iteration 0200: last change l2=4.24893e-06
+Iteration 0300: last change l2=8.81289e-07
+Iteration 0400: last change l2=1.82834e-07
+Iteration 0500: last change l2=3.85324e-08
+Integer ops        = 5809323
+Floating point ops = 605800
+Memory used        = 4067 bytes
+```
+
+---
+
+### Run 5 (larger dt=0.008)
+
+```
+$ make hr_spikes_crankn_largedt
+./heat dx=0.01 dt=0.008 bc1=0 ic="spikes(10,20,10,90)" alg=crankn savi=5
     prec=double
     alpha=0.2
     dx=0.01
     dt=0.008
+    maxt=2
     bc0=0
-    bc1=1
-    ic=const(1)
+    bc1=0
+    ic=spikes(10,20,10,90)
     alg=crankn
-    eps=1e-06
-    maxi=5000
-    savi=25
+    savi=5
     save=0
-    outi=50
+    outi=100
     noout=0
-Iteration 0000: last change l2=1
-Iteration 0050: last change l2=0.00109878
-Iteration 0100: last change l2=0.000220204
-Iteration 0150: last change l2=4.59452e-05
-Iteration 0200: last change l2=9.59052e-06
-Iteration 0250: last change l2=2.00192e-06
-Iteration 0300: last change l2=4.17878e-07
-Iteration 0350: last change l2=8.72275e-08
-Iteration 0400: last change l2=1.82078e-08
-Converged to 7.813e-09 in 428 iterations
-Integer ops        = 5431250
-Floating point ops = 518349
-Memory used        = 4047 bytes
+Iteration 0000: last change l2=162.895
+Iteration 0100: last change l2=1.69397e-05
+Iteration 0200: last change l2=7.37902e-07
+Iteration 0250: last change l2=1.58932e-07
+Integer ops        = 4439568
+Floating point ops = 303790
+Memory used        = 4067 bytes
 ```
 
-|[<img src="hr_crankn0000.png" width="300">](hr_crankn0000.png)|[<img src="hr_crankn0001.png" width="300">](hr_crankn0001.png)|[<img src="hr_crankn0002.png" width="300">](hr_crankn0002.png)|
+> **Why do these runs with Crank-Nicolson use more memory?**
 
-Here, we have increased the timestep and yet the
-[Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method) method
-converged to similar tolerance as in run 4, in just 428 iterations and using
-21x _fewer_ flops.
+|<font color="white">This is the memory required to store a banded matrix for the implicit solve. It is about 3x as much memory (for main diagonal and two sub-diagonals) over the FTCS method.</font>|
 
-> **Why were we able to increase the timestep?**
+> **Is this algorithm _better_ than FTCS?**
 
-|<font color="white">The Crank-Nicolson is known to be unconditionally stable.</font>|
+|<font color="white">It depends on what science you are trying to achieve. Here, we are trying to resolve some fine spatial phenomena which required such a small timestep, the FTCS algorithm really had to work hard and the Crank-Nicolson algorithm provides numerically higher quality results in fewer flops. On the other hand, this comes at greater memory usage and greater complexity in implementation.</font>|
 
-> **Does that mean we can make time-step arbitrarily large?**
+> **How would you parallelize this algorithm...with threads, with MPI, with Cuda/GPU?**
 
-|<font color="white">This is an exercise left to the learner.</font>|
+|<font color="white">You need to break the tri-diagonal matrix into blocks on each processing element and exchange data between blocks. But, what if the matrix was not tri-diagonal?</font>|
 
 ## Out-Brief
 
-We have demonstrated the use of a simple, hand-coded C application to solve
-various cases of the heat equation. We have demonstrated some of the issues
-to be concerned with in the behavior or numerical algorithms such as time
-and space performance and stability.
+We have demonstrated some of the tradeoffs in developing a custom-coded
+C application to model time-varying heat in a wall. We
+developed two different numerical schemes, FTCS and Crank-Nicolson.
+The FTCS scheme is an _explicit_ scheme whereas Crank-Nicolson is
+an _implicit_ scheme. We demonstrated some of the attributes of these
+methods such as relative implementation complexity, memory usage, flop
+counts and stability. There are numerous other attributes of numerical
+algorithms which will be introduced and discussed in later lessons.
+
+We have explained some of the draw-backs in developing custom solutions
+as well as some of the advantages in using community adopted numerical
+packages for application development. In particular, what if we want to
+plan the development of our application so we can easily enhance it, later,
+to support more complex situations such as...
+
+  * More than just one spatial dimension
+  * Coordinate systems other than just cartesian
+  * Heat _sources_
+  * More complex materials
+    * A laminated material where each laminant has a different thermal diffusivity
+    * A material where thermal diffusivity is _iso-tropic_ (e.g. different for
+      different directions of heat _flow_).
+    * A material where thermal diffusivity may vary with either space, _x_,
+      or event time, _t_.
+    * A material where thermal diffusivity may vary with temperature, _u_,
+      introducing _non-linearities_ and the need for non-linear solvers.
+  * More complex objects
+    * Much larger objects involving billions of discretization points and
+      requiring _scalability_ in all phases of the solution.
+    * Features with highly variable spatial resolutions requiring unstructured
+      and/or adaptive meshing.
+  * More complex computational settings
+    * MPI+X
+    * GPU
+    * ARM
+    * Various parallel runtimes
+  * More Agile/Sustainable Software Implementation
+    * debuggability, extensibility, portability, scalability, securability, testability and understandability
+
+Addressing these issues one of the key values of _numerical packages_. Many of the details of these
+issues have been resolved and _vetted_ within the scientific computing community
+within these pacakges. Numerical packages can help to simplify the development of
+highly sophisticated scientific computing applications and provide a much more solid,
+flexible and sustainable foundation than custom code.
+
+The remainder of the lessons will
+focus on the use of various software packages in the solution of ever
+more complex settings involving the heat equation.
 
 A simple examination of the C code, [heat.c](./heat.c) demonstrates that in spite of
 numerous simplification we have made here, developing the code necessary to
 impliment numerical algorithms and, in particular, to provide significant flexibility
 in the methods of solution and to understand and control their behavior is non-trivial.
-Code development complexity can get quite complex very quickly. Consider issues with larger
-objects requiring scalable parallel solutions, higher spatial dimensions, unusual
-shapes requiring either unstructured or adaptive meshing, higher order and different
-types of numerical schemes.
-
-This one of the key values of _numerical packages_. Many of the details of these
-issues have been resolved and _vetted_ within the scientific computing community
-within these pacakges. Numerical packages can help to simplify the development of
-highly sophisticated scientific computing applications and provide a much more solid
-and flexible foundation than custom code.
+Code development can get quite complex very quickly.
 
 ## Further Reading
 
-Apart from time and space performance, _stability_ and _convergence_ there are many other issues
+Apart from time and space performance, _stability_ there are many other issues
 to be concnerned with on numerical algorithms. One issue we don't touch on here is _accuracy_.
 Another is making time-step automatically vary based on how the computation is proceeding.
 
