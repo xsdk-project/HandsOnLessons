@@ -6,7 +6,7 @@
 * bundler
 * jekyll
 
-The recommended way is to use **gem**, the [Ruby](https://www.ruby-lang.org/en/) package manager.
+The recommended way of installing these is to use **gem**, the [Ruby](https://www.ruby-lang.org/en/) package manager.
 
 ```
 $ gem install github-pages
@@ -42,7 +42,7 @@ $ rvm use ruby-2.4 --default
 
 ## Preview your work using a brower
 
-1. Navigate into the root directory of the project
+1. Navigate into the **root** directory of the project
 1. Run Jekyll locally
 ```
 $ bundle exec jekyll serve
