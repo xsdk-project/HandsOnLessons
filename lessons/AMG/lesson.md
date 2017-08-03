@@ -16,7 +16,17 @@ for a structured problem? |data structures                      |faster solve ti
 
 ## The problem being solved
 
-<img src = "AMG-problem.png" width ="600">
+The linear system being solved is generated from the following differential equation:
+
+![equation](http://latex.codecogs.com/gif.latex?%5Cphi-%5CDelta%5Cdot%5Cbeta%5CNabla%5Cphi%20%3D%20RHS) 
+with Dirichlet boundary conditions.
+
+The grid is a cube consisting of 128 x 128 x 128 cells, consisteing of (at least) 8 subgrids.
+We also consider a larger grid with 256 x 256 x 256 cells.
+
+The right hand side (left image) and solution (right image) are plotted below:
+
+[<img src = "rhs.jpg" width ="300">] [<img src = "solution.jpg" width ="300">]
 
 
 ## The Example Input File
