@@ -12,7 +12,7 @@ Question 3?                   |Objective 3                     |Key Point 3
 
 ## The problem being solved
 
-The example application here, [transient-heat.cpp](transient-heat.cpp.numbered),
+The example application here, [transient-heat.cpp](transient-heat.cpp.numbered.txt),
 uses MFEM as a vehicle to demonstrate the use of the
 [SUNDIALS](https://computation.llnl.gov/projects/sundials) package
 in both serial and parallel for more robust and flexible control over _time integration_
