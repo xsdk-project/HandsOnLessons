@@ -3,17 +3,23 @@
 ## At A Glance (10 mins)
 
 ```
-Questions                 |Objectives                       |Key Points
---------------------------|---------------------------------|-------------------------------------
-How to compute gradients  |Know the techniques and software |Adjoint enables dynamic constrained optimization
-Why use an adjoint solver |Understand ingredients needed    |Jacobian is imperative
-How difficult is it       |Understand checkpointing         |Performance depends on checkpointing at large scale
+Questions                  |Objectives                    |Key Points
+---------------------------|------------------------------|-------------------------------------
+How to compute gradients   |Know the techniques and       |Adjoint enables dynamic
+for simulations?           |software packages             |constrained optimization
+Why use an adjoint solver? |Understand ingredients needed |Jacobian is imperative
+                           |for adjoint calculation       |
+How difficult is it to use |Understand the concern of     |Performance may depend on
+the adjoint capability?    |checkpointing                 |checkpointing at large scale
 ```
 
 ## Example 1: generator stability analysis:
 
 This code demonstrates how to solve an ODE-constrained optimization problem with TAO, TSEvent, TSAdjoint and TS.
-The objective is to maximize the mechanical power input subject to the generator swing equations and a constraint on the maximum rotor angle deviation.
+The objective is to maximize the mechanical power input subject to the generator swing equations and a constraint on the maximum rotor angle deviation, which is reformulated as a minimization problem
+
+![equation](http://latex.codecogs.com/gif.latex?%5Cbegin%7Balign%2A%7D%0D%0A%20%20%5Cmin%20%26%20%5C%7B-P_m%20%2B%20%5Csigma%5Cdisplaystyle%20%5Cint_%7Bt_0%7D%5E%7Bt_F%7D%20%5Cmax%5Cleft%280%2C%20%5Ctheta%20-%20%5Ctheta_%7Bmax%7D%5Cright%29%5E%5Ceta%20%5C%20%5Cmathrm%7Bd%7Dt%20%5C%7D%5C%5C%0D%0A%20%20%5Cnonumber%20%7E%7E%20%5Ctext%7Bs.t.%7D%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Ctheta%7D%7Bdt%7D%20%3D%20%5Comega_B%5Cleft%28%5Comega%20-%20%5Comega_s%5Cright%29%20%5C%5C%0D%0A%20%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Comega%7D%7Bdt%7D%20%3D%20%5Cfrac%7B%5Comega_s%7D%7B2H%7D%5Cleft%28P_m%20-%20P_%7Bmax%7D%5Csin%28%5Ctheta%29%20-%20D%28%5Comega%20-%20%5Comega_s%29%5Cright%29%0D%0A%5Cend%7Balign%2A%7D)
+
 Disturbance (a fault) is applied at time 0.1 and cleared at time 0.2.
 The objective function contains an integral function.
 The gradient is computed with the discrete adjoint of an implicit theta method,
@@ -22,7 +28,7 @@ The gradient is computed with the discrete adjoint of an implicit theta method,
 This example is in src/ts/examples/power_grid. To compile, run the following in the source folder
 ```
 make ex3opt
-``` 
+```
 
 ### Command line options
 You can find out the command line options that this particular example can use by doing
