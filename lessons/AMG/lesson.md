@@ -27,7 +27,7 @@ We also consider a larger grid with 256 x 256 x 256 cells.
 
 The right hand side (left image) and solution (right image) are plotted below:
 
-[<img src = "rhs.jpg" width ="300">]       [<img src = "solution.jpg" width ="300">]
+<img src = "rhs.jpg" width ="300">       <img src = "solution.jpg" width ="300">
 
 
 ## The Example Input File
