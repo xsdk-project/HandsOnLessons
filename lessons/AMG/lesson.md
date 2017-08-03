@@ -95,7 +95,7 @@ Examine the number of iterations and the time listed in the line starting with '
 
 #### Questions
 
-> **How do the number of iterations compare?** 
+> **How do the numbers of iterations compare?** 
 
 |<font color="white">PFMG converges much faster, almost 10 times as fast</font>|
 
@@ -131,7 +131,7 @@ sys 0.98
 
 #### Questions
 
-> **How do the number of iterations compare to PFMG without CG?** 
+> **How does the number of iterations compare to that of PFMG without CG?** 
 
 |<font color="white">PFMG with PCG converges about twice as fast as PFMG, 22 times as fast as CG.</font>|
 
@@ -189,7 +189,7 @@ sys 2.93
 
 #### Examining Results
 
-> **How do the number of iterations now compare?** 
+> **How do the numbers of iterations now compare?** 
 
 |<font color="white">Iterations for PCG doubled, whereas PFMG-PCG only increased by 1. PFMG-PCG converges 40 times as fast as PCG.</font>|
 
@@ -298,16 +298,16 @@ user 33.54
 sys 1.47
 ```
 
-This output gives the stats for the developed AMG preconditioner. It shows the number of levels, the average number of nonzeros in total and per row for each matrix as well as each interpolation operator.
+This output gives the stats for the developed AMG preconditioner. It shows the number of levels, the average number of nonzeros in total and per row for each matrix $A_i$ as well as each interpolation operator.
 It also shows the complexities. 
 
 #### Questions
 
-> **Are the complexities acceptable?** 
+> **Is the operator complexity acceptable?** 
 
-|<font color="white">No, they are too large, above 2!</font>|
+|<font color="white">No, it is too large, above 2!</font>|
 
-> **How do the complexities affect performance?** 
+> **How does the complexity affect performance?** 
 
 |<font color="white">The method is slower than PFMG-PCG and even PCG, inspite of a low number of iterations.</font>|
 
@@ -404,13 +404,13 @@ sys 1.34
 
 #### Questions
 
-> **How do the number of levels change? The complexities?** 
+> **How does the number of levels change? The complexity?** 
 
-|<font color="white">There is one level less. The complexities are much improved, almost 3 times as small, clearly below 2, closer to 1.</font>|
+|<font color="white">There is one level less. The complexity is much improved, almost 3 times as small, clearly below 2, closer to 1.</font>|
 
 > **How does this affect the performance?** 
 
-|<font color="white">The times are more than twice as fast, however convergence is worse.</font>|
+|<font color="white">The time is more than twice as fast, however convergence is worse.</font>|
 
 > **How does this compare to PFMG-PCG when applied to the same problem? Why?** 
 
