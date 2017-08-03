@@ -18,12 +18,10 @@ uses MFEM as a vehicle to demonstrate the use of the
 in both serial and parallel for more robust and flexible control over _time integration_
 (e.g. discretization in time) of PDEs.
 
-|[<img src="mfem_sundials_explicit0000.png" width="400">](mfem_sundials_explicit0000.png)|[<img src="pyramid_animated.gif" width="400">](pyramid_animated.gif)
-
-The application has been designed to solve a slightly more general form of the
+The application has been designed to solve a far more general form of the
 [_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation)
 
-|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%28%5Calpha%20%2B%20%5Ckappa%7Bu%7D%29%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)|(1)|
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%28%5Calpha%20%2B%20%5Ckappa%7Bu%7D%29%5Cnabla%5E2x)|(1)|
 
 where the material thermal diffusivity is given by
 ![](http://latex.codecogs.com/gif.latex?%28%5Calpha%20%2B%20%5Ckappa%7Bu%7D%29)
@@ -32,7 +30,11 @@ as in [Lesson 1](../hand_coded_heat/lesson.md) plus a term
 ![](http://latex.codecogs.com/gif.latex?%5Ckappa%7Bu%7D) which varies with
 temperature, _u_, introducing the option of solving systems involving non-linearity.
 
+|[<img src="mfem_sundials_explicit0000.png" width="400">](mfem_sundials_explicit0000.png)|[<img src="pyramid_animated.gif" width="400">](pyramid_animated.gif)
 
+
+**NOTE:** alpha and kappa in equation above is reversed in executable. Was trying to keep
+consistent with lesson 1 where alpha is homogenous diffusivity.
 
 ### Getting Help 
 ```
