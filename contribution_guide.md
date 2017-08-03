@@ -74,6 +74,8 @@ $ bundle exec jekyll serve
 
 To get all the tools on my Mac (gem, bundle, jekyll), I used homebrew.
 
+Detailed instructions on setting up GitHub pages locally can be found [here](https://github.com/xsdk-project/HandsOnLessons/edit/master/how_to_preview_locally.md).
+
 ## Including Math Equations
 
 I am not sure I have found the easiest solution here. I have read that MathJax may be
