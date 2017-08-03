@@ -1,0 +1,524 @@
+     1	#include <assert.h>
+     2	#include <float.h>
+     3	#include <math.h>
+     4	#include <stdio.h>
+     5	#include <stdlib.h>
+     6	#include <string.h>
+     7	#include <unistd.h>
+     8	#ifdef HAVE_FEENABLEEXCEPT
+     9	#define _GNU_SOURCE
+    10	#include <fenv.h>
+    11	#if 0
+    12	#include "fe-handling-example.c"
+    13	#endif
+    14	#endif
+    15	
+    16	int const Nt_max = 50000;
+    17	int const Nx_max = 10000;
+    18	
+    19	int noout = 0;
+    20	int savi = 0;
+    21	int outi = 100;
+    22	int save = 0;
+    23	char const *alg = "ftcs";
+    24	char const *prec = "double";
+    25	char const *ic = "const(1)";
+    26	double alpha = 0.2;
+    27	double dt = 0.004;
+    28	double dx = 0.1;
+    29	double bc0 = 0;
+    30	double bc1 = 1;
+    31	double maxt = 2.0;
+    32	
+    33	double *curr=0, *last=0, *change_history=0, *exact=0, *error_history=0;
+    34	double *cn_Amat = 0;
+    35	
+    36	int Nx = (int) (1/0.1+1.5);
+    37	int Nt = (int) (1 / 0.004);
+    38	
+    39	/*
+    40	 * Utilities 
+    41	 */
+    42	static double
+    43	l2_norm(int n, double const *a, double const *b)
+    44	{
+    45	    int i;
+    46	    double sum = 0;
+    47	    for (i = 0; i < n; i++)
+    48	    {
+    49	        double diff = a[i] - b[i];
+    50	        sum += diff * diff;
+    51	    }
+    52	    return sum;
+    53	}
+    54	
+    55	static void
+    56	copy(int n, double *dst, double const *src)
+    57	{
+    58	    int i;
+    59	    for (i = 0; i < n; i++)
+    60	        dst[i] = src[i];
+    61	}
+    62	
+    63	#define TSTART -1
+    64	#define TFINAL -2
+    65	#define RESIDUAL -3
+    66	#define ERROR -4
+    67	static void
+    68	write_array(int t, int n, double dx, double const *a)
+    69	{
+    70	    int i;
+    71	    char fname[32];
+    72	    FILE *outf;
+    73	
+    74	    if (noout) return;
+    75	
+    76	    if (t == TSTART)
+    77	        snprintf(fname, sizeof(fname), "heat_soln_00000.curve");
+    78	    else if (t == TFINAL)
+    79	        snprintf(fname, sizeof(fname), "heat_soln_final.curve");
+    80	    else if (t == RESIDUAL)
+    81	        snprintf(fname, sizeof(fname), "change.curve");
+    82	    else if (t == ERROR)
+    83	        snprintf(fname, sizeof(fname), "error.curve");
+    84	    else
+    85	    {
+    86	        if (a == exact)
+    87	            snprintf(fname, sizeof(fname), "heat_exact_%05d.curve", t);
+    88	        else
+    89	            snprintf(fname, sizeof(fname), "heat_soln_%05d.curve", t);
+    90	    }
+    91	    
+    92	    outf = fopen(fname,"w");
+    93	    for (i = 0; i < n; i++)
+    94	        fprintf(outf, "%8.4g %8.4g\n", i*dx, a[i]);
+    95	    fclose(outf);
+    96	}
+    97	
+    98	
+    99	static void
+   100	r83_np_fa(int n, double *a)
+   101	/*
+   102	  Licensing: This code is distributed under the GNU LGPL license. 
+   103	  Modified: 30 May 2009 Author: John Burkardt
+   104	  Modified by Mark C. Miller, July 23, 2017
+   105	*/
+   106	{
+   107	    int i;
+   108	
+   109	    for ( i = 1; i <= n-1; i++ )
+   110	    {
+   111	        assert ( a[1+(i-1)*3] != 0.0 );
+   112	        /*
+   113	          Store the multiplier in L.
+   114	        */
+   115	        a[2+(i-1)*3] = a[2+(i-1)*3] / a[1+(i-1)*3];
+   116	        /*
+   117	          Modify the diagonal entry in the next column.
+   118	        */
+   119	        a[1+i*3] = a[1+i*3] - a[2+(i-1)*3] * a[0+i*3];
+   120	    }
+   121	
+   122	    assert( a[1+(n-1)*3] != 0.0 );
+   123	}
+   124	
+   125	static void
+   126	initialize(void)
+   127	{
+   128	    curr = (double *) calloc(Nx, sizeof(double));
+   129	    last = (double *) calloc(Nx, sizeof(double));
+   130	    if (save)
+   131	    {
+   132	        exact = (double *) calloc(Nx, sizeof(double));
+   133	        change_history = (double *) calloc(Nt, sizeof(double));
+   134	        error_history = (double *) calloc(Nt, sizeof(double));
+   135	    }
+   136	
+   137	    assert(strncmp(alg, "ftcs", 4)==0 ||
+   138	           strncmp(alg, "upwind15", 8)==0 ||
+   139	           strncmp(alg, "crankn", 6)==0);
+   140	
+   141	#ifdef HAVE_FEENABLEEXCEPT
+   142	    feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW);
+   143	#endif
+   144	
+   145	    if (!strncmp(alg, "crankn", 6))
+   146	    {
+   147	        /*
+   148	          We do some additional initialization work for Crank-Nicolson.
+   149	          The matrix A does not change with time.  We can set it once,
+   150	          factor it once, and solve repeatedly.
+   151	        */
+   152	        int i;
+   153	        double w = alpha * dt / dx / dx;
+   154	
+   155	        cn_Amat = ( double * ) malloc ( 3 * Nx * sizeof ( double ) );
+   156	
+   157	        cn_Amat[0+0*3] = 0.0;
+   158	        cn_Amat[1+0*3] = 1.0;
+   159	        cn_Amat[0+1*3] = 0.0;
+   160	
+   161	        for ( i = 1; i < Nx - 1; i++ )
+   162	        {
+   163	            cn_Amat[2+(i-1)*3] =           - w;
+   164	            cn_Amat[1+ i   *3] = 1.0 + 2.0 * w;
+   165	            cn_Amat[0+(i+1)*3] =           - w;
+   166	        }
+   167	        
+   168	        cn_Amat[2+(Nx-2)*3] = 0.0;
+   169	        cn_Amat[1+(Nx-1)*3] = 1.0;
+   170	        cn_Amat[2+(Nx-1)*3] = 0.0;
+   171	
+   172	        /*
+   173	          Factor the matrix.
+   174	        */
+   175	        r83_np_fa(Nx, cn_Amat);
+   176	    }
+   177	}
+   178	
+   179	#define HANDLE_ARG(VAR, TYPE, STYLE, HELP) \
+   180	{ \
+   181	    void *valp = (void*) &VAR; \
+   182	    int const len = strlen(#VAR)+1; \
+   183	    for (i = 1; i < argc; i++) \
+   184	    {\
+   185	        char const *style = #STYLE; \
+   186	        int valid_style = style[1]=='d'||style[1]=='g'||style[1]=='s'; \
+   187	        if (strncmp(argv[i], #VAR"=", len)) \
+   188	            continue; \
+   189	        assert(valid_style); \
+   190		if (strlen(argv[i]+len)) \
+   191	        {\
+   192	            if      (style[1] == 'd') /* int */ \
+   193	                *((int*) valp) = (int) strtol(argv[i]+len,0,10); \
+   194	            else if (style[1] == 'g') /* double */ \
+   195	                *((double*) valp) = (double) strtod(argv[i]+len,0); \
+   196	            else if (style[1] == 's') /* char* */ \
+   197	                *((char**) valp) = (char*) strdup(argv[i]+len); \
+   198	        }\
+   199	    }\
+   200	    if (help) \
+   201	    {\
+   202	        char tmp[256]; \
+   203	        int len = snprintf(tmp, sizeof(tmp), "        %s=" #STYLE, \
+   204	            #VAR, VAR);\
+   205	        snprintf(tmp, sizeof(tmp), "%s (%s)", #HELP, #TYPE); \
+   206	        fprintf(stderr, "        %s=" #STYLE "%*s\n", \
+   207	            #VAR, VAR, 80-len, tmp);\
+   208	    }\
+   209	    else \
+   210	        fprintf(stderr, "    %s="#STYLE"\n", \
+   211	            #VAR, VAR);\
+   212	}
+   213	
+   214	static void
+   215	process_args(int argc, char **argv)
+   216	{
+   217	    int i;
+   218	    int help = 0;
+   219	
+   220	    /* quick pass for 'help' anywhere on command line */
+   221	    for (i = 0; i < argc && !help; i++)
+   222	        help = 0!=strcasestr(argv[i], "help");
+   223	    
+   224	    if (help)
+   225	    {
+   226	        fprintf(stderr, "Usage:\n");
+   227	        fprintf(stderr, "    ./heat <arg>=<value> <arg>=<value>...\n");
+   228	    }
+   229	
+   230	    HANDLE_ARG(prec, char*, %s, precision half|float|double|quad);
+   231	    HANDLE_ARG(alpha, double, %g, material thermal diffusivity);
+   232	    HANDLE_ARG(dx, double, %g, x-incriment (1/dx->int));
+   233	    HANDLE_ARG(dt, double, %g, t-incriment);
+   234	    HANDLE_ARG(maxt, double, %g, max. time to run simulation to);
+   235	    HANDLE_ARG(bc0, double, %g, bc @ x=0: u(0,t));
+   236	    HANDLE_ARG(bc1, double, %g, bc @ x=1: u(1,t));
+   237	    HANDLE_ARG(ic, char*, %s, ic @ t=0: u(x,0));
+   238	    HANDLE_ARG(alg, char*, %s, algorithm ftcs|upwind15|crankn);
+   239	    HANDLE_ARG(savi, int, %d, save every i-th solution step);
+   240	    HANDLE_ARG(save, int, %d, save error in every saved solution);
+   241	    HANDLE_ARG(outi, int, %d, output progress every i-th solution step);
+   242	    HANDLE_ARG(noout, int, %d, disable all file outputs);
+   243	
+   244	    if (help)
+   245	    {
+   246	        fprintf(stderr, "Examples...\n");
+   247	        fprintf(stderr, "    ./heat Nx=51 dt=0.002 alg=ftcs\n");
+   248	        fprintf(stderr, "    ./heat Nx=51 bc0=5 bc1=10\n");
+   249	        exit(1);
+   250	    }
+   251	
+   252	}
+   253	
+   254	static void
+   255	set_initial_condition(int n, double *a, double dx, char const *ic)
+   256	{
+   257	    int i;
+   258	    double x;
+   259	
+   260	    if (!strncmp(ic, "const(", 6)) /* const(val) */
+   261	    {
+   262	        double cval = strtod(ic+6, 0);
+   263	        for (i = 0; i < n; i++)
+   264	            a[i] = cval;
+   265	    }
+   266	    else if (!strncmp(ic, "step(", 5)) /* step(left,xmid,right) */
+   267	    {
+   268	        char *p;
+   269	        double left = strtod(ic+5, &p);
+   270	        double xmid = strtod(p+1, &p);
+   271	        double right = strtod(p+1, 0);
+   272	        for (i = 0, x = 0; i < n; i++, x+=dx)
+   273	        {
+   274	            if (x < xmid) a[i] = left;
+   275	            else          a[i] = right;
+   276	        }
+   277	    }
+   278	    else if (!strncmp(ic, "ramp(", 5)) /* ramp(left,right) */
+   279	    {
+   280	        char *p;
+   281	        double left = strtod(ic+5, &p);
+   282	        double right = strtod(p+1, 0);
+   283	        double dv = (right-left)/(n-1);
+   284	        for (i = 0, x = left; i < n; i++, x+=dv)
+   285	            a[i] = x;
+   286	    }
+   287	    else if (!strncmp(ic, "rand(", 5)) /* rand(seed,amp) */
+   288	    {
+   289	        char *p;
+   290	        int seed = (int) strtol(ic+5,&p,10);
+   291	        double amp = strtod(p+1, 0);
+   292	        const double maxr = ((long long)1<<31)-1;
+   293	        srandom(seed);
+   294	        for (i = 0; i < n; i++)
+   295	            a[i] = amp * random()/maxr;
+   296	    }
+   297	    else if (!strncmp(ic, "sin(Pi*x)", 9)) /* rand(seed,amp) */
+   298	    {
+   299	        for (i = 0, x = 0; i < n; i++, x+=dx)
+   300	            a[i] = sin(M_PI*x);
+   301	    }
+   302	    else if (!strncmp(ic, "spikes(", 7)) /* spikes(Amp,Loc,Amp,Loc,...) */
+   303	    {
+   304	        char const *p = &ic[6];
+   305	        for (i = 0, x = 0; i < n; i++)
+   306	            a[i] = 0;
+   307	        while (*p != ')')
+   308	        {
+   309	            char *ep_amp, *ep_idx;
+   310	            double amp = strtod(p+1, &ep_amp);
+   311	            int idx = (int) strtod(ep_amp+1, &ep_idx);
+   312	            assert(idx<n);
+   313	            a[idx] = amp;
+   314	            p = ep_idx;
+   315	        }
+   316	
+   317	    }
+   318	
+   319	    write_array(TSTART, Nx, dx, a);
+   320	}
+   321	
+   322	static void 
+   323	compute_exact_solution(int n, double *a, double dx, char const *ic,
+   324	    double alpha, double t, double bc0, double bc1)
+   325	{
+   326	    int i;
+   327	    double x;
+   328	    
+   329	    if (bc0 == 0 && bc1 == 0 && !strncmp(ic, "sin(Pi*x)", 9))
+   330	    {
+   331	        for (i = 0, x = 0; i < n; i++, x+=dx)
+   332	            a[i] = sin(M_PI*x)*exp(-alpha*M_PI*M_PI*t);
+   333	    }
+   334	    else if (bc0 == 0 && bc1 == 0 && !strncmp(ic, "const(", 6))
+   335	    {
+   336	        double cval = strtod(ic+6, 0);
+   337	        for (i = 0, x = 0; i < n; i++, x+=dx)
+   338	        {
+   339	            int n;
+   340	            double fsum = 0;
+   341	
+   342	            /* sum first 200 terms of Fourier series */
+   343	            for (n = 1; n < 200; n++)
+   344	            {
+   345	                double coeff = 2*cval*(1-pow(-1.0,(double)n))/(n*M_PI);
+   346	                double func = sin(n*M_PI*x)*exp(-alpha*n*n*M_PI*M_PI*t);
+   347	                fsum += coeff * func;
+   348	            }
+   349	            a[i] = fsum;
+   350	        }
+   351	    }
+   352	    else /* can only compute final steady state solution */
+   353	    {
+   354	        for (i = 0, x = 0; i < n; i++, x+=dx)
+   355	            a[i] = bc0 + (bc1-bc0)*x;
+   356	    }
+   357	}
+   358	
+   359	static void
+   360	solution_update_ftcs(int n, double *curr, double const *last,
+   361	    double alpha, double dx, double dt,
+   362	    double bc_0, double bc_1)
+   363	{
+   364	#if 0
+   365	    int i;
+   366	    double k = alpha * alpha * dt / (dx * dx);
+   367	    curr[0  ] = bc_0;
+   368	    curr[n-1] = bc_1;
+   369	    for (i = 1; i < n-1; i++)
+   370	        curr[i] = last[i] + k * (last[i-1] - 2 * last[i] + last[i+1]);
+   371	#endif
+   372	    double const r = alpha * dt / (dx * dx);
+   373	
+   374	    /* Impose boundary conditions for solution indices i==0 and i==n-1 */
+   375	    curr[0  ] = bc_0;
+   376	    curr[n-1] = bc_1;
+   377	
+   378	    /* Update the solution using FTCS algorithm */
+   379	    for (int i = 1; i < n-1; i++)
+   380	        curr[i] = r*last[i+1] + (1-2*r)*last[i] + r*last[i-1];
+   381	}
+   382	
+   383	static void
+   384	solution_update_upwind15(int n, double *curr, double const *last,
+   385	    double alpha, double dx, double dt,
+   386	    double bc_0, double bc_1)
+   387	{
+   388	    double const f2 = 1.0/24;
+   389	    double const f1 = 1.0/6;
+   390	    double const f0 = 1.0/4;
+   391	    double const k = alpha * alpha * dt / (dx * dx);
+   392	    double const k2 = k*k;
+   393	
+   394	    int i;
+   395	    curr[0  ] = bc_0;
+   396	    curr[1  ] = last[1  ] + k * (last[0  ] - 2 * last[1  ] + last[2  ]);
+   397	    curr[n-2] = last[n-2] + k * (last[n-3] - 2 * last[n-2] + last[n-1]);
+   398	    curr[n-1] = bc_1;
+   399	    for (i = 2; i < n-2; i++)
+   400	        curr[i] =  f2*(12*k2  -2*k    )*last[i-2]
+   401	                  +f2*(12*k2  -2*k    )*last[i+2]
+   402	                  -f1*(12*k2  -8*k    )*last[i-1]
+   403	                  -f1*(12*k2  -8*k    )*last[i+1]
+   404	                  +f0*(12*k2 -10*k  +4)*last[i  ];
+   405	}
+   406	
+   407	static void 
+   408	r83_np_sl ( int n, double const *a_lu, double const *b, double *x)
+   409	    /* Licensing: This code is distributed under the GNU LGPL license. 
+   410	       Modified: 30 May 2009 Author: John Burkardt
+   411	       Modified by Mark C. Miller, miller86@llnl.gov, July 23, 2017
+   412	    */
+   413	{
+   414	    int i;
+   415	
+   416	    for ( i = 0; i < n; i++ )
+   417	        x[i] = b[i];
+   418	
+   419	    /* Solve L * Y = B.  */
+   420	    for ( i = 1; i < n; i++ )
+   421	        x[i] = x[i] - a_lu[2+(i-1)*3] * x[i-1];
+   422	
+   423	    /* Solve U * X = Y.  */
+   424	    for ( i = n; 1 <= i; i-- )
+   425	    {
+   426	        x[i-1] = x[i-1] / a_lu[1+(i-1)*3];
+   427	        if ( 1 < i )
+   428	            x[i-2] = x[i-2] - a_lu[0+(i-1)*3] * x[i-1];
+   429	    }
+   430	}
+   431	
+   432	static void
+   433	solution_update_crankn(int n, double *curr, double const *last,
+   434	    double alpha, double dx, double dt,
+   435	    double bc_0, double bc_1)
+   436	{
+   437	    /* Do the solve */
+   438	    r83_np_sl (n, cn_Amat, last, curr);
+   439	    curr[0] = bc0;
+   440	    curr[n-1] = bc1;
+   441	}
+   442	
+   443	int finalize(int ti, double maxt, double change)
+   444	{
+   445	    int retval = 0;
+   446	
+   447	    if (outi)
+   448	        printf("Iteration %04d: last change l2=%g\n", ti, change);
+   449	
+   450	    free(curr);
+   451	    free(last);
+   452	    if (exact) free(exact);
+   453	    if (change_history) free(change_history);
+   454	    if (error_history) free(error_history);
+   455	    if (cn_Amat) free(cn_Amat);
+   456	    if (strncmp(alg, "ftcs", 4)) free((void*)alg);
+   457	    if (strncmp(prec, "double", 6)) free((void*)prec);
+   458	    if (strncmp(ic, "const(1)", 8)) free((void*)ic);
+   459	
+   460	    return retval;
+   461	}
+   462	
+   463	int main(int argc, char **argv)
+   464	{
+   465	    int i, ti;
+   466	    double error;
+   467	    FILE *outf;
+   468	
+   469	    process_args(argc, argv);
+   470	
+   471	    double change;
+   472	    Nx = (int) (1/dx+1.5);
+   473	    Nt = (int) (maxt / dt);
+   474	    dx = 1.0/(Nx-1);
+   475	
+   476	    initialize();
+   477	
+   478	    /* Initial condition */
+   479	    set_initial_condition(Nx, last, dx, ic);
+   480	
+   481	    /* Iterate until residual is small or hit max iterations */
+   482	    for (ti = 0; ti*dt < maxt; ti++)
+   483	    {
+   484	        if (!strcmp(alg, "ftcs"))
+   485	            solution_update_ftcs(Nx, curr, last, alpha, dx, dt, bc0, bc1);
+   486	        else if (!strcmp(alg, "upwind15"))
+   487	            solution_update_upwind15(Nx, curr, last, alpha, dx, dt, bc0, bc1);
+   488	        else if (!strcmp(alg, "crankn"))
+   489	            solution_update_crankn(Nx, curr, last, alpha, dx, dt, bc0, bc1);
+   490	
+   491	        if (ti>0 && save)
+   492	        {
+   493	            compute_exact_solution(Nx, exact, dx, ic, alpha, ti*dt, bc0, bc1);
+   494	            if (savi && ti%savi==0)
+   495	                write_array(ti, Nx, dx, exact);
+   496	        }
+   497	
+   498	        if (ti>0 && savi && ti%savi==0)
+   499	            write_array(ti, Nx, dx, curr);
+   500	
+   501	        change = l2_norm(Nx, curr, last);
+   502	        if (save)
+   503	        {
+   504	            change_history[ti] = change;
+   505	            error_history[ti] = l2_norm(Nx, curr, exact);
+   506	        }
+   507	
+   508	        copy(Nx, last, curr);
+   509	
+   510	        if (outi && ti%outi==0)
+   511	        {
+   512	            printf("Iteration %04d: last change l2=%g\n", ti, change);
+   513	        }
+   514	    }
+   515	
+   516	    write_array(TFINAL, Nx, dx, curr);
+   517	    if (save)
+   518	    {
+   519	        write_array(RESIDUAL, ti, dt, change_history);
+   520	        write_array(ERROR, ti, dt, error_history);
+   521	    }
+   522	
+   523	    return finalize(ti, maxt, change);
+   524	}

@@ -44,6 +44,21 @@ run:
 basic:
 	${MAKE} PROB=$@ SAVI=100 run
 
+basic_spikes:
+	${MAKE} PROB=$@ BC1=0 IC="spikes(10,2,10,9)" SAVI=25 run
+
+hr_spikes:
+	${MAKE} PROB=$@ BC1=0 IC="spikes(10,20,10,90)" DX=0.01 SAVI=10 run
+
+hr_spikes_smalldt:
+	${MAKE} PROB=$@ BC1=0 IC="spikes(10,20,10,90)" DX=0.01 DT=0.0001 SAVI=500 run
+
+hr_spikes_crankn:
+	${MAKE} PROB=$@ BC1=0 IC="spikes(10,20,10,90)" DX=0.01 ALG=crankn SAVI=10 run
+
+hr_spikes_crankn_largedt:
+	${MAKE} PROB=$@ BC1=0 IC="spikes(10,20,10,90)" DX=0.01 DT=0.008 ALG=crankn SAVI=5 run
+
 highres:
 	${MAKE} PROB=$@ DX=0.01 SAVI=10 run
 
@@ -54,7 +69,7 @@ hr_smalldt_long:
 	${MAKE} PROB=$@ DX=0.01 DT=0.001 SAVI=250 OUTI=250 MAXI=20000 run
 
 hr_crankn:
-	${MAKE} PROB=$@ DX=0.01 ALG=crankn SAVI=50 OUTi=50 run
+	${MAKE} PROB=$@ DX=0.01 DT=0.001 ALG=crankn SAVI=100 run
 
 crankn_faster:
 	${MAKE} PROB=$@ DX=0.01 DT=0.008 ALG=crankn SAVI=25 OUTI=50 run
@@ -62,5 +77,6 @@ crankn_faster:
 view:
 	@pushd ${PROB};\
         ${VISIT} -cli -s ../plot_heat.py
+
 
 all: basic highres hr_smalldt_short hr_smalldt_long hr_crankn crankn_faster

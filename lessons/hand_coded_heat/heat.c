@@ -25,16 +25,16 @@ char const *prec = "double";
 char const *ic = "const(1)";
 double alpha = 0.2;
 double dt = 0.004;
-double eps = 1e-6;
 double dx = 0.1;
 double bc0 = 0;
 double bc1 = 1;
-int maxi = 5000;
+double maxt = 2.0;
 
-double *curr=0, *last=0, *res_history=0, *exact=0, *error_history=0;
+double *curr=0, *last=0, *change_history=0, *exact=0, *error_history=0;
 double *cn_Amat = 0;
 
 int Nx = (int) (1/0.1+1.5);
+int Nt = (int) (1 / 0.004);
 
 /*
  * Utilities 
@@ -78,7 +78,7 @@ write_array(int t, int n, double dx, double const *a)
     else if (t == TFINAL)
         snprintf(fname, sizeof(fname), "heat_soln_final.curve");
     else if (t == RESIDUAL)
-        snprintf(fname, sizeof(fname), "residual.curve");
+        snprintf(fname, sizeof(fname), "change.curve");
     else if (t == ERROR)
         snprintf(fname, sizeof(fname), "error.curve");
     else
@@ -130,8 +130,8 @@ initialize(void)
     if (save)
     {
         exact = (double *) calloc(Nx, sizeof(double));
-        res_history = (double *) calloc(maxi, sizeof(double));
-        error_history = (double *) calloc(maxi, sizeof(double));
+        change_history = (double *) calloc(Nt, sizeof(double));
+        error_history = (double *) calloc(Nt, sizeof(double));
     }
 
     assert(strncmp(alg, "ftcs", 4)==0 ||
@@ -231,12 +231,11 @@ process_args(int argc, char **argv)
     HANDLE_ARG(alpha, double, %g, material thermal diffusivity);
     HANDLE_ARG(dx, double, %g, x-incriment (1/dx->int));
     HANDLE_ARG(dt, double, %g, t-incriment);
+    HANDLE_ARG(maxt, double, %g, max. time to run simulation to);
     HANDLE_ARG(bc0, double, %g, bc @ x=0: u(0,t));
     HANDLE_ARG(bc1, double, %g, bc @ x=1: u(1,t));
     HANDLE_ARG(ic, char*, %s, ic @ t=0: u(x,0));
     HANDLE_ARG(alg, char*, %s, algorithm ftcs|upwind15|crankn);
-    HANDLE_ARG(eps, double, %g, convergence criterion);
-    HANDLE_ARG(maxi, int, %d, max. number of time iterations);
     HANDLE_ARG(savi, int, %d, save every i-th solution step);
     HANDLE_ARG(save, int, %d, save error in every saved solution);
     HANDLE_ARG(outi, int, %d, output progress every i-th solution step);
@@ -245,8 +244,8 @@ process_args(int argc, char **argv)
     if (help)
     {
         fprintf(stderr, "Examples...\n");
-        fprintf(stderr, "    ./heat Nx=51 dt=0.002 alg=ftcs\n");
-        fprintf(stderr, "    ./heat Nx=51 bc0=5 bc1=10\n");
+        fprintf(stderr, "    ./heat dx=0.01 dt=0.0002 alg=ftcs\n");
+        fprintf(stderr, "    ./heat dx=0.1 bc0=5 bc1=10 ic=\"spikes(5,5)\"\n");
         exit(1);
     }
 
@@ -300,6 +299,22 @@ set_initial_condition(int n, double *a, double dx, char const *ic)
         for (i = 0, x = 0; i < n; i++, x+=dx)
             a[i] = sin(M_PI*x);
     }
+    else if (!strncmp(ic, "spikes(", 7)) /* spikes(Amp,Loc,Amp,Loc,...) */
+    {
+        char const *p = &ic[6];
+        for (i = 0, x = 0; i < n; i++)
+            a[i] = 0;
+        while (*p != ')')
+        {
+            char *ep_amp, *ep_idx;
+            double amp = strtod(p+1, &ep_amp);
+            int idx = (int) strtod(ep_amp+1, &ep_idx);
+            assert(idx<n);
+            a[idx] = amp;
+            p = ep_idx;
+        }
+
+    }
 
     write_array(TSTART, Nx, dx, a);
 }
@@ -346,12 +361,23 @@ solution_update_ftcs(int n, double *curr, double const *last,
     double alpha, double dx, double dt,
     double bc_0, double bc_1)
 {
+#if 0
     int i;
     double k = alpha * alpha * dt / (dx * dx);
     curr[0  ] = bc_0;
     curr[n-1] = bc_1;
     for (i = 1; i < n-1; i++)
         curr[i] = last[i] + k * (last[i-1] - 2 * last[i] + last[i+1]);
+#endif
+    double const r = alpha * dt / (dx * dx);
+
+    /* Impose boundary conditions for solution indices i==0 and i==n-1 */
+    curr[0  ] = bc_0;
+    curr[n-1] = bc_1;
+
+    /* Update the solution using FTCS algorithm */
+    for (int i = 1; i < n-1; i++)
+        curr[i] = r*last[i+1] + (1-2*r)*last[i] + r*last[i-1];
 }
 
 static void
@@ -414,24 +440,17 @@ solution_update_crankn(int n, double *curr, double const *last,
     curr[n-1] = bc1;
 }
 
-int finalize(int ti, int nt_max, double res)
+int finalize(int ti, double maxt, double change)
 {
     int retval = 0;
 
-    if (ti >= nt_max)
-    {
-        printf("Did not converge: residual = %8.4g after %d iterations\n", res, ti);
-        retval = 1;
-    }
-    else
-    {
-        printf("Converged to %8.4g in %d iterations\n", res, ti);
-    }
+    if (outi)
+        printf("Iteration %04d: last change l2=%g\n", ti, change);
 
     free(curr);
     free(last);
     if (exact) free(exact);
-    if (res_history) free(res_history);
+    if (change_history) free(change_history);
     if (error_history) free(error_history);
     if (cn_Amat) free(cn_Amat);
     if (strncmp(alg, "ftcs", 4)) free((void*)alg);
@@ -449,8 +468,9 @@ int main(int argc, char **argv)
 
     process_args(argc, argv);
 
-    double residual = eps;
+    double change;
     Nx = (int) (1/dx+1.5);
+    Nt = (int) (maxt / dt);
     dx = 1.0/(Nx-1);
 
     initialize();
@@ -459,7 +479,7 @@ int main(int argc, char **argv)
     set_initial_condition(Nx, last, dx, ic);
 
     /* Iterate until residual is small or hit max iterations */
-    for (ti = 0; residual >= dt*eps && ti < maxi; ti++)
+    for (ti = 0; ti*dt < maxt; ti++)
     {
         if (!strcmp(alg, "ftcs"))
             solution_update_ftcs(Nx, curr, last, alpha, dx, dt, bc0, bc1);
@@ -478,10 +498,10 @@ int main(int argc, char **argv)
         if (ti>0 && savi && ti%savi==0)
             write_array(ti, Nx, dx, curr);
 
-        residual = l2_norm(Nx, curr, last);
+        change = l2_norm(Nx, curr, last);
         if (save)
         {
-            res_history[ti] = residual;
+            change_history[ti] = change;
             error_history[ti] = l2_norm(Nx, curr, exact);
         }
 
@@ -489,16 +509,16 @@ int main(int argc, char **argv)
 
         if (outi && ti%outi==0)
         {
-            printf("Iteration %04d: last change l2=%g\n", ti, residual);
+            printf("Iteration %04d: last change l2=%g\n", ti, change);
         }
     }
 
     write_array(TFINAL, Nx, dx, curr);
     if (save)
     {
-        write_array(RESIDUAL, ti, dt, res_history);
+        write_array(RESIDUAL, ti, dt, change_history);
         write_array(ERROR, ti, dt, error_history);
     }
 
-    return finalize(ti, maxi, residual);
+    return finalize(ti, maxt, change);
 }
