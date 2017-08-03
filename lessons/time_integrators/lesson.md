@@ -18,7 +18,7 @@ uses MFEM as a vehicle to demonstrate the use of the
 in both serial and parallel for more robust and flexible control over _time integration_
 (e.g. discretization in time) of PDEs.
 
-|[<img src="mfem_sundials_explicit0000png" width="400">](mfem_sundails_explicit0000.png)|[<img src="pyramid_animated.gif" width="400">](pyramid_animated.gif)
+|[<img src="mfem_sundials_explicit0000.png" width="400">](mfem_sundials_explicit0000.png)|[<img src="pyramid_animated.gif" width="400">](pyramid_animated.gif)
 
 The application has been designed to solve a slightly more general form of the
 [_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation)
