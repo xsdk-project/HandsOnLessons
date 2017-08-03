@@ -126,7 +126,7 @@ solution_update_ftcs(int n,
 }
 ```
 
-The FTCS update method is implemented around line 360 in the example application, [heat.c](heat.c.numbered).
+The FTCS update method is implemented around line 360 in the example application, [heat.c](heat.c.numbered.txt).
 
 ### Getting Help
 
