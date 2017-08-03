@@ -90,6 +90,13 @@ Alternatively, you can upload videos to YouTube and embed them here
 
 > **Question #1?** (triple-click box below to reveal answer)
 
+**Note:** These Questions and _Answer Boxes_ are somewhat cheesey for time being.
+We can expand our use of Jekyll and improve look and feel after ATPESC. In meantime,
+in order for these _Answer Boxes_ to behave as desired (e.g. hidden text which
+gets revealed by user triple-clicking in box), they have to be all on a single
+line with no line breaks and have to be white text on white backgroud. Yeah, its
+cheesey but will work for now.
+
 |<font color="white">Answer to Question #1</font>|
 
 > **Question #2?** (triple-click box below to reveal answer)
