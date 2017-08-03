@@ -303,10 +303,12 @@ This output gives the stats for the developed AMG preconditioner. It shows the n
 as well as each interpolation operator.
 It also shows the operator complexity, which is defined as the sum of the number of nonzeroes of all operators 
 ![](http://latex.codecogs.com/gif.latex?A_i) 
-divided by the number of nonzeroes of the original matrix _A (which equals
-![](http://latex.codecogs.com/gif.latex?A_0) ):
+divided by the number of nonzeroes of the original matrix _A =
+![](http://latex.codecogs.com/gif.latex?A_0) :
+
 ![equation](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Csum_%7Bi%3D0%7D%5EL%20nnz%28A_i%29%7D%7Bnnz%28A%29%7D).
 The memory complexity also includes the number of nonzeroes of all interpolation operators in the sum: 
+
 ![equation](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Csum_%7Bi%3D0%7D%5E%7BL-1%7D%20%28nnz%28A_i%29%2Bnnz%28P_i%29%29%2Bnnz%28A_L%29%7D%7Bnnz%28A%29%7D)
 
 #### Questions
