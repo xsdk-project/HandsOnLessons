@@ -299,10 +299,10 @@ sys 1.47
 ```
 
 This output gives the stats for the developed AMG preconditioner. It shows the number of levels, the average number of nonzeros in total and per row for each matrix 
-![equation](http://latex.codedogs.com/gif.latex?A_i) 
+![](http://latex.codecogs.com/gif.latex?A_i) 
 as well as each interpolation operator.
 It also shows the operator complexity, which is defined as the sum of the number of nonzeroes of all operators 
-![equation](http://latex.codedogs.com/gif.latex?A_i) 
+![](http://latex.codecogs.com/gif.latex?A_i) 
 divided by the number of nonzeroes of the original matrix _A_. 
 The memory complexity also includes the number of nonzeroes of all interpolation operators in the sum. 
 
