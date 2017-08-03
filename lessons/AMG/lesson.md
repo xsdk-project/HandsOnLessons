@@ -95,15 +95,15 @@ Examine the number of iterations and the time listed in the line starting with '
 
 #### Questions
 
-> **How do the number of iterations compare?** (triple-click box below to reveal answer)
+> **How do the number of iterations compare?** 
 
 |<font color="white">PFMG converges much faster, almost 10 times as fast</font>|
 
-> **How do the times compare?** (triple-click box below to reveal answer)
+> **How do the times compare?** 
 
 |<font color="white">PFMG is more than twice as fast</font>|
 
-> **What does this say about the cost of an iteration for CG compared to PFMG?** (triple-click box below to reveal answer)
+> **What does this say about the cost of an iteration for CG compared to PFMG?** 
 
 |<font color="white">One iteration of PFMG is more costly than one CG iteration.</font>|
 
@@ -131,15 +131,15 @@ sys 0.98
 
 #### Questions
 
-> **How do the number of iterations compare to PFMG without CG?** (triple-click box below to reveal answer)
+> **How do the number of iterations compare to PFMG without CG?** 
 
 |<font color="white">PFMG with PCG converges about twice as fast as PFMG, 22 times as fast as CG.</font>|
 
-> **How do the times compare?** (triple-click box below to reveal answer)
+> **How do the times compare?** 
 
 |<font color="white">PFMG-PCG is faster than PFMG alone. It is almost 3 times as fast as CG.</font>|
 
-> **What does this say about the cost of an iteration for PFMG-PCG compared to PFMG?** (triple-click box below to reveal answer)
+> **What does this say about the cost of an iteration for PFMG-PCG compared to PFMG?** 
 
 |<font color="white">One iteration of PFMG-PCG is more costly than one PFMG iteration.</font>|
 
@@ -189,15 +189,15 @@ sys 2.93
 
 #### Examining Results
 
-> **How do the number of iterations now compare?** (triple-click box below to reveal answer)
+> **How do the number of iterations now compare?** 
 
 |<font color="white">Iterations for PCG doubled, whereas PFMG-PCG only increased by 1. PFMG-PCG converges 40 times as fast as PCG.</font>|
 
-> **How do the times compare?** (triple-click box below to reveal answer)
+> **How do the times compare?** 
 
 |<font color="white">PFMG-PCG is almost 6 times as fast as PCG.</font>|
 
-> **If you compare these numbers to the numbers for the smaller system, what do you observe?** (triple-click box below to reveal answer)
+> **If you compare these numbers to the numbers for the smaller system, what do you observe?** 
 
 |<font color="white">Times and iterations for PCG grow much faster than for PFMG-PCG with increasing problem size. PFMG-PCG is more scalable than PCG.</font>|
 
@@ -303,11 +303,11 @@ It also shows the complexities.
 
 #### Questions
 
-> **Are the complexities acceptable?** (triple-click box below to reveal answer)
+> **Are the complexities acceptable?** 
 
 |<font color="white">No, they are too large, above 2!</font>|
 
-> **How do the complexities affect performance?** (triple-click box below to reveal answer)
+> **How do the complexities affect performance?** 
 
 |<font color="white">The method is slower than PFMG-PCG and even PCG, inspite of a low number of iterations.</font>|
 
@@ -404,15 +404,15 @@ sys 1.34
 
 #### Questions
 
-> **How do the number of levels change? The complexities?** (triple-click box below to reveal answer)
+> **How do the number of levels change? The complexities?** 
 
 |<font color="white">There is one level less. The complexities are much improved, almost 3 times as small, clearly below 2, closer to 1.</font>|
 
-> **How does this affect the performance?** (triple-click box below to reveal answer)
+> **How does this affect the performance?** 
 
 |<font color="white">The times are more than twice as fast, however convergence is worse.</font>|
 
-> **How does this compare to PFMG-PCG when applied to the same problem? Why?** (triple-click box below to reveal answer)
+> **How does this compare to PFMG-PCG when applied to the same problem? Why?** 
 
 |<font color="white">PFMG-PCG is almost twice as fast, even converges slightly faster. PFMG-PCG takes advantage of the structure in the problem, which AMG-PCG cannot do.</font>|
 
