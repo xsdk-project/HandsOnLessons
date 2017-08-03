@@ -1,0 +1,505 @@
+     1	//                         MFEM Example 16 - Parallel Version
+     2	//                             SUNDIALS Modification
+     3	//
+     4	// Compile with: make ex16p
+     5	//
+     6	// Sample runs:
+     7	//     mpirun -np 4 ex16p
+     8	//     mpirun -np 4 ex16p -m ../../data/inline-tri.mesh
+     9	//     mpirun -np 4 ex16p -m ../../data/disc-nurbs.mesh -tf 2
+    10	//     mpirun -np 4 ex16p -s 12 -a 0.0 -k 1.0
+    11	//     mpirun -np 4 ex16p -s 1 -a 1.0 -k 0.0 -dt 4e-6 -tf 2e-2 -vs 50
+    12	//     mpirun -np 8 ex16p -s 2 -a 0.5 -k 0.5 -o 4 -dt 8e-6 -tf 2e-2 -vs 50
+    13	//     mpirun -np 4 ex16p -s 3 -dt 2.0e-4 -tf 4.0e-2
+    14	//     mpirun -np 16 ex16p -m ../../data/fichera-q2.mesh
+    15	//     mpirun -np 16 ex16p -m ../../data/escher-p2.mesh
+    16	//     mpirun -np 8 ex16p -m ../../data/beam-tet.mesh -tf 10 -dt 0.1
+    17	//     mpirun -np 4 ex16p -m ../../data/amr-quad.mesh -o 4 -rs 0 -rp 0
+    18	//     mpirun -np 4 ex16p -m ../../data/amr-hex.mesh -o 2 -rs 0 -rp 0
+    19	//
+    20	// Description:  This example solves a time dependent nonlinear heat equation
+    21	//               problem of the form du/dt = C(u), with a non-linear diffusion
+    22	//               operator C(u) = \nabla \cdot (\kappa + \alpha u) \nabla u.
+    23	//
+    24	//               The example demonstrates the use of nonlinear operators (the
+    25	//               class ConductionOperator defining C(u)), as well as their
+    26	//               implicit time integration. Note that implementing the method
+    27	//               ConductionOperator::ImplicitSolve is the only requirement for
+    28	//               high-order implicit (SDIRK) time integration. By default, this
+    29	//               example uses the SUNDIALS ODE solvers from CVODE and ARKODE.
+    30	//
+    31	//               We recommend viewing examples 2, 9 and 10 before viewing this
+    32	//               example.
+    33	
+    34	#include "mfem.hpp"
+    35	#include "papi.h"
+    36	#include <fstream>
+    37	#include <iostream>
+    38	#include <cmath>
+    39	#include <assert.h>
+    40	
+    41	using namespace std;
+    42	using namespace mfem;
+    43	
+    44	/** After spatial discretization, the conduction model can be written as:
+    45	 *
+    46	 *     du/dt = M^{-1}(-Ku)
+    47	 *
+    48	 *  where u is the vector representing the temperature, M is the mass matrix,
+    49	 *  and K is the diffusion operator with diffusivity depending on u:
+    50	 *  (\kappa + \alpha u).
+    51	 *
+    52	 *  Class ConductionOperator represents the right-hand side of the above ODE.
+    53	 */
+    54	class ConductionOperator : public TimeDependentOperator
+    55	{
+    56	protected:
+    57	   ParFiniteElementSpace &fespace;
+    58	   Array<int> ess_tdof_list; // this list remains empty for pure Neumann b.c.
+    59	
+    60	   ParBilinearForm *M;
+    61	   ParBilinearForm *K;
+    62	
+    63	   HypreParMatrix Mmat;
+    64	   HypreParMatrix Kmat;
+    65	   HypreParMatrix *T; // T = M + dt K
+    66	   double current_dt;
+    67	
+    68	   CGSolver M_solver;    // Krylov solver for inverting the mass matrix M
+    69	   HypreSmoother M_prec; // Preconditioner for the mass matrix M
+    70	
+    71	   CGSolver T_solver;    // Implicit solver for T = M + dt K
+    72	   HypreSmoother T_prec; // Preconditioner for the implicit solver
+    73	
+    74	   double alpha, kappa;
+    75	
+    76	   mutable Vector z; // auxiliary vector
+    77	
+    78	public:
+    79	   ConductionOperator(ParFiniteElementSpace &f, double alpha, double kappa,
+    80	                      const Vector &u);
+    81	
+    82	   virtual void Mult(const Vector &u, Vector &du_dt) const;
+    83	   /** Solve the Backward-Euler equation: k = f(u + dt*k, t), for the unknown k.
+    84	       This is the only requirement for high-order SDIRK implicit integration.*/
+    85	   virtual void ImplicitSolve(const double dt, const Vector &u, Vector &k);
+    86	
+    87	   /** Solve the system (M + dt K) y = M b. The result y replaces the input b.
+    88	       This method is used by the implicit SUNDIALS solvers. */
+    89	   void SundialsSolve(const double dt, Vector &b);
+    90	
+    91	   /// Update the diffusion BilinearForm K using the given true-dof vector `u`.
+    92	   void SetParameters(const Vector &u);
+    93	
+    94	   virtual ~ConductionOperator();
+    95	};
+    96	
+    97	/// Custom Jacobian system solver for the SUNDIALS time integrators.
+    98	/** For the ODE system represented by ConductionOperator
+    99	
+   100	        M du/dt = -K(u),
+   101	
+   102	    this class facilitates the solution of linear systems of the form
+   103	
+   104	        (M + γK) y = M b,
+   105	
+   106	    for given b, u (not used), and γ = GetTimeStep(). */
+   107	class SundialsJacSolver : public SundialsODELinearSolver
+   108	{
+   109	private:
+   110	  ConductionOperator *oper;
+   111	
+   112	public:
+   113	   SundialsJacSolver() : oper(NULL) { }
+   114	
+   115	   int InitSystem(void *sundials_mem);
+   116	   int SetupSystem(void *sundials_mem, int conv_fail,
+   117	                   const Vector &y_pred, const Vector &f_pred, int &jac_cur,
+   118	                   Vector &v_temp1, Vector &v_temp2, Vector &v_temp3);
+   119	   int SolveSystem(void *sundials_mem, Vector &b, const Vector &weight,
+   120	                   const Vector &y_cur, const Vector &f_cur);
+   121	   int FreeSystem(void *sundials_mem);
+   122	};
+   123	
+   124	double InitialTemperature(const Vector &x);
+   125	
+   126	static void initialize_papi(void)
+   127	{
+   128	#ifdef HAVE_PAPI
+   129	    float ireal_time, iproc_time, imflops;
+   130	    long long iflpops;
+   131	
+   132	    assert(PAPI_library_init(PAPI_VER_CURRENT) == PAPI_VER_CURRENT);
+   133	    assert(PAPI_flops(&ireal_time,&iproc_time,&iflpops,&imflops) >= PAPI_OK);
+   134	#endif
+   135	}
+   136	
+   137	static void finalize_papi(void)
+   138	{
+   139	#ifdef HAVE_PAPI
+   140	    float real_time, proc_time, mflops;
+   141	    long long flpops;
+   142	    PAPI_dmem_info_t dmem;
+   143	
+   144	    assert(PAPI_flops(&real_time,&proc_time,&flpops,&mflops) >= PAPI_OK);
+   145	    assert(PAPI_get_dmem_info(&dmem) >= PAPI_OK);
+   146	
+   147	    cout << "Memory Info:" << endl;;
+   148	    cout << "\tMem Size:     " << dmem.size << endl;
+   149	    cout << "\tMem Resident:\t\t" << dmem.resident << endl;
+   150	    cout << "\tMem Heap:     " << dmem.heap << endl;
+   151	    cout << "Timing Info:" << endl;
+   152	    cout << "\tReal_time:    " << real_time << endl;
+   153	    cout << "\tProc_time:    " << proc_time << endl;
+   154	    cout << "Flops Info:" << endl;
+   155	    cout << "\tTotal flpops: " << flpops << endl;
+   156	    cout << "\tMFLOPS:       " << mflops << endl;
+   157	#endif
+   158	}
+   159	
+   160	
+   161	int main(int argc, char *argv[])
+   162	{
+   163	   initialize_papi();
+   164	
+   165	   // Initialize MPI.
+   166	   int num_procs, myid;
+   167	   MPI_Init(&argc, &argv);
+   168	   MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+   169	   MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+   170	
+   171	   // Parse command-line options.
+   172	   int dim = 2;
+   173	   int ref_levels = 0;
+   174	   int order = 1;
+   175	   double t_final = 0.5;
+   176	   double dt = 0.01;
+   177	   double alpha = 0.0;
+   178	   double kappa = 0.5;
+   179	   bool implicit = false;
+   180	   bool adaptdt = false;
+   181	   double reltol = 1e-4;
+   182	   double abstol = 1e-4;
+   183	   bool noout = false;
+   184	
+   185	   OptionsParser args(argc, argv);
+   186	   args.AddOption(&dim, "-d", "--dim",
+   187	                  "Number of dimensions in the problem (1 or 2).");
+   188	   args.AddOption(&ref_levels, "-r", "--refine",
+   189	                  "Number of times to refine the mesh uniformly.");
+   190	   args.AddOption(&order, "-o", "--order",
+   191	                  "Order (degree) of the finite elements.");
+   192	   args.AddOption(&t_final, "-tf", "--t-final",
+   193	                  "Final time; start time is 0.");
+   194	   args.AddOption(&dt, "-dt", "--time-step",
+   195	                  "Initial time step.");
+   196	   args.AddOption(&alpha, "-a", "--alpha",
+   197	                  "Alpha coefficient for conductivity: kappa + alpha*temperature");
+   198	   args.AddOption(&kappa, "-k", "--kappa",
+   199	                  "Kappa coefficient conductivity: kappa + alpha*temperature");
+   200	   args.AddOption(&adaptdt, "-adt", "--adapt-time-step", "-fdt", "--fixed-time-step",
+   201	                  "Flag whether or not to adapt the time step.");
+   202	   args.AddOption(&implicit, "-imp", "--implicit", "-exp", "--explicit",
+   203	                  "Implicit or Explicit ODE solution.");
+   204	   args.AddOption(&reltol, "-rtol", "--relative-tolerance",
+   205	                  "Relative tolerance in Sundials time integrator.");
+   206	   args.AddOption(&abstol, "-atol", "--absolute-tolerance",
+   207	                  "Absolute tolerance in Sundials time integrator.");
+   208	   args.AddOption(&noout, "-noout", "--no-output", "-out", "--do-output",
+   209	                  "Disable all file outputs.");
+   210	
+   211	   int precision = 8;
+   212	   cout.precision(precision);
+   213	   args.Parse();
+   214	   if (!args.Good())
+   215	   {
+   216	      args.PrintUsage(cout);
+   217	      MPI_Finalize();
+   218	      return 1;
+   219	   }
+   220	
+   221	   if (myid == 0)
+   222	   {
+   223	      args.PrintOptions(cout);
+   224	   }
+   225	
+   226	   Mesh *mesh;
+   227	   if (dim == 1)
+   228	   {
+   229	      mesh = new Mesh(16, 1.0);
+   230	   }
+   231	   else if (dim == 2)
+   232	   {
+   233	      mesh = new Mesh(16, 16, Element::QUADRILATERAL, 1, 1.0, 1.0);
+   234	   }
+   235	   else if (dim == 3)
+   236	   {
+   237	      mesh = new Mesh(16, 16, 16, Element::HEXAHEDRON, 1, 1.0, 1.0, 1.0);
+   238	   }
+   239	   else
+   240	   {
+   241	      cout << "Diminsion mus be set to 1, 2, or 3." << endl;
+   242	      return 2;
+   243	   }
+   244	   ParMesh *pmesh = new ParMesh(MPI_COMM_WORLD, *mesh);
+   245	   for (int lev = 0; lev < ref_levels; lev++)
+   246	   {
+   247	      pmesh->UniformRefinement();
+   248	   }
+   249	   delete mesh;
+   250	
+   251	   // Define the ARKODE solver used for time integration. Either implicit or explicit.
+   252	   ODESolver *ode_solver = NULL;
+   253	   ARKODESolver *arkode = NULL;
+   254	   SundialsJacSolver sun_solver; // Used by the implicit ARKODE solver.
+   255	
+   256	   if (implicit)
+   257	   {
+   258	      arkode = new ARKODESolver(MPI_COMM_WORLD, ARKODESolver::IMPLICIT);
+   259	      arkode->SetLinearSolver(sun_solver);
+   260	   }
+   261	   else
+   262	   {
+   263	      arkode = new ARKODESolver(MPI_COMM_WORLD, ARKODESolver::EXPLICIT);
+   264	      arkode->SetERKTableNum(FEHLBERG_13_7_8);
+   265	   }
+   266	   arkode->SetStepMode(ARK_ONE_STEP);
+   267	   arkode->SetSStolerances(reltol, abstol);
+   268	   arkode->SetMaxStep(t_final / 2.0);
+   269	   if (!adaptdt)
+   270	   {
+   271	      arkode->SetFixedStep(dt);
+   272	   }
+   273	   ode_solver = arkode;
+   274	
+   275	   // Define the vector finite element space representing the current and the
+   276	   // initial temperature, u_ref.
+   277	   H1_FECollection fe_coll(order, dim);
+   278	   ParFiniteElementSpace fespace(pmesh, &fe_coll);
+   279	   ParGridFunction u_gf(&fespace);
+   280	   int fe_size = fespace.GlobalTrueVSize();
+   281	   if (myid == 0)
+   282	   {
+   283	      cout << "Number of temperature unknowns: " << fe_size << endl;
+   284	   }
+   285	
+   286	   // Set the initial conditions for u.
+   287	   FunctionCoefficient u_0(InitialTemperature);
+   288	   u_gf.ProjectCoefficient(u_0);
+   289	   Vector u;
+   290	   u_gf.GetTrueDofs(u);
+   291	
+   292	   // Initialize the conduction operator and the VisIt visualization.
+   293	   ConductionOperator oper(fespace, alpha, kappa, u);
+   294	   u_gf.SetFromTrueDofs(u);
+   295	   VisItDataCollection visit_dc("dump", pmesh);
+   296	   visit_dc.RegisterField("temperature", &u_gf);
+   297	   if (!noout)
+   298	   {
+   299	      visit_dc.SetCycle(0);
+   300	      visit_dc.SetTime(0.0);
+   301	      visit_dc.Save();
+   302	   }
+   303	
+   304	   // Perform time-integration
+   305	   if (myid == 0)
+   306	   {
+   307	      cout << "Integrating the ODE ..." << endl;
+   308	   }
+   309	   ode_solver->Init(oper);
+   310	   double t = 0.0;
+   311	   bool last_step = false;
+   312	   for (int ti = 1; !last_step; ti++)
+   313	   {
+   314	      if (dt > t_final - t) 
+   315	      {
+   316	         dt = t_final - t;
+   317	         arkode->SetFixedStep(dt);
+   318	      }
+   319	      ode_solver->Step(u, t, dt);
+   320	
+   321	      if (myid == 0)
+   322	      {
+   323	         cout << "step " << ti << ", t = " << t << endl;
+   324	         arkode->PrintInfo();
+   325	      }
+   326	
+   327	      u_gf.SetFromTrueDofs(u);
+   328	
+   329	      if (!noout)
+   330	      {
+   331	          visit_dc.SetCycle(ti);
+   332	          visit_dc.SetTime(t);
+   333	          visit_dc.Save();
+   334	      }
+   335	
+   336	      oper.SetParameters(u);
+   337	      last_step = (t >= t_final - 1e-8*dt);
+   338	   }
+   339	
+   340	   // Cleanup
+   341	   delete ode_solver;
+   342	   delete pmesh;
+   343	   MPI_Finalize();
+   344	
+   345	   finalize_papi();
+   346	
+   347	   return 0;
+   348	}
+   349	
+   350	ConductionOperator::ConductionOperator(ParFiniteElementSpace &f, double al,
+   351	                                       double kap, const Vector &u)
+   352	   : TimeDependentOperator(f.GetTrueVSize(), 0.0), fespace(f), M(NULL), K(NULL),
+   353	     T(NULL), current_dt(0.0),
+   354	     M_solver(f.GetComm()), T_solver(f.GetComm()), z(height)
+   355	{
+   356	   const double rel_tol = 1e-8;
+   357	
+   358	   M = new ParBilinearForm(&fespace);
+   359	   M->AddDomainIntegrator(new MassIntegrator());
+   360	   M->Assemble(0); // keep sparsity pattern of M and K the same
+   361	   M->FormSystemMatrix(ess_tdof_list, Mmat);
+   362	
+   363	   M_solver.iterative_mode = false;
+   364	   M_solver.SetRelTol(rel_tol);
+   365	   M_solver.SetAbsTol(0.0);
+   366	   M_solver.SetMaxIter(100);
+   367	   M_solver.SetPrintLevel(0);
+   368	   M_prec.SetType(HypreSmoother::Jacobi);
+   369	   M_solver.SetPreconditioner(M_prec);
+   370	   M_solver.SetOperator(Mmat);
+   371	
+   372	   alpha = al;
+   373	   kappa = kap;
+   374	
+   375	   T_solver.iterative_mode = false;
+   376	   T_solver.SetRelTol(rel_tol);
+   377	   T_solver.SetAbsTol(0.0);
+   378	   T_solver.SetMaxIter(100);
+   379	   T_solver.SetPrintLevel(0);
+   380	   T_solver.SetPreconditioner(T_prec);
+   381	
+   382	   SetParameters(u);
+   383	}
+   384	
+   385	void ConductionOperator::Mult(const Vector &u, Vector &du_dt) const
+   386	{
+   387	   // Compute:
+   388	   //    du_dt = M^{-1}*-K(u)
+   389	   // for du_dt
+   390	   Kmat.Mult(u, z);
+   391	   z.Neg(); // z = -z
+   392	   M_solver.Mult(z, du_dt);
+   393	}
+   394	
+   395	void ConductionOperator::ImplicitSolve(const double dt,
+   396	                                       const Vector &u, Vector &du_dt)
+   397	{
+   398	   // Solve the equation:
+   399	   //    du_dt = M^{-1}*[-K(u + dt*du_dt)]
+   400	   // for du_dt
+   401	   if (!T)
+   402	   {
+   403	      T = Add(1.0, Mmat, dt, Kmat);
+   404	      current_dt = dt;
+   405	      T_solver.SetOperator(*T);
+   406	   }
+   407	   MFEM_VERIFY(dt == current_dt, ""); // SDIRK methods use the same dt
+   408	   Kmat.Mult(u, z);
+   409	   z.Neg();
+   410	   T_solver.Mult(z, du_dt);
+   411	}
+   412	
+   413	void ConductionOperator::SundialsSolve(const double dt, Vector &b)
+   414	{
+   415	   // Solve the system (M + dt K) y = M b. The result y replaces the input b.
+   416	   if (!T || dt != current_dt)
+   417	   {
+   418	      delete T;
+   419	      T = Add(1.0, Mmat, dt, Kmat);
+   420	      current_dt = dt;
+   421	      T_solver.SetOperator(*T);
+   422	   }
+   423	   Mmat.Mult(b, z);
+   424	   T_solver.Mult(z, b);
+   425	}
+   426	
+   427	void ConductionOperator::SetParameters(const Vector &u)
+   428	{
+   429	   ParGridFunction u_alpha_gf(&fespace);
+   430	   u_alpha_gf.SetFromTrueDofs(u);
+   431	   for (int i = 0; i < u_alpha_gf.Size(); i++)
+   432	   {
+   433	      u_alpha_gf(i) = kappa + alpha*u_alpha_gf(i);
+   434	   }
+   435	
+   436	   delete K;
+   437	   K = new ParBilinearForm(&fespace);
+   438	
+   439	   GridFunctionCoefficient u_coeff(&u_alpha_gf);
+   440	
+   441	   K->AddDomainIntegrator(new DiffusionIntegrator(u_coeff));
+   442	   K->Assemble(0); // keep sparsity pattern of M and K the same
+   443	   K->FormSystemMatrix(ess_tdof_list, Kmat);
+   444	   delete T;
+   445	   T = NULL; // re-compute T on the next ImplicitSolve or SundialsSolve
+   446	}
+   447	
+   448	ConductionOperator::~ConductionOperator()
+   449	{
+   450	   delete T;
+   451	   delete M;
+   452	   delete K;
+   453	}
+   454	
+   455	
+   456	int SundialsJacSolver::InitSystem(void *sundials_mem)
+   457	{
+   458	   TimeDependentOperator *td_oper = GetTimeDependentOperator(sundials_mem);
+   459	
+   460	   // During development, we use dynamic_cast<> to ensure the setup is correct:
+   461	   oper = dynamic_cast<ConductionOperator*>(td_oper);
+   462	   MFEM_VERIFY(oper, "operator is not ConductionOperator");
+   463	   return 0;
+   464	}
+   465	
+   466	int SundialsJacSolver::SetupSystem(void *sundials_mem, int conv_fail,
+   467	                                   const Vector &y_pred, const Vector &f_pred,
+   468	                                   int &jac_cur, Vector &v_temp1,
+   469	                                   Vector &v_temp2, Vector &v_temp3)
+   470	{
+   471	   jac_cur = 1;
+   472	
+   473	   return 0;
+   474	}
+   475	
+   476	int SundialsJacSolver::SolveSystem(void *sundials_mem, Vector &b,
+   477	                                   const Vector &weight, const Vector &y_cur,
+   478	                                   const Vector &f_cur)
+   479	{
+   480	   oper->SundialsSolve(GetTimeStep(sundials_mem), b);
+   481	
+   482	   return 0;
+   483	}
+   484	
+   485	int SundialsJacSolver::FreeSystem(void *sundials_mem)
+   486	{
+   487	   return 0;
+   488	}
+   489	
+   490	
+   491	//This will be a "pyramid" initial temperature with 1.0 at the center
+   492	//tending to 0.0 at all the boundaries.
+   493	double InitialTemperature(const Vector &x)
+   494	{
+   495	   double max_comp_dist = 0.0;
+   496	   for (int d = 0; d < x.Size(); ++d)
+   497	   {
+   498	      double comp_dist = std::abs(x[d] - 0.5);
+   499	      if (comp_dist > max_comp_dist)
+   500	      {
+   501	         max_comp_dist = comp_dist;
+   502	      }
+   503	   }
+   504	   return 1.0 - 2.0*max_comp_dist;
+   505	}
