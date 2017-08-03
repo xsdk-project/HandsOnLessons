@@ -25,6 +25,9 @@ The application has been designed to solve a slightly more general form of the
 
 |![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%28%5Calpha%20%2B%20%5Ckappa%7Bu%7D%29%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)|(1)|
 
+
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial+u%7D%7B%5Cpartial+t%7D+-+%5Cnabla+%5Ccdot+%28%5Ckappa+%2B+u+%5Calpha%29+%5Cnabla+u+%3D+0+|(1)|
+
 where the material thermal diffusivity is given by
 ![](http://latex.codecogs.com/gif.latex?%28%5Calpha%20%2B%20%5Ckappa%7Bu%7D%29)
 which includes the same constant term ![](http://latex.codecogs.com/gif.latex?%5Calpha)
