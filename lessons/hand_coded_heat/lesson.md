@@ -1,25 +1,28 @@
 # Hand Coded 1D Heat Equation
 
+*** To reveal answers to the questions throughout this lesson, triple-click on the answer box.
+
 ## At A Glance (15 mins)
 
 ```
 Questions                 |Objectives                           |Key Points
 --------------------------|-------------------------------------|-------------------------------------
-What is a numerical alg.? |Understand performance metrics       |Numerical pkgs involve signficant
-                          |                                     |Software Quality Engineering (SQE) 
+What is a numerical alg.? |Understand performance metrics       |HPC numerical software involves complex
+                          |                                     |algorithms and data structures.
                           |                                     |
-What is discretization?   |Understand algorithmic trade-offs    |Software packages simplify dev. & use
+What is discretization?   |Understand algorithmic trade-offs    |Robust software requires significant 
+                          |                                     |software quality engineering (SQE).
                           |                                     |
-                          |                                     |
-What is stability?        |Understand value of software packages|Numerical pkgs involve complex
-                          |                                     |Data Structures.
+What is stability?        |Understand value of software packages|Numerical packages simplify app development,
+                          |                                     |provide efficient & scalable performance,
+                          |                                     |and enable app-specific customization.
 ```
 
 ## A Real-World Heat Problem
 
 In this lesson, we demonstrate the design and use of a hand-coded
-(e.g. does not use any software packages) C-language application to
-model _heat_ conduction through a wall as pictured here...
+(e.g., does not use any software packages) C-language application to
+model _heat_ conduction through a wall as pictured here ...
 
 |[<img src="simple_1d_heat.png" width="400">](simple_1d_heat.png)|[<img src="spikes_animated.gif" width="400">](spikes_animated.gif)
 
@@ -35,7 +38,7 @@ where _u_ is the temperature within the wall at spatial positions, _x_, and time
 of the material(s) comprising the wall and ![](http://latex.codecogs.com/gif.latex?%5Cnabla%5E2)
 is the [Laplace Operator](https://en.wikipedia.org/wiki/Laplace_operator).
 This equation is known as the _Diffusion Equation_ and also the
-[_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation)
+[_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation).
 
 ---
 
@@ -46,7 +49,7 @@ To make the problem tractible for this lesson, we make some simplifying assumpti
 1. The thermal diffusivity, ![](http://latex.codecogs.com/gif.latex?%5Calpha),
    is constant for all _space_ and _time_.
 1. The only heat _source_ is from the initial and/or boundary conditions.
-1. We will deal only with the _one dimensional_ problem in _cartesian coordinates_.
+1. We will deal only with the _one dimensional_ problem in _Cartesian coordinates_.
 
 In this case, the PDE we need to develop an application to solve simplifies to...
 
@@ -61,7 +64,7 @@ such as...
 
 1. Will the temperature at _x=A_ exceed a given value?
 1. How does the maximum temperature in the wall change with time?
-1. What time will temperature fluxuations of frequency, _f_ fall below threshold?
+1. At what time will temperature fluxuations of frequency, _f_ fall below a threshold?
 
 To answer questions such as these, the application needs to be designed so that it can
 properly model _time varying_ or _transient_ behavior of heat conduction and not just
@@ -84,8 +87,8 @@ properly model _time varying_ or _transient_ behavior of heat conduction and not
 
 ### FTCS Discretization
 
-Consider discretizing, independently, the left and right hand sides of
-equation 2. For the left hand side, we can approximate the first derivative
+Consider discretizing, independently, the left- and right-hand sides of
+equation 2. For the left-hand side, we can approximate the first derivative
 of _u_ with respect to time, _t_, by the equation...
 
 |![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%5CBigr%7C_%7Bt_%7Bk%2B1%7D%7D%20%5Capprox%20%5Cfrac%7Bu_i%5E%7Bk%2B1%7D-u_i%5Ek%7D%7B%5CDelta%20t%7D)|(3)|
@@ -102,9 +105,9 @@ the next time, _k+1_, from temperatures at the current time, _k_, as
 |![](http://latex.codecogs.com/gif.latex?u_i%5E%7Bk%2B1%7D%20%3D%20ru_%7Bi%2B1%7D%5Ek%2B%281-2r%29u_i%5Ek%2Bru_%7Bi-1%7D%5Ek)|(6)|
 
 where ![](http://latex.codecogs.com/gif.latex?r%3D%5Calpha%5Cfrac%7B%5CDelta%20t%7D%7B%5CDelta%20x%5E2%7D)
-Note that all the values on the left hand side of equation 6 are for time, _k-1_, the
+Note that all the values on the left-hand side of equation 6 are for time, _k-1_, the
 solution from a _previously known_ time-step. Such a method is known as an _explicit_
-numerical method. Explicit methods have some nice properties
+numerical method. Explicit methods have some nice properties:
 
 * They are easy to implement.
 * They typically require minimal memory.
@@ -162,12 +165,12 @@ Examples...
 
 ### Run 1
 
-Lets use this method to model the time-evolution of heat from the initial
+Let's use this method to model the time evolution of heat from the initial
 condition pictured here...
 
 |[<img src="spikes0000.png" width="400">](spikes0000.png)|
 
-out to a maximum time of 2 seconds.
+to a maximum time of 2 seconds.
 
 ```
 make basic_spikes
@@ -201,24 +204,23 @@ metrics to other runs later.
 
 > **Are the results correct? How would we assess that?**
 
-|<font color="white">Writing custom code often also requires additional work to vett the results obained whereas relying upon mature community adopted software packages often means results those packages produce have already been well vetted in many regimes of interest.</font>|
+|<font color="white">Writing custom code often also requires additional work to vett the results obained, whereas relying upon mature community adopted software packages often means results those packages produce have already been well vetted in many regimes of interest.</font>|
 
-> **Will I get the same results on other platforms, compilers, math libraries? Is
-the code we've written portable enough to even support that?**
+> **Will I get the same results when using other computing platforms and compilers? Is the code we've written portable enough even to support that?**
 
-|<font color="white">Maybe. In this overly simplified 500-line exmaple program, its concievable we can get numerically identical results on numerous different platforms, compilers and math libraries. However, imagine trying to do that with applications requiring highly sophisticated numerical algorithms and involvin hundreds of thousands of lines of code. The advantage of using matture numerical packages is that many of these details have already been solved for you.</font>|
+|<font color="white">Maybe. In this overly simplified 500-line example program, it's conceivable that we could get numerically identical results when using numerous different platforms and compilers. However, imagine trying to do that with applications requiring highly sophisticated numerical algorithms and involving hundreds of thousands of lines of code, running on high-performance machines where we must also explicitly consider parallelism and architectural heterogeneity.  A key advantage of using mature numerical packages is that many of these details have already been addressed people who have deep expertise with high-performance algorithms and software.</font>|
 
 ---
 
 ### Run 2
 
-Now, suppose the science question(s) we need to answer requires that we do
+Now, suppose the science questions we need to answer require that we do
 a better job _resolving_ the _transient_ local temperature _minimum_ that
-occurs at early time around _x=0.6_ as shown below from time 0.1 seconds.
+occurs at early time around _x=0.6_, as shown below from time 0.1 seconds.
 
 |[<img src="spikes0001.png" width="400">](spikes0001.png)|
 
-To do this, we can try to increase the spatial resolution. Lets try dx=0.01.
+To do this, we can try to increase the spatial resolution. Lets try _dx_=0.01.
 
 ```
 [mcmiller@cooleylogin2 ~/tmp]$ make hr_spikes
@@ -262,9 +264,9 @@ Note the Y-axis range in these two plots. It gets out of control!
 
 The [FTCS](https://en.wikipedia.org/wiki/FTCS_scheme) algorithm
 is known to be stable only for values of _r_ in equation 6 less than
-or equal to 1/2. Given a spatial resolution, _dx_, of _0.01_, this
-means our time-step size now needs to be less than or equal to 0.00025.
-Lets run with a value of _dt_ of 0.0001.
+or equal to 1/2. Given a spatial resolution, _dx_=0.01, this
+means our timestep size now needs to be less than or equal to 0.00025.
+Lets run with a value of _dt_=0.0001.
 
 ```
 $ make hr_spikes_smalldt
@@ -313,7 +315,7 @@ Memory used        = 1636 bytes
 
 |<font color="white">18165900 on this more finely resolved mesh vs. 50310 on the coarse mesh. Thats 361x more flops!</font>|
 
-> **The solution changes vary slowly at late time. Do we need to use the same small timestep for all iterations?**
+> **The solution changes very slowly at late time. Do we need to use the same small timestep for all iterations?**
 
 |<font color="white">Not necessarily. But, how would you go about changing our application so that it could robustly adapt the timestep to changing conditions of the solution?<font>|
 
@@ -474,11 +476,56 @@ Memory used        = 4067 bytes
 
 > **Is this algorithm _better_ than FTCS?**
 
-|<font color="white">It depends on what science you are trying to achieve. Here, we are trying to resolve some fine spatial phenomena which required such a small timestep, the FTCS algorithm really had to work hard and the Crank-Nicolson algorithm provides numerically higher quality results in fewer flops. On the other hand, this comes at greater memory usage and greater complexity in implementation.</font>|
+|<font color="white">It depends on what science you are trying to achieve. Here, we are trying to resolve some fine spatial phenomena requiring such a small timestep that the FTCS algorithm really has to work hard, while the Crank-Nicolson algorithm provides numerically higher quality results in fewer flops. On the other hand, the Crank-Nicolson approach requires greater memory usage and greater complexity in implementation.</font>|
 
 > **How would you parallelize this algorithm...with threads, with MPI, with Cuda/GPU?**
 
 |<font color="white">You need to break the tri-diagonal matrix into blocks on each processing element and exchange data between blocks. But, what if the matrix was not tri-diagonal?</font>|
+
+## Why Use Numerical Software Packages Instead of Hand-Coding?
+
+What if we want to plan the development of our application so we can easily enhance it later
+to support more complex situations such as...
+
+  * More than just one spatial dimension
+  * Coordinate systems other than just Cartesian
+  * Heat _sources_
+  * More complex materials
+    * A laminated material where each laminant has a different thermal diffusivity
+    * A material where thermal diffusivity is _nonisotropic_ (e.g. different for
+      different directions of heat _flow_).
+    * A material where thermal diffusivity may vary with either space, _x_,
+      or event time, _t_.
+    * A material where thermal diffusivity may vary with temperature, _u_,
+      introducing _non-linearities_ and the need for non-linear solvers.
+  * More complex domains
+    * Much larger objects involving billions of discretization points and
+      requiring _scalability_ in all phases of the solution.
+    * Features with highly variable spatial resolutions requiring unstructured
+      and/or adaptive meshing.
+  * Parallelism and complex computational settings on high-performance architectures
+    * MPI+X
+    * GPU
+    * ARM
+    * Various parallel runtimes
+  * Other aspects of modeling, simulation, and analytics
+    * Alternative models and domain-specific science details
+    * Multiphysics, multiscale, multidomain, multiresolution
+    * Work toward predictive simulation, optimization, and design
+  * More agile and sustainable software, addressing
+    * Understandability of code, with encapsulation of complexities 
+    * Robustness, efficiency, scalability, portability, reproducibility
+    * Ease of debugging
+    * Thorough testing
+    * Extensibility to exploit application-specific knowledge
+    * Interoperability with complementary software 
+ 
+Addressing these issues for large-scale simulations in science and engineering is 
+one of the key values of _numerical packages_.  Many of the details of these
+issues have been resolved and _vetted_ within the scientific computing community
+within widely used software packages. Numerical packages can help to simplify the development of
+highly sophisticated scientific computing applications and provide a much more solid,
+flexible, and sustainable foundation than custom code.
 
 ## Out-Brief
 
@@ -488,46 +535,14 @@ developed two different numerical schemes, FTCS and Crank-Nicolson.
 The FTCS scheme is an _explicit_ scheme whereas Crank-Nicolson is
 an _implicit_ scheme. We demonstrated some of the attributes of these
 methods such as relative implementation complexity, memory usage, flop
-counts and stability. There are numerous other attributes of numerical
-algorithms which will be introduced and discussed in later lessons.
+counts, and stability.  Numerous other attributes of numerical
+algorithms will be introduced and discussed in later lessons.
 
-We have explained some of the draw-backs in developing custom solutions
-as well as some of the advantages in using community adopted numerical
-packages for application development. In particular, what if we want to
-plan the development of our application so we can easily enhance it, later,
-to support more complex situations such as...
+We have explained some of the drawbacks of developing custom solutions
+as well as some of the advantages of using community adopted numerical
+packages for application development. 
 
-  * More than just one spatial dimension
-  * Coordinate systems other than just cartesian
-  * Heat _sources_
-  * More complex materials
-    * A laminated material where each laminant has a different thermal diffusivity
-    * A material where thermal diffusivity is _iso-tropic_ (e.g. different for
-      different directions of heat _flow_).
-    * A material where thermal diffusivity may vary with either space, _x_,
-      or event time, _t_.
-    * A material where thermal diffusivity may vary with temperature, _u_,
-      introducing _non-linearities_ and the need for non-linear solvers.
-  * More complex objects
-    * Much larger objects involving billions of discretization points and
-      requiring _scalability_ in all phases of the solution.
-    * Features with highly variable spatial resolutions requiring unstructured
-      and/or adaptive meshing.
-  * More complex computational settings
-    * MPI+X
-    * GPU
-    * ARM
-    * Various parallel runtimes
-  * More Agile/Sustainable Software Implementation
-    * debuggability, extensibility, portability, scalability, securability, testability and understandability
-
-Addressing these issues one of the key values of _numerical packages_. Many of the details of these
-issues have been resolved and _vetted_ within the scientific computing community
-within these pacakges. Numerical packages can help to simplify the development of
-highly sophisticated scientific computing applications and provide a much more solid,
-flexible and sustainable foundation than custom code.
-
-The remainder of the lessons will
+The remainder of the lessons 
 focus on the use of various software packages in the solution of ever
 more complex settings involving the heat equation.
 
@@ -539,12 +554,12 @@ Code development can get quite complex very quickly.
 
 ## Further Reading
 
-Apart from time and space performance, _stability_ there are many other issues
-to be concnerned with on numerical algorithms. One issue we don't touch on here is _accuracy_.
-Another is making time-step automatically vary based on how the computation is proceeding.
+Apart from time and space performance and _stability_, there are many other issues
+required for effective numerical algorithms. One issue we don't touch on here is _accuracy_.
+Another is making timestep automatically vary based on how the computation is proceeding.
 
 Heat [conduction](https://en.wikipedia.org/wiki/Thermal_conduction) in this simple
-one dimensional, cartesian coordinate  case is goverened by the partial differential
+one dimensional, Cartesian coordinate  case is goverened by the partial differential
 equation (PDE)...
 
 ![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)
@@ -565,15 +580,15 @@ This equation is known as the _Diffusion Equation_ and also the
 
 In some cases, the only solution we may care about is the _steady state_ solution.
 That is the solution for ![](http://latex.codecogs.com/gif.latex?t%5Cgg0), after a _long, long_ time,
-where whatever the initial condition may have been, it's transient effects have died out and all
-that is left are the effects due to the constant temperature boundary conditions.
+where whatever the initial condition may have been, its transient effects have died out and all
+that remains are the effects due to constant temperature boundary conditions.
 In other cases, we may care about how the temperature varies with time either at a given
 point in the wall or throughout the entire width of the wall.
 
 ### Analytic Solutions
 
-In some cases, it is possible to define the problem such that there exist an
-_analytic_ solution either for a given time or for all time. That is, an
+In some cases, it is possible to define the problem such that an
+_analytic_ solution exists either for a given time or for all time. That is, an
 _exact_ solution that can be written down as a mathematical formula.
 These cases are attractive because they allow us to assess the accuracy of
 our implementation of any numerical algorithm. 
@@ -595,12 +610,15 @@ a simple linear interpolation between temperature values at the ends...
 
 ![](http://latex.codecogs.com/gif.latex?u%28x%2Ct%29%20%3D%20x%7Bbc0%7D%2B%281-x%29%7Bbc1%7D%2C%20t%5Cgg0)
 
-### CPDS-Heat
+### Simple Examples
 
+The following explain some basics related to the heat equation but do not address the complexities needed for high-performance numerical software. 
+
+#### CPDS-Heat
 [There is a GitHub site which appears to have custom codes for solving 1D/2D heat
 equation with a variety of algorithms and with MPI, OpenMP and Cuda](https://github.com/joaomlneto/cpds-heat)
 
-### Solving One-Dimensional PDEs with Microsoft Excel
+#### Solving One-Dimensional PDEs with Microsoft Excel
 
 [Microsoft Excel can be used as a powerful way to play with and visualize
 results from _explicit_ numerical algorithms.](http://www.math.ubc.ca/~costanza/HeatEqTutorial.html)
