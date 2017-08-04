@@ -5,9 +5,14 @@
 ```
 Questions                 |Objectives                           |Key Points
 --------------------------|-------------------------------------|-------------------------------------
-What is a numerical alg.? |Understand performance metrics       |Numerical algs. involve signficant SQE
+What is a numerical alg.? |Understand performance metrics       |Numerical pkgs involve signficant
+                          |                                     |Software Quality Engineering (SQE) 
+                          |                                     |
 What is discretization?   |Understand algorithmic trade-offs    |Software packages simplify dev. & use
-What is stability?        |Understand value of software packages|
+                          |                                     |
+                          |                                     |
+What is stability?        |Understand value of software packages|Numerical pkgs involve complex
+                          |                                     |Data Structures.
 ```
 
 ## A Real-World Heat Problem
