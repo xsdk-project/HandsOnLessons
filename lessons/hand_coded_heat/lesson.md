@@ -1,7 +1,5 @@
 # Hand Coded 1D Heat Equation
 
-*** To reveal answers to the questions throughout this lesson, triple-click on the answer box.
-
 ## At A Glance (15 mins)
 
 ```
@@ -202,11 +200,11 @@ Memory used        = 194 bytes
 Take note of number of flops and memory used so we can compare these
 metrics to other runs later.
 
-> **Are the results correct? How would we assess that?**
+> **Are the results correct? How would we assess that?** (triple-click in box below to reveal answer)
 
 |<font color="white">Writing custom code often also requires additional work to vett the results obained, whereas relying upon mature community adopted software packages often means results those packages produce have already been well vetted in many regimes of interest.</font>|
 
-> **Will I get the same results when using other computing platforms and compilers? Is the code we've written portable enough even to support that?**
+> **Will I get the same results when using other computing platforms and compilers? Is the code we've written portable enough even to support that?** (triple-click in box below to reveal answer)
 
 |<font color="white">Maybe. In this overly simplified 500-line example program, it's conceivable that we could get numerically identical results when using numerous different platforms and compilers. However, imagine trying to do that with applications requiring highly sophisticated numerical algorithms and involving hundreds of thousands of lines of code, running on high-performance machines where we must also explicitly consider parallelism and architectural heterogeneity.  A key advantage of using mature numerical packages is that many of these details have already been addressed people who have deep expertise with high-performance algorithms and software.</font>|
 
@@ -250,11 +248,11 @@ Memory used        = 1636 bytes
 
 Note the Y-axis range in these two plots. It gets out of control!
 
-> **What do you think happened?**
+> **What do you think happened?** (triple-click in box below to reveal answer)
 
 |<font color="white">This goes back to our original design choice in the method of discretization.  That choice may not be appropriate for all of the science questions we want our application to be able to answer. In particular, the FTCS algorithm is known to have stability issues for certain combinations dt and dx.</font>|
 
-> **What can we do to correct for the instability?**
+> **What can we do to correct for the instability?** (triple-click in box below to reveal answer)
 
 |<font color="white">We can naively correct for this by shrinking the time-step.</font>|
 
@@ -303,23 +301,23 @@ Memory used        = 1636 bytes
 
 |[<img src="hr_spikes_smalldt0000.png" width="300">](hr_spikes_smalldt0000.png)|[<img src="hr_spikes_smalldt0001.png" width="300">](hr_spikes_smalldt0001.png)|[<img src="hr_spikes_smalldt0002.png" width="300">](hr_spikes_smalldt0002.png)
 
-> **Where do you estimate the local minimum occurs?**
+> **Where do you estimate the local minimum occurs?** (triple-click in box below to reveal answer)
 
 |<font color="white">It appears to occur between 0.56 and 0.57.</font>|
 
-> **Why did this run use more memory?**
+> **Why did this run use more memory?** (triple-click in box below to reveal answer)
 
 |<font color="white">It is a more finely resolved mesh.</font>|
 
-> **How many more flops were required?**
+> **How many more flops were required?** (triple-click in box below to reveal answer)
 
 |<font color="white">18165900 on this more finely resolved mesh vs. 50310 on the coarse mesh. Thats 361x more flops!</font>|
 
-> **The solution changes very slowly at late time. Do we need to use the same small timestep for all iterations?**
+> **The solution changes very slowly at late time. Do we need to use the same small timestep for all iterations?** (triple-click in box below to reveal answer)
 
 |<font color="white">Not necessarily. But, how would you go about changing our application so that it could robustly adapt the timestep to changing conditions of the solution?<font>|
 
-> **Can we achieve solution of similar quality with fewer flops?**
+> **Can we achieve solution of similar quality with fewer flops?** (triple-click in box below to reveal answer)
 
 |<font color="white">Maybe. But, we probably need to consider a different discretization. Do we really want to have to support multiple different numerical methods in our application? Yet another advantage of using community adopted numerical packages is that such packages often provide a great deal of flexibility in choice of algorithm.</font>|
 
@@ -470,15 +468,15 @@ Floating point ops = 303790
 Memory used        = 4067 bytes
 ```
 
-> **Why do these runs with Crank-Nicolson use more memory?**
+> **Why do these runs with Crank-Nicolson use more memory?** (triple-click in box below to reveal answer)
 
 |<font color="white">This is the memory required to store a banded matrix for the implicit solve. It is about 3x as much memory (for main diagonal and two sub-diagonals) over the FTCS method.</font>|
 
-> **Is this algorithm _better_ than FTCS?**
+> **Is this algorithm _better_ than FTCS?** (triple-click in box below to reveal answer)
 
 |<font color="white">It depends on what science you are trying to achieve. Here, we are trying to resolve some fine spatial phenomena requiring such a small timestep that the FTCS algorithm really has to work hard, while the Crank-Nicolson algorithm provides numerically higher quality results in fewer flops. On the other hand, the Crank-Nicolson approach requires greater memory usage and greater complexity in implementation.</font>|
 
-> **How would you parallelize this algorithm...with threads, with MPI, with Cuda/GPU?**
+> **How would you parallelize this algorithm...with threads, with MPI, with Cuda/GPU?** (triple-click in box below to reveal answer)
 
 |<font color="white">You need to break the tri-diagonal matrix into blocks on each processing element and exchange data between blocks. But, what if the matrix was not tri-diagonal?</font>|
 
