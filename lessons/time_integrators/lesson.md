@@ -14,7 +14,7 @@ Question 3?                   |Objective 3                     |Key Point 3
 
 The example application here, [transient-heat.cpp](transient-heat.cpp.numbered.txt),
 uses MFEM and the ARKode package from SUNDIALS as a vehicle to demonstrate the use of the
-[SUNDIALS](https://computation.llnl.gov/projects/sundials) package
+[SUNDIALS](https://computation.llnl.gov/projects/sundials) suite
 in both serial and parallel for more robust and flexible control over _time integration_
 (e.g. discretization in time) of PDEs.
 
@@ -40,7 +40,7 @@ pictured in Figure 1.
 |:---:|:---:|
 |[<img src="mfem_sundials_explicit0000.png" width="400">](mfem_sundials_explicit0000.png)|[<img src="pyramid_animated.gif" width="400">](pyramid_animated.gif)|
 
-The main loop of This application is shown here...
+The main loop of this application is shown here...
 
 ```c++
 304    // Perform time-integration
