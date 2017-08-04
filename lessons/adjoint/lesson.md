@@ -5,17 +5,19 @@
 ```
 Questions                  |Objectives                    |Key Points
 ---------------------------|------------------------------|-------------------------------------
-How to compute gradients   |Know the techniques and       |Adjoint enables dynamic
-for simulations?           |software packages             |constrained optimization
-Why use an adjoint solver? |Understand ingredients needed |Jacobian is imperative
+How can gradients be       |Know the techniques and       |Adjoint enables dynamic
+computed for simulations?  |software packages             |constrained optimization.
+                           |                              |
+Why use an adjoint solver? |Understand ingredients needed |Jacobian is imperative.
                            |for adjoint calculation       |
+                           |                              |
 How difficult is it to use |Understand the concern of     |Performance may depend on
-the adjoint capability?    |checkpointing                 |checkpointing at large scale
+the adjoint capability?    |checkpointing                 |checkpointing at large scale.
 ```
 
 ## Example 1: Generator Stability Analysis:
 
-This code demonstrates how to solve an ODE-constrained optimization problem with TAO, TSEvent, TSAdjoint and TS.
+This code demonstrates how to solve an ODE-constrained optimization problem with the Toolkit for Advanced Optimization (TAO), TSEvent, TSAdjoint and TS.
 The objective is to maximize the mechanical power input subject to the generator swing equations and a constraint on the maximum rotor angle deviation, which is reformulated as a minimization problem
 
 ![equation](http://latex.codecogs.com/gif.latex?%5Cbegin%7Balign%2A%7D%0D%0A%20%20%5Cmin%20%26%20%5C%7B-P_m%20%2B%20%5Csigma%5Cdisplaystyle%20%5Cint_%7Bt_0%7D%5E%7Bt_F%7D%20%5Cmax%5Cleft%280%2C%20%5Ctheta%20-%20%5Ctheta_%7Bmax%7D%5Cright%29%5E%5Ceta%20%5C%20%5Cmathrm%7Bd%7Dt%20%5C%7D%5C%5C%0D%0A%20%20%5Cnonumber%20%7E%7E%20%5Ctext%7Bs.t.%7D%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Ctheta%7D%7Bdt%7D%20%3D%20%5Comega_B%5Cleft%28%5Comega%20-%20%5Comega_s%5Cright%29%20%5C%5C%0D%0A%20%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Comega%7D%7Bdt%7D%20%3D%20%5Cfrac%7B%5Comega_s%7D%7B2H%7D%5Cleft%28P_m%20-%20P_%7Bmax%7D%5Csin%28%5Ctheta%29%20-%20D%28%5Comega%20-%20%5Comega_s%29%5Cright%29%0D%0A%5Cend%7Balign%2A%7D)
@@ -25,13 +27,13 @@ The objective function contains an integral function.
 The gradient is computed with the discrete adjoint of an implicit time stepping method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)).
 
 ### Compile the code
-You do not need to do this since the binaries are available under the ATPESC project folder on cooley. In case that you are using your own copy of PETSc, this example is in src/ts/examples/power_grid/. To compile, run the following in the source folder
+During ATPESC, participants do not need to compile code because binaries are available in the ATPESC project folder on Cooley. In case you are using your own copy of PETSc, this example is located in `src/ts/examples/power_grid/`. To compile, run the following in the source folder
 ```
 make ex3opt
 ```
 
 ### Command line options
-You can find out the command line options that this particular example can use by doing
+You can determine the command line options available for this particular example by doing
 ```
 ./ex3opt -help
 ```
@@ -68,25 +70,25 @@ type: seq
 1.00793
 ```
 #### Questions
->** Exam the source code ex3opt.c(./ex3opt.c) and find out the callback functions needed by TAO, TS, and TSAdjoint respectively. **
+>** Examine the source code ex3opt.c(./ex3opt.c) and find the callback functions needed by TAO, TS, and TSAdjoint respectively. **
 
 
 ### Further information
 
-A more complicated example for power grid application is in src/ts/examples/power_grid/stability_9bus/ex9busopt.c.
+A more complicated example for power grid application is in `src/ts/examples/power_grid/stability_9bus/ex9busopt.c`.
 
 
 ## Example 2: Hybrid dynamical system:
 
-This code demonstrates how to compute the adjoint sensitivity for a complex dynamical system involving discontinuities with TSEvent, TSAdjoint and TS. The dynamics is described by the ODE
+This code demonstrates how to compute the adjoint sensitivity for a complex dynamical system involving discontinuities with TSEvent, TSAdjoint and TS. The dynamics are described by the ODE
 
-![equation](http://latex.codecogs.com/gif.latex?%5Cdot%7Bx%7D%20%3D%20A_i%20x.)
+![equation](http://latex.codecogs.com/gif.latex?%5Cdot%7Bx%7D%20%3D%20A_i%20x.),
 
-where ![equation](http://latex.codecogs.com/gif.latex?x%20%3D%20%5Bx_1%2C%20x_2%5D%5ET) and the matrix A changes from
+where ![equation](http://latex.codecogs.com/gif.latex?x%20%3D%20%5Bx_1%2C%20x_2%5D%5ET) and the matrix A change from
 
 ![equation](http://latex.codecogs.com/gif.latex?A_1%20%3D%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bc%20c%7D1%20%26-100%5C%5C%2010%20%261%20%5Cend%7Barray%7D%0D%0A%5Cright%5D%0D%0A%5Cquad%20%5Ctext%7Bto%7D%20%5Cquad%0D%0AA_2%20%3D%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bc%20c%7D1%20%2610%5C%5C%20-100%20%261%20%5Cend%7Barray%7D%0D%0A%5Cright%5D)
 
- when ![equation](http://latex.codecogs.com/gif.latex?%24x_2%3D2.75%20x_1%24) and switch back  when ![equation](http://latex.codecogs.com/gif.latex?%24x_2%3D0.365%20x_1%24)
+ when ![equation](http://latex.codecogs.com/gif.latex?%24x_2%3D2.75%20x_1%24) and switch back  when ![equation](http://latex.codecogs.com/gif.latex?%24x_2%3D0.365%20x_1%24).
 
 Thus the ODE system alternates the right-hand side when a switching face is encountered. The switching surfaces are given by the algebraic constraints depending on the state variables, as shown below (left)
 
@@ -116,7 +118,7 @@ make ex1adj
 ```
 ./ex1adj -ts_monitor
 ```
-Trailing (r) in some lines of the output indicates that a rollback happens. In this example, it is triggered by TSEvent. To check the details about the event, we can use the event monitor
+Trailing (r) in some lines of the output indicates that a rollback happens. In this example, it is triggered by `TSEvent`. To check  details about the event, we can use the event monitor
 ```
 ./ex1adj -ts_monitor -ts_event_monitor
 ```
@@ -127,13 +129,13 @@ We can also monitor the timestepping for the adjoint calculation by doing
 
 ### Further information
 
-ex3fwd.c in the same folder illustrates the forward sensitivity approach for the same problem.
+The example `ex3fwd.c` in the same folder illustrates the forward sensitivity approach for the same problem.
 
 
 ## Example 3: Diffusion-reaction problem
 
-This code demonstrates parallel adjoint calculation for a system of time-dependent PDE on a 2D rectangular grid.
-We only need to write the right-hand-side function and the Jacobian and compile the code once. All the tasks in the following can be accomplished just using command line options.
+This code demonstrates parallel adjoint calculation for a system of time-dependent PDEs on a 2D rectangular grid.
+We need only to write the right-hand-side function and the Jacobian and compile the code once. All the tasks in the following can be accomplished using command line options.
 
 ### Run 1: Monitor solution graphically
 
@@ -142,13 +144,13 @@ mpirun -n 4 ./ex5adj -forwardonly -implicitform 0 -ts_type rk \
                      -ts_monitor -ts_monitor_draw_solution
 ```
 
-* -forwardonly perform the forward simulation without doing adjoint
-* -implicitform 0 -ts_type rk changes the time stepping algorithm to a Runge-Kutta method
-* -ts_monitor_draw_solution monitors the progress for the solution at each time step
-* Add -draw_pause -2 if you want to pause at the end of simulation to see the plot
+* `-forwardonly` perform the forward simulation without doing adjoint
+* `-implicitform 0 -ts_type rk` changes the time stepping algorithm to a Runge-Kutta method
+* `-ts_monitor_draw_solution` monitors the progress for the solution at each time step
+* Add `-draw_pause -2` if you want to pause at the end of simulation to see the plot
 
 ### Run 2: Optimal checkpointing schedule
-By default, the checkpoints are stored into binary files on disk. Of course, this may not be a good choice for large scale applications running on big machines where I/O cost is significant. We can make the solver use RAM for checkpointing and specify the maximum allowable checkpoints so that an optimal adjoint checkpointing schedule that minimizes the number of recomputations will be generated.
+By default, the checkpoints are stored in binary files on disk. Of course, this may not be a good choice for large-scale applications running on high-performance machines where I/O cost is significant. We can make the solver use RAM for checkpointing and specify the maximum allowable checkpoints so that an optimal adjoint checkpointing schedule that minimizes the number of recomputations will be generated.
 
 ```
 mpirun -n 4 ./ex5adj -implicitform 0 -ts_type rk -ts_adapt_type none \
@@ -156,28 +158,28 @@ mpirun -n 4 ./ex5adj -implicitform 0 -ts_type rk -ts_adapt_type none \
                      -ts_trajectory_type memory -ts_trajectory_max_cps_ram 3 \
                      -ts_trajectory_monitor -ts_trajectory_view  
 ```
-The output corresponds to the schedule depicted by the following diagram.
+The output corresponds to the schedule depicted by the following diagram:
 
 <img src="chkpt.png" width="800">
 
 #### Questions
-> **What will happen if we add the option -ts_trajectory_max_cps_disk 2 to specify there are two available slots for disk checkpoints?**
+> **What will happen if we add the option `-ts_trajectory_max_cps_disk 2` to specify there are two available slots for disk checkpoints?**
 
 
 ### Run 3: Implicit time integration method
-Now we switch to implicit method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)) using fixed stepsize, which is the default setting in the code. At each time step, a nonlinear system is solved by the PETSc nonlinear solver SNES.
+Now we switch to implicit method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)) using fixed stepsize, which is the default setting in the code. At each time step, a nonlinear system is solved by the PETSc nonlinear solver `SNES`.
 ```
 mpirun -n 32 ./ex5adj -da_grid_x 1024 -da_grid_y 1024 -ts_max_steps 10 -snes_monitor -log_view
 ```
-* -snes_monitor shows the progress of SNES
-* -log_view prints a summary of the logging
+* `-snes_monitor` shows the progress of `SNES`
+* `-log_view` prints a summary of the logging
 
 #### Questions
-> **What is the majority of CPU time spent on?**
+> **Where is the majority of CPU time spent?**
 
 > **How expensive is it to do an adjoint step?**
 
-> **How can we improve the performance?**
+> **How can we improve performance?**
 
 ## Out-Brief
 
