@@ -20,12 +20,12 @@ The objective is to maximize the mechanical power input subject to the generator
 
 ![equation](http://latex.codecogs.com/gif.latex?%5Cbegin%7Balign%2A%7D%0D%0A%20%20%5Cmin%20%26%20%5C%7B-P_m%20%2B%20%5Csigma%5Cdisplaystyle%20%5Cint_%7Bt_0%7D%5E%7Bt_F%7D%20%5Cmax%5Cleft%280%2C%20%5Ctheta%20-%20%5Ctheta_%7Bmax%7D%5Cright%29%5E%5Ceta%20%5C%20%5Cmathrm%7Bd%7Dt%20%5C%7D%5C%5C%0D%0A%20%20%5Cnonumber%20%7E%7E%20%5Ctext%7Bs.t.%7D%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Ctheta%7D%7Bdt%7D%20%3D%20%5Comega_B%5Cleft%28%5Comega%20-%20%5Comega_s%5Cright%29%20%5C%5C%0D%0A%20%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Comega%7D%7Bdt%7D%20%3D%20%5Cfrac%7B%5Comega_s%7D%7B2H%7D%5Cleft%28P_m%20-%20P_%7Bmax%7D%5Csin%28%5Ctheta%29%20-%20D%28%5Comega%20-%20%5Comega_s%29%5Cright%29%0D%0A%5Cend%7Balign%2A%7D)
 
-Disturbance (a fault) is applied at time 0.1 and cleared at time 0.2.
+Disturbance (a fault) is applied to the generator at time 0.1 and cleared at time 0.2.
 The objective function contains an integral function.
-The gradient is computed with the discrete adjoint of an implicit theta method,
+The gradient is computed with the discrete adjoint of an implicit time stepping method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)).
 
 ### Compile the code
-This example is in src/ts/examples/power_grid. To compile, run the following in the source folder
+You do not need to do this since the binaries are available under the ATPESC project folder on cooley. In case that you are using your own copy of PETSc, this example is in src/ts/examples/power_grid/. To compile, run the following in the source folder
 ```
 make ex3opt
 ```
@@ -38,7 +38,7 @@ You can find out the command line options that this particular example can use b
 and show the options related to TAO only by doing
 ./ex3opt -help | grep tao
 
-### Run 1:
+### Run 1: monitor the optimization progress
 
 ```
 ./ex3opt -tao_monitor -tao_view
@@ -68,6 +68,9 @@ type: seq
 1.00793
 ```
 
+>** Exam the source code ex3opt.c(./ex3opt.c) and find out the callback functions needed by TAO, TS, and TSAdjoint respectively. **
+
+
 ### Further information
 
 A more complicated example for power grid application is in src/ts/examples/power_grid/stability_9bus/ex9busopt.c.
@@ -75,8 +78,17 @@ A more complicated example for power grid application is in src/ts/examples/powe
 
 ## Example 2: a hybrid dynamical system:
 
-This code demonstrates how to compute the adjoint sensitivity for a complex dynamical system involving discontinuities with TSEvent, TSAdjoint and TS.
-The ODE system alternates the right-hand side when a switching face is encountered. The switching surfaces are given by the algebraic constraints depending on the state variables, as shown below (left)
+This code demonstrates how to compute the adjoint sensitivity for a complex dynamical system involving discontinuities with TSEvent, TSAdjoint and TS. The dynamics is described by the ODE
+
+![equation](http://latex.codecogs.com/gif.latex?%5Cdot%7Bx%7D%20%3D%20A_i%20x.)
+
+where ![equation](http://latex.codecogs.com/gif.latex?x%20%3D%20%5Bx_1%2C%20x_2%5D%5ET) and the matrix A changes from
+
+![equation](http://latex.codecogs.com/gif.latex?A_1%20%3D%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bc%20c%7D1%20%26-100%5C%5C%2010%20%261%20%5Cend%7Barray%7D%0D%0A%5Cright%5D%0D%0A%5Cquad%20%5Ctext%7Bto%7D%20%5Cquad%0D%0AA_2%20%3D%20%5Cleft%5B%20%5Cbegin%7Barray%7D%7Bc%20c%7D1%20%2610%5C%5C%20-100%20%261%20%5Cend%7Barray%7D%0D%0A%5Cright%5D)
+
+ when ![equation](http://latex.codecogs.com/gif.latex?%24x_2%3D2.75%20x_1%24) and switch back  when ![equation](http://latex.codecogs.com/gif.latex?%24x_2%3D0.365%20x_1%24)
+
+Thus the ODE system alternates the right-hand side when a switching face is encountered. The switching surfaces are given by the algebraic constraints depending on the state variables, as shown below (left)
 
 
 <img src="ex1.png" width="400"><img src="ex1adj.png" width="400">
@@ -94,18 +106,18 @@ make ex1adj
 
 ```
 
-### Run 1 monitor solution graphically with phase diagram
+### Run 1: monitor solution graphically with phase diagram
 
 ```
 ./ex1adj -ts_monitor_draw_solution_phase -4,-2,2,2 -draw_pause -2
 ```
 
-### Run 2 monitor the timestepping process
+### Run 2: monitor the timestepping process
 
 ```
 ./ex1adj -ts_monitor
 ```
-Trailing (r) indicates that a rollback happens. In this example, it is triggered by TSEvent. To check the details about the event, we use the event monitor  
+Trailing (r) in some lines of the output indicates that a rollback happens. In this example, it is triggered by TSEvent. To check the details about the event, we can use the event monitor
 ```
 ./ex1adj -ts_monitor -ts_event_monitor
 ```
@@ -114,11 +126,15 @@ We can also monitor the timestepping for the adjoint calculation by doing
 ./ex1adj -ts_monitor -ts_adjoint_monitor
 ```
 
+### Further information
+
+ex3fwd.c in the same folder illustrates the forward sensitivity approach for the same problem.
+
 
 ## Example 3: diffusion-reaction problem
 
 This code demonstrates parallel adjoint calculation for a system of time-dependent PDE on a 2D rectangular grid.
-We only need to write the right-hand-side function and the Jacobian and compile the code once. All the tasks in the following can be accompolished just using command line options. 
+We only need to write the right-hand-side function and the Jacobian and compile the code once. All the tasks in the following can be accomplished just using command line options.
 
 ### Run 1 monitor solution graphically
 
@@ -141,9 +157,9 @@ mpirun -n 4 ./ex5adj -implicitform 0 -ts_type rk -ts_adapt_type none \
                      -ts_trajectory_type memory -ts_trajectory_max_cps_ram 3 \
                      -ts_trajectory_monitor -ts_trajectory_view  
 ```
-The output corresponds to the schedule dipicted by the following diagram.
+The output corresponds to the schedule depicted by the following diagram.
 
-<img src="chkpt.png" width="600">
+<img src="chkpt.png" width="800">
 
 > **What will happen if we add two slots for disk checkpoints with -ts_trajectory_max_cps_disk 2 ?**
 
