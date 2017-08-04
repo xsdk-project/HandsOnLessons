@@ -21,16 +21,18 @@ in both serial and parallel for more robust and flexible control over _time inte
 The application has been designed to solve a far more general form of the
 [_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation)
 
-|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20-%20%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%2B%20u%20%5Calpha%29%20%5Cnabla%20u%20%3D%200%20)|(1)|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%28%5Ckappa%20%2B%20%5Calpha%7Bu%7D%29%5Cnabla%5E2u)|(2)|
-
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20-%20%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%2B%20u%20%5Calpha%29%20%5Cnabla%20u%20%3D%200%20)|(1)|
+<!---
+![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%28%5Ckappa%20%2B%20%5Calpha%7Bu%7D%29%5Cnabla%5E2u)|(2)|
+--->
 where the material thermal diffusivity is given by
 ![](http://latex.codecogs.com/gif.latex?%28%5Ckappa%20%2B%20%5Calpha%7Bu%7D%29)
 which includes the same constant term ![](http://latex.codecogs.com/gif.latex?%5Ckappa)
 as in [Lesson 1](../hand_coded_heat/lesson.md) plus a term
-![](http://latex.codecogs.com/gif.latex?%5Ckalpha%7Bu%7D) which varies with
+![](http://latex.codecogs.com/gif.latex?%5Calpha%7Bu%7D) which varies with
 temperature, _u_, introducing the option of solving systems involving non-linearity.
 
-And where the initial condition is a _pyramid_ or _ramp_ with value of _1_ at the
+The initial condition is a _pyramid_ or _ramp_ with value of _1_ at the
 apex in the _middle_ of the computational domain and zero on the boundaries as
 pictured in Figure 1.
 
