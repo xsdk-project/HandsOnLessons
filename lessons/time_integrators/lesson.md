@@ -312,6 +312,11 @@ Integer ops        = 2085145055
 Floating point ops = 199642899
 Memory used        = 67423151 bytes
 ```
+
+| Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_|
+|:---:|
+|[<img src="mfem_sundials_dtt0000.png" width="400">](mfem_sundials_dtt0000.png)|
+
 ---
 
 ### Run 4: Implicit, Fixed ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) at 0.001
@@ -556,7 +561,11 @@ Floating point ops = 115569416
 Memory used        = 41202775 bytes
 ```
 
-./transient-heat -adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6  --implicit Succeeds with 26 steps and 210 nonlinear solver iterations
+| Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_|
+|:---:|
+|[<img src="mfem_sundials_dtt0001.png" width="400">](mfem_sundials_dtt0001.png)|
+
+---
 
 ### Run 7: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6, 2nd Order
 
@@ -627,7 +636,11 @@ Floating point ops = 218387843
 Memory used        = 70640491 bytes
 ```
 
-./transient-heat -adt --arkode-order 2 --arkode-abstol 1e-6 --arkode-reltol 1e-6  --implicit Succeeds with 127 steps and 321 nonlinear solver iterations
+| Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_|
+|:---:|
+|[<img src="mfem_sundials_dtt0002.png" width="400">](mfem_sundials_dtt0002.png)|
+
+---
 
 ### Run 8: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6, 2nd Order
 
@@ -698,6 +711,13 @@ Integer ops        = 893073353
 Floating point ops = 108013134
 Memory used        = 38070499 bytes
 ```
+
+#### Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_
+
+|:---:|:---:|:---:|
+|[<img src="mfem_sundials_dtt0001.png" width="400">](mfem_sundials_dtt0001.png)|[<img src="mfem_sundials_dtt0002.png" width="400">](mfem_sundials_dtt0002.png)|[<img src="mfem_sundials_dtt0003.png" width="400">](mfem_sundials_dtt0003.png)|
+
+---
 
 I will point out a number of items with each of these runs.  It will be good to see the time step profiles (may need to zoom in close to the y-axis as I expect the time steps dramatically increase at the start) and the operation counts.  Here we will have some good work measures beyond those indicated above.  However, we don't have an accuracy measure - something for next year.
 
