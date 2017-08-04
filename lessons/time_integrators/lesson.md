@@ -17,13 +17,16 @@ What is adaptive time-step?   |                                |
 ## The problem being solved
 
 The example application here, [transient-heat.cpp](transient-heat.cpp.numbered.txt),
-uses MFEM and the ARKode package from SUNDIALS as a vehicle to demonstrate the use of the
+uses [MFEM](http://mfem.org) and the ARKode package from
+[SUNDIALS](https://computation.llnl.gov/projects/sundials)
+as a vehicle to demonstrate the use of the
 [SUNDIALS](https://computation.llnl.gov/projects/sundials) suite
 in both serial and parallel for more robust and flexible control over _time integration_
 (e.g. discretization in time) of PDEs.
 
 The application has been designed to solve a far more general form of the
-[_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation)
+[_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation) in 1, 2 or
+3 dimensions as well as to work in a scalable, parallel way.
 
 |![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20-%20%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%2B%20u%20%5Calpha%29%20%5Cnabla%20u%20%3D%200%20)|(1)|
 
@@ -165,22 +168,21 @@ ARKODE:
   method order: 4, last dt: 0.001, next dt: 0.001
 Integer ops        = 1010644516
 Floating point ops = 57427320
-Memory used        = 57717204 bytes
 ```
 
-The first few iterations of this explicit algorithm are plotted below.
+The first few time-steps of this explicit algorithm are plotted below.
 
-|Iteration 0|Iteration 1|Iteration 2|
+|Time 0|Time 0.0005|Time 0.001|
 |:---:|:---:|:---:|
 |[<img src="mfem_sundials_explicit0000.png" width="400">](mfem_sundials_explicit0000.png)|[<img src="mfem_sundials_explicit0001.png" width="400">](mfem_sundials_explicit0001.png)|[<img src="mfem_sundials_explicit0002.png" width="400">](mfem_sundials_explicit0002.png)
 
 > **What do you think happened?** (triple-click box below to reveal answer)
 
-|<font color="white">The explicit algorithm is unstable for the specified timestep.</font>|
+|<font color="white">The explicit algorithm is unstable for the specified timestep size.</font>|
 
 > **How can we make this explicit method work?** (triple-click box below to reveal answer)
 
-|<font color="white">The shrink the timestep.</font>|
+|<font color="white">We can shrink the timestep.</font>|
 
 ---
 
@@ -192,16 +194,6 @@ make EXEC=transient-heat PROB=transient_heat_2 EXEC_ARGS="-dt 0.0005 --arkode-or
 make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
 ./transient-heat -dt 0.0005 --arkode-order 4 --explicit
 ~/tmp/transient_heat_2 ~/tmp
---------------------------------------------------------------------------
-No OpenFabrics connection schemes reported that they were able to be
-used on a specific port.  As such, the openib BTL (OpenFabrics
-support) will be disabled for this port.
-
-  Local host:           cooleylogin1
-  Local device:         mlx4_0
-  Local port:           1
-  CPCs attempted:       rdmacm, udcm
---------------------------------------------------------------------------
 Options used:
    --dim 2
    --refine 0
@@ -247,10 +239,9 @@ ARKODE:
   method order: 4, last dt: 0.0005, next dt: 0.0005
 Integer ops        = 2330325813
 Floating point ops = 181844398
-Memory used        = 82719437 bytes
 ```
 
-|Iteration 7|Iteration 32|Iteration 100|
+|Time 0.0035|Time 0.016|Time 0.05|
 |:---:|:---:|:---:|
 |[<img src="mfem_sundials_explicit20000.png" width="400">](mfem_sundials_explicit20000.png)|[<img src="mfem_sundials_explicit20001.png" width="400">](mfem_sundials_explicit20001.png)|[<img src="mfem_sundials_explicit20002.png" width="400">](mfem_sundials_explicit20002.png)
 
@@ -258,22 +249,15 @@ Memory used        = 82719437 bytes
 
 ### Run 3: Explicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) Absolute and Relative Tolerance 1e-6
 
+Now, we will switch to an _adaptive_ time stepping method using the `-adt`
+command-line option but keeping all other options the same.
+
 ```
 [mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_3
 make EXEC=transient-heat PROB=transient_heat_3 EXEC_ARGS="-adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --explicit" EXEC_OUTON=-v run
 make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
 ./transient-heat -adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --explicit
 ~/tmp/transient_heat_3 ~/tmp
---------------------------------------------------------------------------
-No OpenFabrics connection schemes reported that they were able to be
-used on a specific port.  As such, the openib BTL (OpenFabrics
-support) will be disabled for this port.
-
-  Local host:           cooleylogin1
-  Local device:         mlx4_0
-  Local port:           1
-  CPCs attempted:       rdmacm, udcm
---------------------------------------------------------------------------
 Options used:
    --dim 2
    --refine 0
@@ -319,16 +303,25 @@ ARKODE:
   method order: 4, last dt: 0.0002964885, next dt: 0.0002964885
 Integer ops        = 2085145055
 Floating point ops = 199642899
-Memory used        = 67423151 bytes
 ```
 
 | Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_|
 |:---:|
 |[<img src="mfem_sundials_dtt0000.png" width="400">](mfem_sundials_dtt0000.png)|
 
+> **How many steps did this method take and how many flops**?
+
+|<font color="white">By adapting the timestep, we took only 136 steps to the solution at t=0.1. There are about 10% more flops required, however, in total.</font>|
+
+> **A plot of the time step size vs. time is shown here. Can you explain its shape?**
+
+|<font color="white">Recall the explicit method we are using here is unstable for dt=0.001 but is stable for dt=0.0005. The adaptive algorithm is attempting to adapt the timestep. It attemps step sizes outside of the regime of stability and may even get away with a few steps in that regime before having to shrink the timestep back down to maintain stability. Note the majority of timestep sizes used are between 0.0007 and 0.0008 which is just butting up against the timestep threshold of stability for this particular 4th order algorithm.</font>|
+
 ---
 
 ### Run 4: Implicit, Fixed ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) at 0.001
+
+Now, lets switch to an _implicit_ method and see how that effects behavior of the numerical algorithms.
 
 ```
 [mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_4
@@ -336,16 +329,6 @@ make EXEC=transient-heat PROB=transient_heat_4 EXEC_ARGS="-dt 0.001 --arkode-ord
 make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
 ./transient-heat -dt 0.001 --arkode-order 4 --implicit
 ~/tmp/transient_heat_4 ~/tmp
---------------------------------------------------------------------------
-No OpenFabrics connection schemes reported that they were able to be
-used on a specific port.  As such, the openib BTL (OpenFabrics
-support) will be disabled for this port.
-
-  Local host:           cooleylogin1
-  Local device:         mlx4_0
-  Local port:           1
-  CPCs attempted:       rdmacm, udcm
---------------------------------------------------------------------------
 Options used:
    --dim 2
    --refine 0
@@ -394,14 +377,14 @@ ARKODE:
   method order: 4, last dt: 0.001, next dt: 0.001
 Integer ops        = 2331254488
 Floating point ops = 248347397
-Memory used        = 62734180 bytes
 ```
 
-Take note of the number of non-linear solution iterations here, 524.
+Take note of the number of non-linear solution iterations here, 524 and total flops 62734180.
 
 > **How is all the flexiblity demonstrated here possible?**
 
 |<font color="white">The lines of code below illustrate how the application is taking advantage of the SUNDIALS numerical package to affect various methods of solution.</font>|
+
 
 ```c++
 204    // Define the ARKODE solver used for time integration. Either implicit or explicit.
@@ -429,6 +412,10 @@ Take note of the number of non-linear solution iterations here, 524.
 226    ode_solver = arkode;
 ```
 
+Note lines 210/215 that select either _implicit or _explicit_ method.
+Lines 220 sets the order of the method and line 224 sets a _fixed_ time
+step whereas the default is an _adaptive_ timestep.
+
 ---
 
 ### Run 5: Implicit, Fixed ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) at 0.001, 2nd Order
@@ -440,16 +427,6 @@ make EXEC=transient-heat PROB=transient_heat_5 EXEC_ARGS="-dt 0.001 --arkode-ord
 make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
 ./transient-heat -dt 0.001 --arkode-order 2 --implicit
 ~/tmp/transient_heat_5 ~/tmp
---------------------------------------------------------------------------
-No OpenFabrics connection schemes reported that they were able to be
-used on a specific port.  As such, the openib BTL (OpenFabrics
-support) will be disabled for this port.
-
-  Local host:           cooleylogin1
-  Local device:         mlx4_0
-  Local port:           1
-  CPCs attempted:       rdmacm, udcm
---------------------------------------------------------------------------
 Options used:
    --dim 2
    --refine 0
@@ -496,7 +473,6 @@ ARKODE:
   method order: 2, last dt: 0.001, next dt: 0.001
 Integer ops        = 1482885073
 Floating point ops = 119982846
-Memory used        = 62118716 bytes
 ```
 
 > **There are about half as many non-linear solver iterations, 224. Why?**
@@ -513,16 +489,6 @@ make EXEC=transient-heat PROB=transient_heat_6 EXEC_ARGS="-adt --arkode-order 4 
 make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
 ./transient-heat -adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit
 ~/tmp/transient_heat_6 ~/tmp
---------------------------------------------------------------------------
-No OpenFabrics connection schemes reported that they were able to be
-used on a specific port.  As such, the openib BTL (OpenFabrics
-support) will be disabled for this port.
-
-  Local host:           cooleylogin1
-  Local device:         mlx4_0
-  Local port:           1
-  CPCs attempted:       rdmacm, udcm
---------------------------------------------------------------------------
 Options used:
    --dim 2
    --refine 0
@@ -567,7 +533,6 @@ ARKODE:
   method order: 4, last dt: 0.0049438602, next dt: 0.0049438602
 Integer ops        = 1009761594
 Floating point ops = 115569416
-Memory used        = 41202775 bytes
 ```
 
 | Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_|
@@ -584,16 +549,6 @@ make EXEC=transient-heat PROB=transient_heat_7 EXEC_ARGS="-adt --arkode-order 2 
 make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
 ./transient-heat -adt --arkode-order 2 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit
 ~/tmp/transient_heat_7 ~/tmp
---------------------------------------------------------------------------
-No OpenFabrics connection schemes reported that they were able to be
-used on a specific port.  As such, the openib BTL (OpenFabrics
-support) will be disabled for this port.
-
-  Local host:           cooleylogin1
-  Local device:         mlx4_0
-  Local port:           1
-  CPCs attempted:       rdmacm, udcm
---------------------------------------------------------------------------
 Options used:
    --dim 2
    --refine 0
@@ -642,7 +597,6 @@ ARKODE:
   method order: 2, last dt: 0.0017844596, next dt: 0.0017844596
 Integer ops        = 2279562091
 Floating point ops = 218387843
-Memory used        = 70640491 bytes
 ```
 
 | Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_|
@@ -659,16 +613,6 @@ make EXEC=transient-heat PROB=transient_heat_8 EXEC_ARGS="-adt --arkode-order 5 
 make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
 ./transient-heat -adt --arkode-order 5 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit
 ~/tmp/transient_heat_8 ~/tmp
---------------------------------------------------------------------------
-No OpenFabrics connection schemes reported that they were able to be
-used on a specific port.  As such, the openib BTL (OpenFabrics
-support) will be disabled for this port.
-
-  Local host:           cooleylogin1
-  Local device:         mlx4_0
-  Local port:           1
-  CPCs attempted:       rdmacm, udcm
---------------------------------------------------------------------------
 Options used:
    --dim 2
    --refine 0
@@ -718,7 +662,6 @@ ARKODE:
   method order: 5, last dt: 0.011977434, next dt: 0.011977434
 Integer ops        = 893073353
 Floating point ops = 108013134
-Memory used        = 38070499 bytes
 ```
 
 #### Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_
