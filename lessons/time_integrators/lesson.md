@@ -17,7 +17,8 @@ What is adaptive time-step?   |                                |
 ## The problem being solved
 
 The example application here, [transient-heat.cpp](transient-heat.cpp.numbered.txt),
-uses MFEM and the ARKode package from SUNDIALS as a vehicle to demonstrate the use of the
+uses MFEM and the ARKode package from SUNDIALS as a vehicle to demonstrate
+ the use of the
 [SUNDIALS](https://computation.llnl.gov/projects/sundials) suite
 in both serial and parallel for more robust and flexible control over _time integration_
 (e.g. discretization in time) of PDEs.
