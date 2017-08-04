@@ -1,6 +1,6 @@
 # Algebraic Multigrid
 
-## At A Glance (Expected 10 minutes to complete)
+## At A Glance (10 mins)
 
 
 ```
