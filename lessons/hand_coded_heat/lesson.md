@@ -1,7 +1,5 @@
 # Hand Coded 1D Heat Equation
 
-*** To reveal answers to the questions throughout this lesson, triple-click on the answer box.
-
 ## At A Glance (15 mins)
 
 ```
@@ -13,10 +11,17 @@ What is a numerical alg.? |Understand performance metrics       |HPC numerical s
 What is discretization?   |Understand algorithmic trade-offs    |Robust software requires significant 
                           |                                     |software quality engineering (SQE).
                           |                                     |
-What is stability?        |Understand value of software packages|Numerical packages simplify app development,
-                          |                                     |provide efficient & scalable performance,
+What is stability?        |Understand value of software packages|Numerical packages simplify app dev.
+                          |                                     |offer efficient, scalable performance,
                           |                                     |and enable app-specific customization.
 ```
+
+**Note:** After each run, there are sometimes Q&A sections. To reveal answers,
+triple-click in the box below the answer.
+
+> **Question:?** (triple-click box to reveal answer)
+
+|<font color="white">Answer</font>|
 
 ## A Real-World Heat Problem
 
@@ -106,7 +111,8 @@ the next time, _k+1_, from temperatures at the current time, _k_, as
 
 where ![](http://latex.codecogs.com/gif.latex?r%3D%5Calpha%5Cfrac%7B%5CDelta%20t%7D%7B%5CDelta%20x%5E2%7D)
 Note that all the values on the left-hand side of equation 6 are for time, _k-1_, the
-solution from a _previously known_ time-step. Such a method is known as an _explicit_
+solution from a _previously known_ time-step. Such a method is known as an
+[_explicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods)
 numerical method. Explicit methods have some nice properties:
 
 * They are easy to implement.

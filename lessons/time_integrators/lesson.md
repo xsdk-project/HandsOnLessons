@@ -5,9 +5,13 @@
 ```
 Questions                     |Objectives                      |Key Points
 ------------------------------|--------------------------------|----------
-What is the SUNDIALS Package? |Objective 3                     |Key Point 3
-What is a time integrator?    |Objective 3                     |Key Point 3
-Question 3?                   |Objective 3                     |Key Point 3
+What is the SUNDIALS Package? |Compare fixed and adaptive time |Time integration considerations
+                              |integrator techniques           |play a role in time to solution
+                              |                                |
+What is a time integrator?    |Observe impact of order of      |The SUNDIALS package has robust,
+                              |on time to solution/flop count  |flexible methods for time integration.
+                              |                                |
+What is adaptive time-step?   |                                |
 ```
 
 ## The problem being solved
@@ -22,9 +26,11 @@ The application has been designed to solve a far more general form of the
 [_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation)
 
 |![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20-%20%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%2B%20u%20%5Calpha%29%20%5Cnabla%20u%20%3D%200%20)|(1)|
+
 <!---
 ![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%28%5Ckappa%20%2B%20%5Calpha%7Bu%7D%29%5Cnabla%5E2u)|(2)|
 --->
+
 where the material thermal diffusivity is given by
 ![](http://latex.codecogs.com/gif.latex?%28%5Ckappa%20%2B%20%5Calpha%7Bu%7D%29)
 which includes the same constant term ![](http://latex.codecogs.com/gif.latex?%5Ckappa)
@@ -59,8 +65,9 @@ The main loop of this application is shown here...
 ```
 
 Later in this lesson, we'll show the lines of code that permit the 
-application great flexibility in how it employs various numerical
-packages and various options _within_ those packages.
+application great flexibility in how it employs
+[SUNDIALS](https://computation.llnl.gov/projects/sundials) to handle
+time integration.
 
 ### Getting Help 
 ```
@@ -97,7 +104,7 @@ Options:
         Enable dumping of visit files.
 ```
 
-**Note:** This application may be used to compute the same equation used in
+**Note:** This application may be used to solve the same equation used in
 [Lesson 1](../hand_coded_heat/lesson.md) by using command line options
 `-d 1 -alpha 0`. The role of [Lesson 1's](../hand_coded_heat/lesson.md)
 ![](http://latex.codecogs.com/gif.latex?%5Calpha) is played by 
@@ -728,6 +735,16 @@ If you have a bunch of time (ha!) and have a way to take a solution from a highl
 Let me know if your numbers differ from these when you run.
 
 ## Out-Brief
+
+We have used MFEM as a demonstration vehicle for illustrating the value in robust,
+time-integration methods in numerical algorithms. In particular, we have used
+the [SUNDIALS](https://computation.llnl.gov/projects/sundials) suite of solvers to
+compare and contrast both the effects of _adaptive_ time stepping as well as the
+role the order of the time-integration plays in time to solution.
+
+The use of _adaptation_ here was confined to _discretzation_ of time. Other lessons
+here demonstrate the advantages _adaptation_ can play in the _discretization_ of
+_space_.
 
 ### Further Reading
 
