@@ -17,9 +17,8 @@ What is adaptive time-step?   |                                |
 ## The problem being solved
 
 The example application here, [transient-heat.cpp](transient-heat.cpp.numbered.txt),
-uses [MFEM](http://mfem.org) and the ARKode package from
-[SUNDIALS](https://computation.llnl.gov/projects/sundials)
-as a vehicle to demonstrate the use of the
+uses [MFEM](http://mfem.org) and the ARKode package from SUNDIALS as a vehicle
+to demonstrate the use of the
 [SUNDIALS](https://computation.llnl.gov/projects/sundials) suite
 in both serial and parallel for more robust and flexible control over _time integration_
 (e.g. discretization in time) of PDEs.
@@ -170,9 +169,9 @@ Integer ops        = 1010644516
 Floating point ops = 57427320
 ```
 
-The first few time-steps of this explicit algorithm are plotted below.
+The first few time steps of this explicit algorithm are plotted below.
 
-|Time 0|Time 0.0005|Time 0.001|
+|Time Step 0|Time Step 1|Time Step 2|
 |:---:|:---:|:---:|
 |[<img src="mfem_sundials_explicit0000.png" width="400">](mfem_sundials_explicit0000.png)|[<img src="mfem_sundials_explicit0001.png" width="400">](mfem_sundials_explicit0001.png)|[<img src="mfem_sundials_explicit0002.png" width="400">](mfem_sundials_explicit0002.png)
 
@@ -241,7 +240,7 @@ Integer ops        = 2330325813
 Floating point ops = 181844398
 ```
 
-|Time 0.0035|Time 0.016|Time 0.05|
+|Time Step 7|Time Step 32|Time Step 100|
 |:---:|:---:|:---:|
 |[<img src="mfem_sundials_explicit20000.png" width="400">](mfem_sundials_explicit20000.png)|[<img src="mfem_sundials_explicit20001.png" width="400">](mfem_sundials_explicit20001.png)|[<img src="mfem_sundials_explicit20002.png" width="400">](mfem_sundials_explicit20002.png)
 
@@ -671,26 +670,30 @@ Floating point ops = 108013134
 
 ---
 
-I will point out a number of items with each of these runs.  It will be good to see the time step profiles (may need to zoom in close to the y-axis as I expect the time steps dramatically increase at the start) and the operation counts.  Here we will have some good work measures beyond those indicated above.  However, we don't have an accuracy measure - something for next year.
-
-If you have a bunch of time (ha!) and have a way to take a solution from a highly resolved run (./transient-heat -adt --arkode-order 2 --arkode-abstol 1e-8 --arkode-reltol 1e-8  --implicit) and show plots of eth difference between solutions from these runs over time, that would be awesome.  I don't expect any of us have time for that at this late hour though.
-
-Let me know if your numbers differ from these when you run.
-
 ## Out-Brief
 
 We have used MFEM as a demonstration vehicle for illustrating the value in robust,
-time-integration methods in numerical algorithms. In particular, we have used
+time integration methods in numerical algorithms. In particular, we have used
 the [SUNDIALS](https://computation.llnl.gov/projects/sundials) suite of solvers to
 compare and contrast both the effects of _adaptive_ time stepping as well as the
-role the order of the time-integration plays in time to solution.
+role the order of the time integration plays in time to solution and number of time 
+steps in the adaptive case.  In addition, we have demonstrated the ability of implicit
+methods to run at higher time steps than explicit and also demonstrated teh cost of 
+nonlinear solvers in implicit approaches.
 
 The use of _adaptation_ here was confined to _discretzation_ of time. Other lessons
 here demonstrate the advantages _adaptation_ can play in the _discretization_ of
 _space_.
 
+Other lessons will demonstrate some of the options for _nonlinear_ and 
+_linear _ solvers needed for implicit integration approaches.
+
 ### Further Reading
 
-https://www.phy.ornl.gov/csep/pde/node2.html
+Users guides for CVODE, ARKode, and IDA at
+https://computation.llnl.gov/projects/sundials/sundials-software
 
-Include links to other online sources you might want to include.
+Publications at the SUNDIALS Publications page:
+https://computation.llnl.gov/projects/sundials/publications
+
+
