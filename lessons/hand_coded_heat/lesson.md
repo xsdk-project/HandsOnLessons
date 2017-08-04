@@ -11,8 +11,8 @@ What is a numerical alg.? |Understand performance metrics       |HPC numerical s
 What is discretization?   |Understand algorithmic trade-offs    |Robust software requires significant 
                           |                                     |software quality engineering (SQE).
                           |                                     |
-What is stability?        |Understand value of software packages|Numerical packages simplify app dev.
-                          |                                     |offer efficient, scalable performance,
+What is stability?        |Understand value of software packages|Numerical packages simplify app dev.,
+                          |                                     |offer efficient & scalable performance,
                           |                                     |and enable app-specific customization.
 ```
 
@@ -488,7 +488,7 @@ Memory used        = 4067 bytes
 
 |<font color="white">You need to break the tri-diagonal matrix into blocks on each processing element and exchange data between blocks. But, what if the matrix was not tri-diagonal?</font>|
 
-## Why Use Numerical Software Packages Instead of Hand-Coding?
+## Why Use Numerical Software Packages Instead of Hand Coding?
 
 What if we want to plan the development of our application so we can easily enhance it later
 to support more complex situations such as...
@@ -503,7 +503,7 @@ to support more complex situations such as...
     * A material where thermal diffusivity may vary with either space, _x_,
       or event time, _t_.
     * A material where thermal diffusivity may vary with temperature, _u_,
-      introducing _non-linearities_ and the need for non-linear solvers.
+      introducing _nonlinearities_ and the need for nonlinear solvers.
   * More complex domains
     * Much larger objects involving billions of discretization points and
       requiring _scalability_ in all phases of the solution.
@@ -531,7 +531,9 @@ one of the key values of _numerical packages_.  Many of the details of these
 issues have been resolved and _vetted_ within the scientific computing community
 within widely used software packages. Numerical packages can help to simplify the development of
 highly sophisticated scientific computing applications and provide a much more solid,
-flexible, and sustainable foundation than custom code.
+flexible, and sustainable foundation than code that is completely written from scratch.  
+Moreover, well-designed numerical software packages enable users to build custom
+solution strategies that leverage application-specific knowledge.
 
 ## Out-Brief
 
@@ -544,7 +546,7 @@ methods such as relative implementation complexity, memory usage, flop
 counts, and stability.  Numerous other attributes of numerical
 algorithms will be introduced and discussed in later lessons.
 
-We have explained some of the drawbacks of developing custom solutions
+We have explained some of the drawbacks of developing completely hand-coded solutions
 as well as some of the advantages of using community adopted numerical
 packages for application development. 
 
