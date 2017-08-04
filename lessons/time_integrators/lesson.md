@@ -13,7 +13,7 @@ Question 3?                   |Objective 3                     |Key Point 3
 ## The problem being solved
 
 The example application here, [transient-heat.cpp](transient-heat.cpp.numbered.txt),
-uses MFEM as a vehicle to demonstrate the use of the
+uses MFEM and teh ARKode packagr from SUNDIALS as a vehicle to demonstrate the use of the
 [SUNDIALS](https://computation.llnl.gov/projects/sundials) package
 in both serial and parallel for more robust and flexible control over _time integration_
 (e.g. discretization in time) of PDEs.
@@ -78,7 +78,7 @@ Options:
    -tf <double>, --t-final <double>, current value: 0.1
         Final time; start time is 0.
    -dt <double>, --time-step <double>, current value: 0.001
-        Initial time step.
+        When using a fixed step, time step size.
    -a <double>, --alpha <double>, current value: 0.2
         Alpha coefficient for conductivity: kappa + alpha*temperature
    -k <double>, --kappa <double>, current value: 0.5
