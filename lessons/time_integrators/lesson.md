@@ -38,7 +38,7 @@ pictured in Figure 1.
 |:---:|:---:|
 |[<img src="mfem_sundials_explicit0000.png" width="400">](mfem_sundials_explicit0000.png)|[<img src="pyramid_animated.gif" width="400">](pyramid_animated.gif)|
 
-The main loop of This application is shown here...
+The main loop of this application is shown here...
 
 ```c++
 304    // Perform time-integration
@@ -57,8 +57,8 @@ The main loop of This application is shown here...
 ```
 
 Later in this lesson, we'll show the lines of code that permit the 
-application great flexibility in how it employs various numerical
-packages and various options _within_ those packages.
+application great flexibility in how it employs SUNDIALS to handle
+time integration.
 
 ### Getting Help 
 ```
@@ -95,7 +95,7 @@ Options:
         Enable dumping of visit files.
 ```
 
-**Note:** This application may be used to compute the same equation used in
+**Note:** This application may be used to solve the same equation used in
 [Lesson 1](../hand_coded_heat/lesson.md) by using command line options
 `-d 1 -alpha 0`. The role of [Lesson 1's](../hand_coded_heat/lesson.md)
 ![](http://latex.codecogs.com/gif.latex?%5Calpha) is played by 
