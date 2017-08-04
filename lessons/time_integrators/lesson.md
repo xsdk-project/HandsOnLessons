@@ -65,7 +65,8 @@ The main loop of this application is shown here...
 ```
 
 Later in this lesson, we'll show the lines of code that permit the 
-application great flexibility in how it employs SUNDIALS to handle
+application great flexibility in how it employs
+[SUNDIALS](https://computation.llnl.gov/projects/sundials) to handle
 time integration.
 
 ### Getting Help 
