@@ -315,7 +315,7 @@ Floating point ops = 199642899
 
 |<font color="white">By adapting the timestep, we took only 136 steps to the solution at t=0.1. There are about 10% more flops required, however, in total.</font>|
 
-> **A plot of the time step size vs. time is shown here. Can you explain its shape?**
+> **A plot of the time step size vs. time is shown above. Can you explain its shape?**
 
 |<font color="white">Recall the explicit method we are using here is unstable for dt=0.001 but is stable for dt=0.0005. The adaptive algorithm is attempting to adapt the timestep. It attemps step sizes outside of the regime of stability and may even get away with a few steps in that regime before having to shrink the timestep back down to maintain stability. Note the majority of timestep sizes used are between 0.0007 and 0.0008 which is just butting up against the timestep threshold of stability for this particular 4th order algorithm.</font>|
 
@@ -381,13 +381,17 @@ Integer ops        = 2331254488
 Floating point ops = 248347397
 ```
 
-Take note of the number of non-linear solution iterations here, 524 and total flops 62734180.
+Take note of the number of non-linear solution iterations here, 524 and total flops 248347397.
+
+> **How does the flop count in this _implicit_ fixed time step method compare with the _explicit_ fixed time step method?**
+
+|<font color="white">Well, at a dt=0.001, the explicit method failed due to stability issues. But, it suceeded with a dt=0.0005, which required twice as many steps to reach t=0.1 where the _implicit_ succeeds with dt=0.001 but still requires about 33% more flops due to the implicit solves needed on each step.</font>|
 
 > **How is all the flexiblity demonstrated here possible?**
 
 |<font color="white">The lines of code below illustrate how the application is taking advantage of the SUNDIALS numerical package to affect various methods of solution.</font>|
 
-
+---
 ```c++
 204    // Define the ARKODE solver used for time integration. Either implicit or explicit.
 205    ODESolver *ode_solver = NULL;
@@ -422,6 +426,7 @@ step whereas the default is an _adaptive_ timestep.
 
 ### Run 5: Implicit, Fixed ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) at 0.001, 2nd Order
 
+Here, we reduce the order of the time-integration from 4 to 2 and observe the behavior.
 
 ```
 [mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_5
@@ -477,13 +482,15 @@ Integer ops        = 1482885073
 Floating point ops = 119982846
 ```
 
-> **There are about half as many non-linear solver iterations, 224. Why?**
+> **This second order method succeeds in about 1/2 the number of flops. Why?**
 
-|<font color="white">Answer to Question</font>|
+|<font color="white">High order time-integration is not always required or the best approach. By paying attention to the time-integration order requirements of your particular application, you can indeed reduce flop counts required.</font>|
 
 ---
 
 ### Run 6: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6 
+
+In this run, we'll combine **both** the advantages of an _implicit_ algorithm and an _adaptive_ time step.
 
 ```
 [mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_6
@@ -541,9 +548,19 @@ Floating point ops = 115569416
 |:---:|
 |[<img src="mfem_sundials_dtt0001.png" width="400">](mfem_sundials_dtt0001.png)|
 
+> **How many steps and flops does it take to reach t=0.1?**
+
+|<font color="white">The algorithm reaches t=0.1 in 26 steps but about the same number of flops.</font>|
+
+> **A plot of dt vs. time is shown above. Why is it able to continue increasing dt?**
+
+|<font color="white">This is using an implicit method which is uncondtionally stable. As time increases, the solution changes more slowly allow the time-integration to continue to increase. Contrast this with adaptive time stepping for the explicit case where it would try to increase the step size and then constantly have to back up to maintain stability.</font>|
+
 ---
 
 ### Run 7: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6, 2nd Order
+
+Here, like Run 5, we compare to the preceding run with a 2nd order method.
 
 ```
 [mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_7
@@ -601,13 +618,19 @@ Integer ops        = 2279562091
 Floating point ops = 218387843
 ```
 
+> **Why does the algorithm take more steps to reach t=0.1?**
+
+|<font color="white">The lower order (2 as compared to 4) we are using here means the algorithm is unable to maintain the desired tolerances at larger step sizes. In general, the step sizes are smaller for a lower order method so more steps are required to reach t=0.1</font>|
+
 | Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_|
 |:---:|
 |[<img src="mfem_sundials_dtt0002.png" width="400">](mfem_sundials_dtt0002.png)|
 
 ---
 
-### Run 8: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6, 2nd Order
+### Run 8: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6, 5nd Order
+
+Here, for a final comparison, we _increase_ to order 5 and observe the impact.
 
 ```
 [mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_8
@@ -666,10 +689,14 @@ Integer ops        = 893073353
 Floating point ops = 108013134
 ```
 
-#### Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_
+A comparison of the three, preceding _implicit_, adaptive methods at order 4, 2 and 5 is shown below
 
+#### Plot of ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) vs _t_ for 3 succeeding implicit, adaptive runs
+
+|O=2, N=128, F=218387843|O=4, N=26, F=115569416|O=5, N=15, F=108013134|
+|N=_Nn_, F=_Fn_ (normalized)|N=0.2 _Nn_, F=0.5 _Fn_|N=0.12 _Nn_, F=0.5 _Fn_|
 |:---:|:---:|:---:|
-|[<img src="mfem_sundials_dtt0001.png" width="400">](mfem_sundials_dtt0001.png)|[<img src="mfem_sundials_dtt0002.png" width="400">](mfem_sundials_dtt0002.png)|[<img src="mfem_sundials_dtt0003.png" width="400">](mfem_sundials_dtt0003.png)|
+|[<img src="mfem_sundials_dtt0002.png" width="400">](mfem_sundials_dtt0002.png)|[<img src="mfem_sundials_dtt0001.png" width="400">](mfem_sundials_dtt0001.png)|[<img src="mfem_sundials_dtt0003.png" width="400">](mfem_sundials_dtt0003.png)|
 
 ---
 
@@ -681,7 +708,7 @@ the [SUNDIALS](https://computation.llnl.gov/projects/sundials) suite of solvers 
 compare and contrast both the effects of _adaptive_ time stepping as well as the
 role the order of the time integration plays in time to solution and number of time 
 steps in the adaptive case.  In addition, we have demonstrated the ability of implicit
-methods to run at higher time steps than explicit and also demonstrated teh cost of 
+methods to run at higher time steps than explicit and also demonstrated the cost of 
 nonlinear solvers in implicit approaches.
 
 The use of _adaptation_ here was confined to _discretzation_ of time. Other lessons
@@ -693,10 +720,6 @@ _linear_ solvers needed for implicit integration approaches.
 
 ### Further Reading
 
-Users guides for CVODE, ARKode, and IDA at
-https://computation.llnl.gov/projects/sundials/sundials-software
+[Users guides for CVODE, ARKode, and IDA](https://computation.llnl.gov/projects/sundials/sundials-software)
 
-Publications at the SUNDIALS Publications page:
-https://computation.llnl.gov/projects/sundials/publications
-
-
+[Publications](https://computation.llnl.gov/projects/sundials/publications)
