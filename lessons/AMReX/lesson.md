@@ -256,5 +256,5 @@ and again visualize the results.
 
 ### Further Reading
 
-To learn more about AMReX, go to https://www.github.com/AMReX-code/amrex and take a look at the Users Guide in Docs.
+Learn more about [AMReX](https://www.github.com/AMReX-codes/amrex) and take a look at the Users Guide in Docs.
 
