@@ -88,8 +88,8 @@ is_periodic = 1 0
 
 ```
 
-The grid is a cube consisting of 256 x 256 x 256 cells, consisting of 8 subgrids each
-of size 128x128x128 cells.  The problem is periodic in the x-direction and not in the y-direction.
+The grid is a cube consisting of 256 x 256 cells, consisting of 8 subgrids each
+of size 128x128 cells.  The problem is periodic in the x-direction and not in the y-direction.
 This problem happens to be set-up to have homogeneous Neumann boundary conditions when not periodic.
 
 Let's try running this 2-d problem and animating the 1-d slices.
@@ -185,46 +185,15 @@ algorithm, which we haven't really had time to talk about, looks like
     }
 ```
 
-and
-```
-  do    j = lo(2), hi(2)
-     do i = lo(1), hi(1)
- 
-        phinew(i,j) = phiold(i,j) &
-             + dtdx(1) * (fluxx(i+1,j  ) - fluxx(i,j)) &
-             + dtdx(2) * (fluxy(i  ,j+1) - fluxy(i,j))
- 
-     end do
-  end do
-
-```
-
-The other parts of the algorithm -- that, in particular, involve MPI communication, are handled in the C++:
-
-```
-        MultiFab::Copy(phi_old, phi_new, 0, 0, 1, 0);
-```
-
-and
-
-```
-            old_phi.FillBoundary(geom.periodicity());
-```
-
-See if it makes sense what order all of these are called in.
-
 ### Running the Problem
 
-Copy the directory AMReX_Diffusion from PATH_TO_AMREX_DIFFUSION
+Copy the directory AMReX_Advection from PATH_TO_AMREX_ADVECTION
 
 In this directory you'll see
 
 ```
 main2d.gnu.MPI.ex -- the executable
 inputs_2d -- the inputs file
-fextract -- an executable that extracts a 1-d slice from 2-d or 3-d data
-extract_slice -- a simple script that calls fextract on each of our plotfiles
-plot_phi -- a simple gnuplot script to read and animate the 1-d slices 
 ```
 
 The inputs file currently has 
@@ -238,25 +207,19 @@ is_periodic = 1 0
 
 ```
 
-The grid is a cube consisting of 256 x 256 x 256 cells, consisting of 8 subgrids each
-of size 128x128x128 cells.  The problem is periodic in the x-direction and not in the y-direction.
+Here we'll skip the 1-d slices and use VisIt to visualize the solution.
+
+The grid here is a cube consisting of 64 x 64 cells, consisting of 8 subgrids each
+of size 32x32 cells.  The problem is periodic in the x-direction and not in the y-direction.
 This problem happens to be set-up to have homogeneous Neumann boundary conditions when not periodic.
 
 Let's try running this 2-d problem and animating the 1-d slices.
 
 ```
 ./main2d.gnu.MPI.ex inputs_2d  
-source extract_slice
-gnuplot
-```
-and when you get the gnuplot prompt, type 
-```
-load 'plot_phi'
 ```
 
-Do you see the solution evolving in time?
-
-If you'd like to see the 2-d solution, use Visit to open up a plotfile.
+To see the 2-d solution, use Visit to open up a plotfile.
 
 ```
 Select ``File'' then ``Open file ...'',
@@ -275,18 +238,22 @@ to your liking, then click ``Save''.
 
 Your image should look similar to that below.
 
-<img src = "VisIt_2D.jpg" width ="300">
+<img src = "VisIt_2D_adv.jpg" width ="300">
 
+## Now let's turn on AMR.
 
-## What does this do in parallel
-
-Let's now try 
+Before we had 
 ```
-mpirun -n 1 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
-mpirun -n 2 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
-mpirun -n 4 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
+amr.max_level = 0
 ```
-and see how the timings compare.
+in the inputs file.
+
+Let's now run with 
+```
+./main2d.gnu.MPI.ex inputs_2d amr.max_level=1
+```
+
+and again visualize the results.
 
 ### Further Reading
 
