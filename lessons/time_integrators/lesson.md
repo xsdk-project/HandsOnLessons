@@ -5,13 +5,16 @@
 ```
 Questions                     |Objectives                      |Key Points
 ------------------------------|--------------------------------|----------
-What is the SUNDIALS Package? |Compare fixed and adaptive time |Time integration considerations
-                              |integrator techniques           |play a role in time to solution
-                              |                                |
-What is a time integrator?    |Observe impact of order of      |The SUNDIALS package has robust,
-                              |on time to solution/flop count  |flexible methods for time integration.
-                              |                                |
-What is adaptive time-step?   |                                |
+How does the choice of        |Compare performance of explicit |Time integration considerations
+explicit vs. implicit impact  |and implicit methods at step    |play a role in time to solution
+step size?                    |sizes near the stability limit  |
+                              |                                |The SUNDIALS package has robust,
+What is the impact of an      |Compare fixed and adaptive time |flexible methods for time integration.
+adaptive time integrator?     |integrator techniques           |
+                              |                                |In well-designed packages, changing
+How does time integration     |Observe impact of order         |between methods does not require
+order impact the cost?        |on time to solution/flop count  |a lot of work
+                              |and number of steps             |
 ```
 
 ## The problem being solved
@@ -686,7 +689,7 @@ here demonstrate the advantages _adaptation_ can play in the _discretization_ of
 _space_.
 
 Other lessons will demonstrate some of the options for _nonlinear_ and 
-_linear _ solvers needed for implicit integration approaches.
+_linear_ solvers needed for implicit integration approaches.
 
 ### Further Reading
 
