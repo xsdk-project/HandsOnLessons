@@ -29,21 +29,19 @@ In this lesson, we demonstrate the design and use of a hand-coded
 (e.g., does not use any software packages) C-language application to
 model _heat_ conduction through a wall as pictured here ...
 
-|[<img src="simple_1d_heat.png" width="400">](simple_1d_heat.png)|[<img src="spikes_animated.gif" width="400">](spikes_animated.gif)
+|[<img src="problem_setup.png" width="400">](problem_setup.png)|[<img src="spikes_animated.gif" width="400">](spikes_animated.gif)
 
 ### Governing Equations
 
 In general, heat [conduction](https://en.wikipedia.org/wiki/Thermal_conduction) is governed
 by the partial differential (PDE)...
 
-|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%5Cnabla%5E2u)|(1)|
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20-%20%5Cnabla%20%5Ccdot%20%5Calpha%20%5Cnabla%20u%20%3D+0)|(1)|
 
 where _u_ is the temperature within the wall at spatial positions, _x_, and times, _t_,
 ![](http://latex.codecogs.com/gif.latex?%5Calpha) is the _thermal diffusivity_
-of the material(s) comprising the wall and ![](http://latex.codecogs.com/gif.latex?%5Cnabla%5E2)
-is the [Laplace Operator](https://en.wikipedia.org/wiki/Laplace_operator).
-This equation is known as the _Diffusion Equation_ and also the
-[_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation).
+of the material(s) comprising the wall. This equation is known as the
+_Diffusion Equation_ and also the [_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation).
 
 ---
 

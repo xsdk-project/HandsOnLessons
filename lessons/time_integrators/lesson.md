@@ -719,6 +719,11 @@ _space_.
 Other lessons will demonstrate some of the options for _nonlinear_ and 
 _linear_ solvers needed for implicit integration approaches.
 
+Finally, it is worth reminding the learner that the application demonstrated here can
+be run on 1, 2 and 3 dimensional meshes and in scalable, parallel settings on on meshes
+of extremely high spatial resolution if so desired. The learner is encouraged to play
+around with various command-line options to affect various scenarios.
+
 ### Further Reading
 
 [Users guides for CVODE, ARKode, and IDA](https://computation.llnl.gov/projects/sundials/sundials-software)
