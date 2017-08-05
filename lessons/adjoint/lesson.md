@@ -3,16 +3,16 @@
 ## At A Glance (10 mins)
 
 ```
-Questions                  |Objectives                    |Key Points
----------------------------|------------------------------|-------------------------------------
-How can gradients be       |Know the techniques and       |Adjoint enables dynamic
-computed for simulations?  |software packages             |constrained optimization.
-                           |                              |
-Why use an adjoint solver? |Understand ingredients needed |Jacobian is imperative.
-                           |for adjoint calculation       |
-                           |                              |
-How difficult is it to use |Understand the concern of     |Performance may depend on
-the adjoint capability?    |checkpointing                 |checkpointing at large scale.
+Questions                 |Objectives                     |Key Points
+--------------------------|-------------------------------|-------------------------------------
+How can gradients be      |Know PETSc/TAO's capability for|Adjoint enables dynamic
+computed for simulations? |adjoint and optimization       |constrained optimization.
+                          |                               |
+How difficult is it to    |Understand ingredients needed  |Jacobian is imperative.
+use the adjoint method?   |for adjoint calculation        |
+                          |                               |
+                          |Understand the concern of      |Performance may depend on
+?                         |checkpointing                  |checkpointing at large scale.
 ```
 
 ## Example 1: Generator Stability Analysis:
@@ -101,7 +101,7 @@ Thus the ODE system alternates the right-hand side when a switching face is enco
 * The influence of the perturbation in the slope diminishes as the trajectory is approaching the equilibrium point.
 
 ### Compile the code
-This example is in src/ts/examples/hybrid.
+This example is in `src/ts/examples/hybrid`.
 
 ```
 make ex1adj
