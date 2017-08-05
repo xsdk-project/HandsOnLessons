@@ -567,22 +567,11 @@ required for effective numerical algorithms. One issue we don't touch on here is
 Another is making timestep automatically vary based on how the computation is proceeding.
 
 Heat [conduction](https://en.wikipedia.org/wiki/Thermal_conduction) in this simple
-one dimensional, Cartesian coordinate  case is governed by the partial differential
+one dimensional, Cartesian coordinate, homogeneous material  case is governed by the
+partial differential
 equation (PDE)...
 
 ![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)
-
-and in multiple dimensions and any coordinate system...
-
-![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%5Cnabla%5E2u)
-
-where _u_ is the temperature within the wall at positions, _x_, and times, _t_,
-![](http://latex.codecogs.com/gif.latex?%5Calpha) is the _thermal diffusivity_
-of the material composition (homogeneous in this simple case) of the wall
-and ![](http://latex.codecogs.com/gif.latex?%5Cnabla%5E2) is the
-[Laplace Operator](https://en.wikipedia.org/wiki/Laplace_operator).
-This equation is known as the _Diffusion Equation_ and also the
-[_Heat Equation_](https://en.wikipedia.org/wiki/Heat_equation)
 
 ### Steady State or Variation with Time
 
