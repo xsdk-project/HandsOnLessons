@@ -20,31 +20,27 @@ Copy the directory AMReX_Diffusion from PATH_TO_AMREX_DIFFUSION
 
 In this directory you'll see
 
+```
 main2d.gnu.MPI.ex -- the executable
-
 inputs_2d -- the inputs file
-
 extract_slice -- a simple script to extract a 1-d slice from 2-d or 3-d data
-
 plot_phi -- a simple gnuplot script to read and animate the 1-d slices 
+```
 
 The inputs file currently has 
 
 ```
 nsteps = 20000
-
 n_cell = 256
-
 max_grid_size = 64
-
 plot_int = 1000
-
 is_periodic = 1 0
 
 ```
 
 The grid is a cube consisting of 256 x 256 x 256 cells, consisting of (at least) 8 subgrids each
-of size 64x64x64 cells..
+of size 64x64x64 cells.  The problem is periodic in the x-direction and not in the y-direction.
+This problem happens to be set-up to have homogeneous Neumann boundary conditions when not periodic.
 
 Let's try running this 2-d problema and animating the 1-d slices.
 
@@ -57,6 +53,29 @@ and when you get the gnuplot prompt, type
 ```
 load 'plot_phi'
 ```
+
+Do you see the solution evolving in time?
+
+If you'd like to see the 2-d solution, use Visit to open up a plotfile.
+
+```
+Select ``File'' $\rightarrow$ ``Open file ...'',
+then select the {\tt Header} file associated the the plotfile of interest (e.g., {\tt plt00000/Header}).
+Assuming you ran the simulation in 2D, here are instructions for making a simple plot:
+\begin{itemize}
+\item To view the data, select ``Add'' $\rightarrow$ ``Pseudocolor'' $\rightarrow$ ``phi'', and then select
+``Draw''.
+\item To view the grid structure (not particularly interesting yet, but when we add AMR it will be), select
+`` $\rightarrow$ ``subset'' $\rightarrow$ ``levels''.  Then double-click the text ``Subset - levels'',
+enable the ``Wireframe'' option, select ``Apply'', select ``Dismiss'', and then select ``Draw''.
+\item To save the image, select ``File'' $\rightarrow$ ``Set save options'', then customize the image format
+to your liking, then click ``Save''.
+\end{itemize}
+Your image should look similar to that below.
+```
+
+<img src = "VisIt_2D.pdf" width ="300">
+
 
 ## What does this do in parallel
 
