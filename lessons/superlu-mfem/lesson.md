@@ -44,7 +44,7 @@ linear systems.
 ## Running the Example
 
 ### Run 1: default setting with GMRES solver, velocity = 100
-
+```
 $ ./convdiff
 
 Options used:
@@ -90,7 +90,7 @@ GMRES Solve:
 GMRES Iterations = 23
 Final GMRES Relative Residual Norm = 2.56511e-13
 Time required for solver:  0.0362886 (s)
-
+```
 
 ### Run 2: increase velocity to 1000, GMRES doesn't converge
 
