@@ -44,6 +44,7 @@ linear systems.
 ## Running the Example
 
 ### Run 1: default setting with GMRES solver, velocity = 100
+
 ```
 $ ./convdiff
 
@@ -92,45 +93,61 @@ Final GMRES Relative Residual Norm = 2.56511e-13
 Time required for solver:  0.0362886 (s)
 ```
 
-### Run 2: increase velocity to 1000, GMRES doesn't converge
+### Run 2: increase velocity to 1000, GMRES does not converge anymore
 
-#### Expected Behavior/Output
+```
+Options used:
+   --refine 0
+   --order 1
+   --velocity 1000
+   --no-visit
+   --no-superlu
+   --slu-colperm 0
+Number of unknowns: 10201
+=============================================
+Setup phase times:
+=============================================
+GMRES Setup:
+  wall clock time = 0.020000 seconds
+  wall MFLOPS     = 0.000000
+  cpu clock time  = 0.010000 seconds
+  cpu MFLOPS      = 0.000000
 
-#### Examining Results
+L2 norm of b: 9.500000e-04
+Initial L2 norm of residual: 9.500000e-04
+=============================================
 
-Include here examples of either plots or data you expect learners to observe.
+Iters     resid.norm     conv.rate  rel.res.norm
+-----    ------------    ---------- ------------
+    1    9.500000e-04    1.000000   1.000000e+00
+    2    9.500000e-04    1.000000   1.000000e+00
+    3    9.500000e-04    1.000000   1.000000e+00
+    ...
+  200    9.500000e-04    1.000000   1.000000e+00
+```
 
-#### Questions
+### Run 3: Now use SuperLU_DIST, with default options
+```
+$ ./convdiff -slu --velocity 1000
 
-> **Question #1?** (triple-click box below to reveal answer)
+Options used:
+   --refine 0
+   --order 1
+   --velocity 1000
+   --no-visit
+   --superlu
+   --slu-colperm 0
+Number of unknowns: 10201
 
-|<font color="white">Answer to Question #1</font>|
+** Memory Usage **********************************
+** NUMfact space (MB): (sum-of-all-processes)
+    L\U :           41.12 |  Total :    50.72
+** Total highmark (MB):
+    Sum-of-all :    62.27 | Avg :    62.27  | Max :    62.27
+**************************************************
+Time required for solver:  38.201 (s)
+```
 
-> **Question #2?** (triple-click box below to reveal answer)
-
-|<font color="white">Answer to Question #2</font>|
-
----
-
-### Run 3
-
-#### Expected Behavior/Output
-
-#### Examining Results
-
-Include here examples of either plots or data you expect learners to observe.
-
-#### Questions
-
-> **Question #1?** (triple-click box below to reveal answer)
-
-|<font color="white">Answer to Question #1</font>|
-
-> **Question #2?** (triple-click box below to reveal answer)
-
-|<font color="white">Answer to Question #2</font>|
-
----
 
 ## Out-Brief
 
