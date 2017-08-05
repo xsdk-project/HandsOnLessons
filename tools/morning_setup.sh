@@ -49,20 +49,25 @@ while true; do
         esac
     done
 done
-ssh cooley "rm -f ~/.vnc/password; cat > ~/.vnc/password" << EOF
-$pw
-EOF
+ssh cooley "rm -f ~/.vnc/passwd; echo $pw | vncpasswd -f > ~/.vnc/passwd; chmod 600 ~/.vnc/passwd"
 
 # Reserve 3 nodes for interactive use all day
 # get back allocation machine 'name' and start
 # xvnc server there
-qsub_job_info=$(ssh -f cooley "qsub -I -n $nnodes -t $tl -A $acct")
-nodid=$(echo $qsub_job_info | tr ' ' '\n' | grep cc[0-9][0-9][0-9].cooley)
+ssh -t -t -f cooley "qsub -I -n $nnodes -t $tl -A $acct" > ./qsub-interactive.out 2>&1 &
+nodid=""
+while [[ -z "$nodid" ]] ; do
+    echo "Checking for allocation completion"
+    nodid=$(cat ./qsub-interactive.out | tr ' ' '\n' | grep cc[0-9][0-9][0-9].cooley | cut -d'.' -f1)
+    sleep 5
+done
+echo "Got allocation at $nodid"
 
 #
 # Startup xvncserver on the allocation
 #
-ssh cooley "ssh $nodid x0vncserver --display=:0.0 --NeverShared=1 --geometry=2400x1500+0+0 --PasswordFile=/home/$cooley_username/.vnc/passwd --MaxProcessorUsage=100"
+ssh cooley "nohup ssh $nodid x0vncserver --display=:0.0 --NeverShared=1 --geometry=2400x1500+0+0 --PasswordFile=/home/$cooley_username/.vnc/passwd --MaxProcessorUsage=100 >& /dev/null &"
+sleep 10
 
 # Set up 2-hop ssh tunnel to allocation, (above) through
 # login and run xstartup there
@@ -73,9 +78,14 @@ else
 fi
 
 if [[ "$localos" == osx ]]; then
-    open vnc://localhost:22590 &
+    open vnc://localhost:22590
 elif [[ "$localos" == linux ]]; then
     echo "not implemented"
 elif [[ "$localos" == windows ]]; then
     echo "not implemented"
 fi
+
+echo "WARNING: soft add +gcc-4.8.1"
+echo "WARNING: set path=($path /projects/ATPESC2017/NumericalPackages/spack/bin)"
+echo "WARNING: set path to root of hands on"
+
