@@ -98,7 +98,7 @@ Thus the ODE system alternates the right-hand side when a switching face is enco
 * The parameter to which the sensitivities are computed is marked in red.
 * It represents the slope of the switching surface.
 * Intuitively the trajectory cannot be affected before it hits the surface.
-* The influence of the perturbation in the slope diminishes as the trajectory approaching the equilibrium point.
+* The influence of the perturbation in the slope diminishes as the trajectory is approaching the equilibrium point.
 
 ### Compile the code
 This example is in src/ts/examples/hybrid.
