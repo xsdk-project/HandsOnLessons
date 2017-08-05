@@ -1,6 +1,7 @@
 # Lesson Title
 
-## At A Glance (Expected # minutes to complete)
+## At a Glance
+<!-- (Expected # minutes to complete) %% temporarily omit -->
 
 **Note**: GitHub Markdown tables are very limited! To do this section of questions,
 objectives and key points properly, we need to use more features of Jekyll then I
@@ -22,7 +23,7 @@ We don't have to list all possible questions here...only the two or three _most_
 only list here the ones that are _most_ important.
 * **Key Points** are those things we want learners to take-away from the lesson.
 
-## The problem being solved
+## The Problem Being Solved
 
 Describe the problem(s) that will be solved in this lesson.
 If possible, include a picture or graphic here describing the physical problem setup. If the application
@@ -82,7 +83,7 @@ convert -delay 20 -loop 0 image*.<ext> animation.gif
 
 ![Gif Animations](animated_basic_heat.gif)
 
-Alternatively, you can upload videos to YouTube and embed them here 
+Alternatively, you can upload videos to YouTube and embed them here
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/bsSFYrDXK0k" frameborder="0" allowfullscreen></iframe>
 
@@ -155,3 +156,8 @@ did not fully cover.
 ### Further Reading
 
 Include links to other online sources you might want to include.
+
+<!-- Insert space, horizontal line, and link to HandsOnLesson table -->
+&nbsp;
+-------
+[Back to all HandsOnLessons](../lessons.md)
