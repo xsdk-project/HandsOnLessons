@@ -451,4 +451,4 @@ For structured problems, solvers that take advantage of the structure of the pro
 To learn more about algebraic multigrid, see 
 [An Introduction to Algebraic Multigrid](https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/CiSE_2006_amg_220851.pdf)
 
-More information on hypre , including documentation and further publicastions, can be found at the [hypre web page] (http://www.llnl.gov/CASC/hypre)
+More information on hypre , including documentation and further publications, can be found at the [hypre web page](http://www.llnl.gov/CASC/hypre)
