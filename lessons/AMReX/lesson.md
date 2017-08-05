@@ -42,6 +42,51 @@ The grid is a cube consisting of 256 x 256 x 256 cells, consisting of (at least)
 of size 64x64x64 cells.  The problem is periodic in the x-direction and not in the y-direction.
 This problem happens to be set-up to have homogeneous Neumann boundary conditions when not periodic.
 
+This algorithm should look familiar to you -- in each time step we call the following two Fortran routines:
+```fortran
+  ! x-fluxes
+  do    j = lo(2), hi(2)
+     do i = lo(1), hi(1)+1
+        fluxx(i,j) = ( phi(i,j) - phi(i-1,j) ) / dx(1)
+     end do
+  end do
+ 
+  ! y-fluxes
+  do    j = lo(2), hi(2)+1
+     do i = lo(1), hi(1)
+        fluxy(i,j) = ( phi(i,j) - phi(i,j-1) ) / dx(2)
+     end do
+  end do
+```
+
+and
+```
+  do    j = lo(2), hi(2)
+     do i = lo(1), hi(1)
+ 
+        phinew(i,j) = phiold(i,j) &
+             + dtdx(1) * (fluxx(i+1,j  ) - fluxx(i,j)) &
+             + dtdx(2) * (fluxy(i  ,j+1) - fluxy(i,j))
+ 
+     end do
+  end do
+
+```
+
+The other parts of the algorithm -- that, in particular, involve MPI communication, are handled in the C++:
+
+```
+        MultiFab::Copy(phi_old, phi_new, 0, 0, 1, 0);
+```
+
+and
+
+```
+            old_phi.FillBoundary(geom.periodicity());
+```
+
+See if it makes sense what order all of these are called in.
+
 Let's try running this 2-d problema and animating the 1-d slices.
 
 ```
@@ -85,7 +130,13 @@ mpirun -n 1 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Ru
 mpirun -n 2 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
 mpirun -n 4 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
 ```
-and see how the timings compare 
+and see how the timings compare.
+
+Questions to think about:
+
+Why did we set plot_int = -1 in the command line?
+
+If this didn't scale perfectly, why not?
 
 ## Running the Example
 
