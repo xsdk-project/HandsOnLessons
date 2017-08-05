@@ -192,12 +192,12 @@ make basic_spikes
     save=0
     outi=100
     noout=0
-Iteration 0000: last change l2=7.04
-Iteration 0100: last change l2=0.00021002
-Iteration 0200: last change l2=4.25035e-05
-Iteration 0300: last change l2=8.81977e-06
-Iteration 0400: last change l2=1.83059e-06
-Iteration 0500: last change l2=3.8597e-07
+Timestep 0000: last change l2=7.04
+Timestep 0100: last change l2=0.00021002
+Timestep 0200: last change l2=4.25035e-05
+Timestep 0300: last change l2=8.81977e-06
+Timestep 0400: last change l2=1.83059e-06
+Timestep 0500: last change l2=3.8597e-07
 Integer ops        = 3285657
 Floating point ops = 50310
 Memory used        = 194 bytes
@@ -242,8 +242,8 @@ To do this, we can try to increase the spatial resolution. Lets try _dx_=0.01.
     save=0
     outi=100
     noout=0
-Iteration 0000: last change l2=76800
-Iteration 0100: last change l2=1.38688e+302
+Timestep 0000: last change l2=76800
+Timestep 0100: last change l2=1.38688e+302
 /bin/sh: line 8: 835744 Floating point exception
 Integer ops        = 4392943
 Floating point ops = 455350
@@ -288,18 +288,18 @@ $ make hr_spikes_smalldt
     save=0
     outi=100
     noout=0
-Iteration 0000: last change l2=48
-Iteration 0100: last change l2=0.000169428
-Iteration 0200: last change l2=3.60231e-05
-Iteration 0300: last change l2=1.35141e-05
-Iteration 0400: last change l2=6.83466e-06
-Iteration 0500: last change l2=4.08578e-06
+Timestep 0000: last change l2=48
+Timestep 0100: last change l2=0.000169428
+Timestep 0200: last change l2=3.60231e-05
+Timestep 0300: last change l2=1.35141e-05
+Timestep 0400: last change l2=6.83466e-06
+Timestep 0500: last change l2=4.08578e-06
 .
 .
 .
-Iteration 19800: last change l2=2.52461e-11
-Iteration 19900: last change l2=2.42688e-11
-Iteration 20000: last change l2=2.33386e-11
+Timestep 19800: last change l2=2.52461e-11
+Timestep 19900: last change l2=2.42688e-11
+Timestep 20000: last change l2=2.33386e-11
 Integer ops        = 56755439
 Floating point ops = 18165900
 Memory used        = 1636 bytes
@@ -319,7 +319,7 @@ Memory used        = 1636 bytes
 
 |<font color="white">18165900 on this more finely resolved mesh vs. 50310 on the coarse mesh. Thats 361x more flops!</font>|
 
-> **The solution changes very slowly at late time. Do we need to use the same small timestep for all iterations?**
+> **The solution changes very slowly at late time. Do we need to use the same small timestep for all timesteps?**
 
 |<font color="white">Not necessarily. But, how would you go about changing the method so that it could robustly adapt the timestep to changing conditions of the solution?<font>|
 
@@ -414,7 +414,7 @@ static void r83_np_sl(int n,
 ```
 
 Here, we have code that sets up and LU factors the initial matrix.
-Then, the LU factored matrix is used on each solution iteration
+Then, the LU factored matrix is used on each solution timestep
 to solve for the new temperatures.
 
 ### Run 4 (original dt=0.004)
@@ -435,12 +435,12 @@ $ make hr_spikes_crankn
     save=0
     outi=100
     noout=0
-Iteration 0000: last change l2=148.274
-Iteration 0100: last change l2=2.09991e-05
-Iteration 0200: last change l2=4.24893e-06
-Iteration 0300: last change l2=8.81289e-07
-Iteration 0400: last change l2=1.82834e-07
-Iteration 0500: last change l2=3.85324e-08
+Timestep 0000: last change l2=148.274
+Timestep 0100: last change l2=2.09991e-05
+Timestep 0200: last change l2=4.24893e-06
+Timestep 0300: last change l2=8.81289e-07
+Timestep 0400: last change l2=1.82834e-07
+Timestep 0500: last change l2=3.85324e-08
 Integer ops        = 5809323
 Floating point ops = 605800
 Memory used        = 4067 bytes
@@ -466,10 +466,10 @@ $ make hr_spikes_crankn_largedt
     save=0
     outi=100
     noout=0
-Iteration 0000: last change l2=162.895
-Iteration 0100: last change l2=1.69397e-05
-Iteration 0200: last change l2=7.37902e-07
-Iteration 0250: last change l2=1.58932e-07
+Timestep 0000: last change l2=162.895
+Timestep 0100: last change l2=1.69397e-05
+Timestep 0200: last change l2=7.37902e-07
+Timestep 0250: last change l2=1.58932e-07
 Integer ops        = 4439568
 Floating point ops = 303790
 Memory used        = 4067 bytes
