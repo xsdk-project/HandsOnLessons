@@ -12,7 +12,7 @@ How difficult is it to    |Understand ingredients needed  |Jacobian is imperativ
 use the adjoint method?   |for adjoint calculation        |
                           |                               |
                           |Understand the concern of      |Performance may depend on
-?                         |checkpointing                  |checkpointing at large scale.
+                          |checkpointing                  |checkpointing at large scale.
 ```
 
 ## Example 1: Generator Stability Analysis:
@@ -31,6 +31,7 @@ During ATPESC, participants do not need to compile code because binaries are ava
 ```
 make ex3opt
 ```
+The source code is included in [ex3opt.c](./ex3opt.c)
 
 ### Command line options
 You can determine the command line options available for this particular example by doing
@@ -38,7 +39,9 @@ You can determine the command line options available for this particular example
 ./ex3opt -help
 ```
 and show the options related to TAO only by doing
+```
 ./ex3opt -help | grep tao
+```
 
 ### Run 1: Monitor the optimization progress
 
@@ -70,7 +73,7 @@ type: seq
 1.00793
 ```
 #### Questions
-> **Examine the source code ex3opt.c(./ex3opt.c) and find the user-provided functions for TAO, TS, and TSAdjoint respectively.**
+> **Examine the source code and find the user-provided functions for TAO, TS, and TSAdjoint respectively.**
 
 |<font color="white">Essential functions we have provided are FormFunctionGradient for TAO, TSIFunction and TSIJacobian for TS,  RHSJacobianP for TSAdjoint. Because of the integral in the objective function, extra functions including CostIntegrand, DRDYFunction and DRDPFunction are given to TSAdjoint.</font>|
 
@@ -101,11 +104,10 @@ Thus the ODE system alternates the right-hand side when a switching face is enco
 * The influence of the perturbation in the slope diminishes as the trajectory is approaching the equilibrium point.
 
 ### Compile the code
-This example is in `src/ts/examples/hybrid`.
+This example is in `src/ts/examples/hybrid`. The source code is included in [ex1adj.c](./ex1adj.c)
 
 ```
 make ex1adj
-
 ```
 
 ### Run 1: Monitor solution graphically with phase diagram
@@ -130,13 +132,20 @@ We can also monitor the timestepping for the adjoint calculation by doing
 
 ### Further information
 
-The example `ex3fwd.c` in the same folder illustrates the forward sensitivity approach for the same problem.
+The example `ex1fwd.c` in the same folder illustrates the forward sensitivity approach for the same problem.
 
 
 ## Example 3: Diffusion-Reaction Problem
 
 This code demonstrates parallel adjoint calculation for a system of time-dependent PDEs on a 2D rectangular grid.
 We need only to write the right-hand-side function and the Jacobian and compile the code once. All the tasks in the following can be accomplished using command line options.
+
+### Compile the code
+This example is in `src/ts/examples/advection-diffusion-reaction`. The source code is included in [ex5adj.c](./ex5adj.c)
+
+```
+make ex5adj
+```
 
 ### Run 1: Monitor solution graphically
 
