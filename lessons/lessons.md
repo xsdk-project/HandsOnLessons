@@ -6,6 +6,7 @@ As described in [Welcome to HandsOnLessons](../README.md), hosted here are a ser
 
 * [Basic, One Dimensional Heat Equation](hand_coded_heat/lesson.md)
 * [Structured Mesh](AMReX/lesson.md)
+* [Iterative Solvers](iterativesolvers/lesson.md)
 * [Time Integrators](time_integrators/lesson.md)
 * [Algebraic Multigrid](AMG/lesson.md)
 * [Finite Elements Convergence](convergence/lesson.md)
