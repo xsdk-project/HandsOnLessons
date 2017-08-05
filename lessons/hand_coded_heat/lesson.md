@@ -33,7 +33,7 @@ model _heat_ conduction through a wall as pictured here ...
 
 ### Governing Equations
 
-In general, heat [conduction](https://en.wikipedia.org/wiki/Thermal_conduction) is goverened
+In general, heat [conduction](https://en.wikipedia.org/wiki/Thermal_conduction) is governed
 by the partial differential (PDE)...
 
 |![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%5Cnabla%5E2u)|(1)|
@@ -49,7 +49,7 @@ This equation is known as the _Diffusion Equation_ and also the
 
 ### Simplifying Assumptions
 
-To make the problem tractible for this lesson, we make some simplifying assumptions...
+To make the problem tractable for this lesson, we make some simplifying assumptions...
 
 1. The thermal diffusivity, ![](http://latex.codecogs.com/gif.latex?%5Calpha),
    is constant for all _space_ and _time_.
@@ -69,7 +69,7 @@ such as...
 
 1. Will the temperature at _x=A_ exceed a given value?
 1. How does the maximum temperature in the wall change with time?
-1. At what time will temperature fluxuations of frequency, _f_ fall below a threshold?
+1. At what time will temperature fluctuations of frequency, _f_ , fall below a threshold?
 
 To answer questions such as these, the application needs to be designed so that it can
 properly model _time varying_ or _transient_ behavior of heat conduction and not just
@@ -83,10 +83,10 @@ properly model _time varying_ or _transient_ behavior of heat conduction and not
    the _time varying_ or _transient_ solution?
 1. The PDE in equation 2 is a _continuous_ equation in two
    [_independent variables_](https://en.wikipedia.org/wiki/Partial_differential_equation)
-   _x_ and _t_? How will we [_discretize_](https://en.wikipedia.org/wiki/Discretization)
-   the PDE such that its solution can be implemented in a computer program?
-1. How do we develop the software so that enhancing it to accomodate more complex
-   situations later is easy?
+   _x_ and _t_. How will we [_discretize_](https://en.wikipedia.org/wiki/Discretization)
+   the PDE so that we can calculate its solution in a computer program?
+1. How do we develop the software so that extending it to solve more complex problems
+   later is easy?
 
 ## The Application Source Code
 
@@ -98,7 +98,7 @@ of _u_ with respect to time, _t_, by the equation...
 
 |![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%5CBigr%7C_%7Bt_%7Bk%2B1%7D%7D%20%5Capprox%20%5Cfrac%7Bu_i%5E%7Bk%2B1%7D-u_i%5Ek%7D%7B%5CDelta%20t%7D)|(3)|
 
-As well, we can approximate the right-hand side of equation 2 with
+We can approximate the right-hand side of equation 2 with
 the second derivative of _u_ with respect to space, _x_, by the equation...
 
 |![](http://latex.codecogs.com/gif.latex?%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D%5CBigr%7C_%7Bx_i%7D%20%5Capprox%20%5Calpha%20%5Cfrac%7Bu_%7Bi-1%7D%5Ek-2u_i%5Ek%2Bu_%7Bi%2B1%7D%5Ek%7D%7B%5CDelta%20x%5E2%7D)|(4)|
@@ -110,8 +110,8 @@ the next time, _k+1_, from temperatures at the current time, _k_, as
 |![](http://latex.codecogs.com/gif.latex?u_i%5E%7Bk%2B1%7D%20%3D%20ru_%7Bi%2B1%7D%5Ek%2B%281-2r%29u_i%5Ek%2Bru_%7Bi-1%7D%5Ek)|(6)|
 
 where ![](http://latex.codecogs.com/gif.latex?r%3D%5Calpha%5Cfrac%7B%5CDelta%20t%7D%7B%5CDelta%20x%5E2%7D)
-Note that all the values on the left-hand side of equation 6 are for time, _k-1_, the
-solution from a _previously known_ time-step. Such a method is known as an
+Note that this equation now defines the solution at spatial position _i_ and time _k+1_ 
+in terms of values of u at time _k_ .  This is an 
 [_explicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods)
 numerical method. Explicit methods have some nice properties:
 
@@ -210,11 +210,11 @@ metrics to other runs later.
 
 > **Are the results correct? How would we assess that?**
 
-|<font color="white">Writing custom code often also requires additional work to vett the results obained, whereas relying upon mature community adopted software packages often means results those packages produce have already been well vetted in many regimes of interest.</font>|
+|<font color="white">Writing custom code often also requires additional work to vett the results obtained, whereas relying upon mature community adopted software packages often means results those packages produce have already been well vetted in many regimes of interest.</font>|
 
 > **Will I get the same results when using other computing platforms and compilers? Is the code we've written portable enough even to support that?**
 
-|<font color="white">Maybe. In this overly simplified 500-line example program, it's conceivable that we could get numerically identical results when using numerous different platforms and compilers. However, imagine trying to do that with applications requiring highly sophisticated numerical algorithms and involving hundreds of thousands of lines of code, running on high-performance machines where we must also explicitly consider parallelism and architectural heterogeneity.  A key advantage of using mature numerical packages is that many of these details have already been addressed people who have deep expertise with high-performance algorithms and software.</font>|
+|<font color="white">Maybe. In this overly simplified 500-line example program, it's conceivable that we could get numerically identical results when using numerous different platforms and compilers. However, imagine trying to do that with applications requiring highly sophisticated numerical algorithms and involving hundreds of thousands of lines of code, running on high-performance machines where we must also explicitly consider parallelism and architectural heterogeneity.  A key advantage of using mature numerical packages is that many of these details have already been addressed by people who have deep expertise with high-performance algorithms and software.</font>|
 
 ---
 
@@ -323,7 +323,7 @@ Memory used        = 1636 bytes
 
 > **The solution changes very slowly at late time. Do we need to use the same small timestep for all iterations?**
 
-|<font color="white">Not necessarily. But, how would you go about changing our application so that it could robustly adapt the timestep to changing conditions of the solution?<font>|
+|<font color="white">Not necessarily. But, how would you go about changing the method so that it could robustly adapt the timestep to changing conditions of the solution?<font>|
 
 > **Can we achieve solution of similar quality with fewer flops?**
 
@@ -340,15 +340,16 @@ we arrive at the following discretization of equation 2...
 
 where ![](http://latex.codecogs.com/gif.latex?r%3D%20%5Calpha%20%5Cfrac%7B%5CDelta%20t%7D%7B2%20%5CDelta%20x%5E2%7D)
 
-In equation 7, discrete values in the solution depend not only on
-values from the previous solution iteration but also on each other
-in the current iteration. This means each iteration in the solution
-involves solving a linear system of equations defined by equation 7.
-Such methods are known as
-[_implicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods) methods.
-In this case, the system of equations is [_tri-diagonal_](https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm)
-so it is easier to implement than a general matrix solve but is nonetheless,
-more involved.
+In equation 7, the solution at spatial position _i_ and time _k+1_ 
+now depends not only on values of u at time _k_ but also on other
+values of u at time _k+1_.
+This means each time we advance the solution in time we must
+solve a linear system; in other words we must solve for all of the
+values at time _k+1_ in one step.
+This is an example of an [_implicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods) method.
+In this case, the system of equations is [_tri-diagonal_](https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm) --
+since each update for u at _i_ only uses u at _i-1_ , _i_ and _i+1_ -- 
+so it is easier to implement than a general matrix solve but is still more complicated than an explicit update.
 
 The code to implement this method is more involved because it involves 
 doing a tri-diagonal solve.
@@ -482,7 +483,7 @@ Memory used        = 4067 bytes
 
 > **Is this algorithm _better_ than FTCS?**
 
-|<font color="white">It depends on what science you are trying to achieve. Here, we are trying to resolve some fine spatial phenomena requiring such a small timestep that the FTCS algorithm really has to work hard, while the Crank-Nicolson algorithm provides numerically higher quality results in fewer flops. On the other hand, the Crank-Nicolson approach requires greater memory usage and greater complexity in implementation.</font>|
+|<font color="white">It depends on what science you are trying to achieve. Here, the small timestep that the FTCS algorithm needs for stability makes it really expensive; we can get enough accuracy by instead using the Crank-Nicolson algorithm. On the other hand, the Crank-Nicolson approach requires greater memory usage and greater complexity in implementation.</font>|
 
 > **How would you parallelize this algorithm...with threads, with MPI, with Cuda/GPU?**
 
@@ -507,7 +508,8 @@ to support more complex situations such as...
   * More complex domains
     * Much larger objects involving billions of discretization points and
       requiring _scalability_ in all phases of the solution.
-    * Features with highly variable spatial resolutions requiring unstructured
+    * Domains that perehaps aren't square and may have 
+      features with highly variable spatial resolutions requiring unstructured
       and/or adaptive meshing.
   * Parallelism and complex computational settings on high-performance architectures
     * MPI+X
@@ -538,7 +540,7 @@ solution strategies that leverage application-specific knowledge.
 ## Out-Brief
 
 We have demonstrated some of the tradeoffs in developing a custom-coded
-C application to model time-varying heat in a wall. We
+C application to model time-varying heat conduction in a wall. We
 developed two different numerical schemes, FTCS and Crank-Nicolson.
 The FTCS scheme is an _explicit_ scheme whereas Crank-Nicolson is
 an _implicit_ scheme. We demonstrated some of the attributes of these
@@ -552,11 +554,11 @@ packages for application development.
 
 The remainder of the lessons 
 focus on the use of various software packages in the solution of ever
-more complex settings involving the heat equation.
+more complex settings.
 
 A simple examination of the C code, [heat.c](./heat.c) demonstrates that in spite of
-numerous simplification we have made here, developing the code necessary to
-impliment numerical algorithms and, in particular, to provide significant flexibility
+numerous simplifications we have made here, developing the code necessary to
+implement numerical algorithms and, in particular, to provide significant flexibility
 in the methods of solution and to understand and control their behavior is non-trivial.
 Code development can get quite complex very quickly.
 
@@ -567,7 +569,7 @@ required for effective numerical algorithms. One issue we don't touch on here is
 Another is making timestep automatically vary based on how the computation is proceeding.
 
 Heat [conduction](https://en.wikipedia.org/wiki/Thermal_conduction) in this simple
-one dimensional, Cartesian coordinate  case is goverened by the partial differential
+one dimensional, Cartesian coordinate  case is governed by the partial differential
 equation (PDE)...
 
 ![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)
