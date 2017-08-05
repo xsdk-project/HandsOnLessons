@@ -5,4 +5,5 @@ Lesson Name | Approximate Time
 [Basic, One Dimensional Heat Equation](hand_coded_heat/lesson.md) | 15 mins|
 [Time Integrators](time_integrators/lesson.md) | 15 mins|
 [Algebraic Multigrid](AMG/lesson.md) | 10 mins|
+[Finite Elements Convergence](convergence/lesson.md) | 10 mins|
 [Adjoint Solvers](adjoint/lesson.md) | 10 mins|

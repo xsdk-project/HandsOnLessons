@@ -3,17 +3,17 @@
 ## At A Glance (10 mins)
 
 ```
-Questions                   |Objectives                      |Key Points
-----------------------------|--------------------------------|---------------------------
-What is a finite element    |Understand basic finite element |Basis functions determine
-method?                     |machinery                       |the quality of the solution
-                            |                                |
-What is a high order method?|Understand the how polynomial   |High order methods add more
-                            |order affects simulations       |unknowns on the same mesh
-                            |                                |for more precise solutions
-                            |                                |
-What is convergence?        |Understand how convergence and  |High order methods converge
-                            |convergence rate is calculated  |faster for smooth solutions
+Questions                    |Objectives                      |Key Points
+-----------------------------|--------------------------------|---------------------------
+What is a finite element     |Understand basic finite element |Basis functions determine
+method?                      |machinery                       |the quality of the solution
+			     |                                |
+What is a high order method? |Understand  how polynomial      |High order methods add more
+			     |order affects simulations       |unknowns on the same mesh
+			     |                                |for more precise solutions
+			     |                                |
+What is convergence?         |Understand how convergence and  |High order methods converge
+			     |convergence rate is calculated  |faster for smooth solutions
 ```
 
 ## A Widely Applicable Equation
@@ -65,7 +65,7 @@ where
 |![](http://latex.codecogs.com/gif.latex?x_j%20%3D%20c_j)|(7)|
 
 which is a ![](http://latex.codecogs.com/gif.latex?n%20%5Ctimes%20n) linear algebra problem that can be
-solved on a computer for the unknonwn coefficients. Note that we
+solved on a computer for the unknown coefficients. Note that we
 are free to choose whichever basis functions
 ![](http://latex.codecogs.com/gif.latex?%5Cphi_i) as we see fit.
 
@@ -78,11 +78,11 @@ functions which live on a computational mesh.
 
 ```c++
 FiniteElementCollection *fec = new H1_FECollection(order, dim);
-ParFiniteElementSpace *fespace = new ParFiniteElementSpace(pmesh, fec);   
+ParFiniteElementSpace *fespace = new ParFiniteElementSpace(pmesh, fec);
 ```
 
 This defines a collection of H1 functions (meaning the gradient is defined) of
-a given polynomial order on a parallel computaional mesh pmesh. Next, we
+a given polynomial order on a parallel computational mesh pmesh. Next, we
 need to define the integrals in equations 5 and 6.
 
 ```c++
@@ -156,19 +156,19 @@ The convergence study has the following options
 Usage: ./convergence [options] ...
 Options:
    -h, --help
-        Print this help message and exit.
+	Print this help message and exit.
    -m <string>, --mesh <string>, current value: ../../../data/star.mesh
-        Mesh file to use.
+	Mesh file to use.
    -o <int>, --order <int>, current value: 1
-        Finite element order (polynomial degree).
+	Finite element order (polynomial degree).
    -sc, --static-condensation, -no-sc, --no-static-condensation, current option: --no-static-condensation
-        Enable static condensation.
+	Enable static condensation.
    -r <int>, --refinements <int>, current value: 4
-        Number of total uniform refinements
+	Number of total uniform refinements
    -sr <int>, --serial-refinements <int>, current value: 2
-        Maximum number of serial uniform refinements
+	Maximum number of serial uniform refinements
    -f <double>, --frequency <double>, current value: 1
-        Set the frequency for the exact solution.
+	Set the frequency for the exact solution.
 ```
 
 ### Run 1 (Low order)
@@ -185,14 +185,14 @@ Options used:
    --serial-refinements 2
    --frequency 1
 ----------------------------------------------------------------------------------------
-DOFs            h               L^2 error       L^2 rate        H^1 error       H^1 rate        
+DOFs            h               L^2 error       L^2 rate        H^1 error       H^1 rate
 ----------------------------------------------------------------------------------------
-31              0.4876          0.3252          0               2.631           0               
-101             0.2438          0.09293         1.807           1.387           0.9229          
-361             0.1219          0.02393         1.957           0.7017          0.9836          
-1361            0.06095         0.006027        1.989           0.3518          0.996           
-5281            0.03048         0.00151         1.997           0.176           0.999           
-20801           0.01524         0.0003776       1.999           0.08803         0.9997          
+31              0.4876          0.3252          0               2.631           0
+101             0.2438          0.09293         1.807           1.387           0.9229
+361             0.1219          0.02393         1.957           0.7017          0.9836
+1361            0.06095         0.006027        1.989           0.3518          0.996
+5281            0.03048         0.00151         1.997           0.176           0.999
+20801           0.01524         0.0003776       1.999           0.08803         0.9997
 82561           0.007619        9.441e-05       2               0.04402         0.9999
 ```
 
@@ -212,14 +212,14 @@ Options used:
    --serial-refinements 2
    --frequency 1
 ----------------------------------------------------------------------------------------
-DOFs            h               L^2 error       L^2 rate        H^1 error       H^1 rate        
+DOFs            h               L^2 error       L^2 rate        H^1 error       H^1 rate
 ----------------------------------------------------------------------------------------
-211             0.4876          0.004777        0               0.118           0               
-781             0.2438          0.0003178       3.91            0.01576         2.905           
-3001            0.1219          2.008e-05       3.984           0.001995        2.982           
-11761           0.06095         1.258e-06       3.997           0.0002501       2.996           
-46561           0.03048         7.864e-08       4               3.129e-05       2.999           
-185281          0.01524         4.915e-09       4               3.912e-06       3               
+211             0.4876          0.004777        0               0.118           0
+781             0.2438          0.0003178       3.91            0.01576         2.905
+3001            0.1219          2.008e-05       3.984           0.001995        2.982
+11761           0.06095         1.258e-06       3.997           0.0002501       2.996
+46561           0.03048         7.864e-08       4               3.129e-05       2.999
+185281          0.01524         4.915e-09       4               3.912e-06       3
 739201          0.007619        3.072e-10       4               4.891e-07       3
 ```
 
@@ -240,11 +240,11 @@ Options used:
    --serial-refinements 2
    --frequency 1
 ----------------------------------------------------------------------------------------
-DOFs            h               L^2 error       L^2 rate        H^1 error       H^1 rate        
+DOFs            h               L^2 error       L^2 rate        H^1 error       H^1 rate
 ----------------------------------------------------------------------------------------
-729             0.25            0.001386        0               0.04431         0               
-4913            0.125           0.0001772       2.967           0.01106         2.002           
-35937           0.0625          2.227e-05       2.993           0.002765        2.001           
+729             0.25            0.001386        0               0.04431         0
+4913            0.125           0.0001772       2.967           0.01106         2.002
+35937           0.0625          2.227e-05       2.993           0.002765        2.001
 274625          0.03125         2.787e-06       2.998           0.0006911       2
 ```
 
