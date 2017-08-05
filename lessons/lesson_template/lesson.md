@@ -158,6 +158,9 @@ did not fully cover.
 Include links to other online sources you might want to include.
 
 <!-- Insert space, horizontal line, and link to HandsOnLesson table -->
+
 &nbsp;
--------
+
+---
+
 [Back to all HandsOnLessons](../lessons.md)

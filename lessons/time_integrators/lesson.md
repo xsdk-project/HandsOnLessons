@@ -732,6 +732,9 @@ around with various command-line options to affect various scenarios.
 [Publications](https://computation.llnl.gov/projects/sundials/publications)
 
 <!-- Insert space, horizontal line, and link to HandsOnLesson table -->
+
 &nbsp;
--------
+
+---
+
 [Back to all HandsOnLessons](../lessons.md)
