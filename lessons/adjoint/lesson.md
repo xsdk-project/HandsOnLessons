@@ -17,7 +17,7 @@ the adjoint capability?    |checkpointing                 |checkpointing at larg
 
 ## Example 1: Generator Stability Analysis:
 
-This code demonstrates how to solve an ODE-constrained optimization problem with the Toolkit for Advanced Optimization (TAO), TSEvent, TSAdjoint and TS.
+This code uses [PETSc/TAO](https://www.mcs.anl.gov/petsc/) to demonstrates how to solve an ODE-constrained optimization problem with the Toolkit for Advanced Optimization (TAO), TSEvent, TSAdjoint and TS.
 The objective is to maximize the mechanical power input subject to the generator swing equations and a constraint on the maximum rotor angle deviation, which is reformulated as a minimization problem
 
 ![equation](http://latex.codecogs.com/gif.latex?%5Cbegin%7Balign%2A%7D%0D%0A%20%20%5Cmin%20%26%20%5C%7B-P_m%20%2B%20%5Csigma%5Cdisplaystyle%20%5Cint_%7Bt_0%7D%5E%7Bt_F%7D%20%5Cmax%5Cleft%280%2C%20%5Ctheta%20-%20%5Ctheta_%7Bmax%7D%5Cright%29%5E%5Ceta%20%5C%20%5Cmathrm%7Bd%7Dt%20%5C%7D%5C%5C%0D%0A%20%20%5Cnonumber%20%7E%7E%20%5Ctext%7Bs.t.%7D%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Ctheta%7D%7Bdt%7D%20%3D%20%5Comega_B%5Cleft%28%5Comega%20-%20%5Comega_s%5Cright%29%20%5C%5C%0D%0A%20%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Comega%7D%7Bdt%7D%20%3D%20%5Cfrac%7B%5Comega_s%7D%7B2H%7D%5Cleft%28P_m%20-%20P_%7Bmax%7D%5Csin%28%5Ctheta%29%20-%20D%28%5Comega%20-%20%5Comega_s%29%5Cright%29%0D%0A%5Cend%7Balign%2A%7D)
@@ -70,8 +70,9 @@ type: seq
 1.00793
 ```
 #### Questions
->** Examine the source code ex3opt.c(./ex3opt.c) and find the callback functions needed by TAO, TS, and TSAdjoint respectively. **
+> **Examine the source code ex3opt.c(./ex3opt.c) and find the user-provided functions for TAO, TS, and TSAdjoint respectively.**
 
+|<font color="white">Essential functions we have provided are FormFunctionGradient for TAO, TSIFunction and TSIJacobian for TS,  RHSJacobianP for TSAdjoint. Because of the integral in the objective function, extra functions including CostIntegrand, DRDYFunction and DRDPFunction are given to TSAdjoint.</font>|
 
 ### Further information
 
@@ -156,7 +157,7 @@ By default, the checkpoints are stored in binary files on disk. Of course, this 
 mpirun -n 4 ./ex5adj -implicitform 0 -ts_type rk -ts_adapt_type none \
                      -ts_max_steps 10 -ts_monitor -ts_adjoint_monitor \
                      -ts_trajectory_type memory -ts_trajectory_max_cps_ram 3 \
-                     -ts_trajectory_monitor -ts_trajectory_view  
+                     -ts_trajectory_monitor -ts_trajectory_view
 ```
 The output corresponds to the schedule depicted by the following diagram:
 
@@ -165,21 +166,60 @@ The output corresponds to the schedule depicted by the following diagram:
 #### Questions
 > **What will happen if we add the option `-ts_trajectory_max_cps_disk 2` to specify there are two available slots for disk checkpoints?**
 
+|<font color="white">Looking at the output, we will find that the new schedule uses both RAM and disk for checkpointing and takes two less recomputations.</font>|
 
 ### Run 3: Implicit time integration method
 Now we switch to implicit method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)) using fixed stepsize, which is the default setting in the code. At each time step, a nonlinear system is solved by the PETSc nonlinear solver `SNES`.
 ```
-mpirun -n 32 ./ex5adj -da_grid_x 1024 -da_grid_y 1024 -ts_max_steps 10 -snes_monitor -log_view
+mpirun -n 12 ./ex5adj -da_grid_x 1024 -da_grid_y 1024 -ts_max_steps 10 -snes_monitor -log_view
 ```
 * `-snes_monitor` shows the progress of `SNES`
 * `-log_view` prints a summary of the logging
 
+A snippet of the summary:
+```
+...
+Phase summary info:
+   Count: number of times phase was executed
+   Time and Flop: Max - maximum over all processors
+                   Ratio - ratio of maximum to minimum over all processors
+   Mess: number of messages sent
+   Avg. len: average message length (bytes)
+   Reduct: number of global reductions
+   Global: entire computation
+   Stage: stages of a computation. Set stages with PetscLogStagePush() and PetscLogStagePop().
+      %T - percent time in this phase         %F - percent flop in this phase
+      %M - percent messages in this phase     %L - percent message lengths in this phase
+      %R - percent reductions in this phase
+   Total Mflop/s: 10e-6 * (sum of flop over all processors)/(max time over all processors)
+------------------------------------------------------------------------------------------------------------------------
+Event                Count      Time (sec)     Flop                             --- Global ---  --- Stage ---   Total
+                   Max Ratio  Max     Ratio   Max  Ratio  Mess   Avg len Reduct  %T %F %M %L %R  %T %F %M %L %R Mflop/s
+------------------------------------------------------------------------------------------------------------------------
+
+--- Event Stage 0: Main Stage
+
+VecDot                20 1.0 2.7505e-02 1.7 7.00e+06 1.0 0.0e+00 0.0e+00 2.0e+01  0  0  0  0  2   0  0  0  0  2  3050
+VecMDot              321 1.0 2.6292e+00 1.4 6.62e+08 1.0 0.0e+00 0.0e+00 3.2e+02 25 15  0  0 34  25 15  0  0 34  3017
+VecNorm              401 1.0 7.1590e-01 1.9 1.40e+08 1.0 0.0e+00 0.0e+00 4.0e+02  7  3  0  0 42   7  3  0  0 42  2349
+...
+```
+
 #### Questions
 > **Where is the majority of CPU time spent?**
 
+|<font color="white">Of course answer may vary depending on the settings such as number of procs, problem size, and solver options. Typically most of the time should be spent on [VecMDot](http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Vec/VecMDot.html) or [MatMult](http://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/Mat/MatMult.html) </font>|
+
 > **How expensive is it to do an adjoint step?**
 
+|<font color="white">For this particular run, an adjoint step takes about 70% of the running time of a forward step (compare the time between TSAdjointStep and TSStep). </font>|
+
 > **How can we improve performance?**
+
+|<font color="white">1. Use memory instead of disk for checkpointing(`-ts_trajectory_type memory -ts_trajectory_solution_only 0`); 2. Tune the time stepping solver, nonlinear solver, linear solver, preconditioner and so forth. </font>|
+
+### Further information
+Because this example uses `DMDA`, Jacobian can be efficiently approxiated using finite difference with coloring. You can use the option `-snes_fd_color` to enable this feature.
 
 ## Out-Brief
 
