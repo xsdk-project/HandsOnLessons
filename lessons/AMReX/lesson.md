@@ -74,7 +74,7 @@ to your liking, then click ``Save''.
 Your image should look similar to that below.
 ```
 
-<img src = "VisIt_2D.pdf" width ="300">
+<img src = "VisIt_2D.jpg" width ="300">
 
 
 ## What does this do in parallel
