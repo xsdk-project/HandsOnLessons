@@ -212,7 +212,6 @@ sys 2.93
 
 |<font color="white">Times and iterations for PCG grow much faster than for PFMG-PCG with increasing problem size. PFMG-PCG is more scalable than PCG.</font>|
 
-Include here examples of either plots or data you expect learners to observe.
 
 ### Example 4 (Examine complexities in AMG-PCG)
 
@@ -449,6 +448,7 @@ For structured problems, solvers that take advantage of the structure of the pro
 
 ### Further Reading
 
-To learn more about algebraic multigrid, see https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/CiSE_2006_amg_220851.pdf
+To learn more about algebraic multigrid, see 
+[An Introduction to Algebraic Multigrid](https://computation.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/CiSE_2006_amg_220851.pdf)
 
-More information on hypre can be found at http://www.llnl.gov/CASC/hypre
+More information on hypre , including documentation and further publications, can be found [here](http://www.llnl.gov/CASC/hypre)

@@ -1,4 +1,4 @@
-# Using adjoint for optimization
+# Iterative Solution of Linear and Nonlinear Systems
 
 ## At A Glance (10 mins)
 
@@ -232,6 +232,6 @@ Because this example uses `DMDA`, Jacobian can be efficiently approxiated using 
 
 ## Out-Brief
 
-We have used [PETSc](https://www.mcs.anl.gov/petsc/) to demonstrate the adjoint capability as an enabling technology for dynamic-constrained optimization. In particular, we focused on time-depdent problems including complex dynamical systems with discontinuities and a large scale hyperbolic PDE.
+We have used [PETSc](https://www.mcs.anl.gov/petsc/) to demonstrate Krylov methods and nonlinear solver methods. 
 
 We have shown the basic usage of the adjoint solver as well as functionalities that can facilitate rapid development, diagnosis and performance profiling.
