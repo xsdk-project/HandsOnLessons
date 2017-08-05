@@ -67,15 +67,16 @@ echo "Got allocation at $nodid"
 # Startup xvncserver on the allocation
 #
 ssh cooley "nohup ssh $nodid x0vncserver --display=:0.0 --NeverShared=1 --geometry=2400x1500+0+0 --PasswordFile=/home/$cooley_username/.vnc/passwd --MaxProcessorUsage=100 >& /dev/null &"
-sleep 10
+sleep 5 
 
 # Set up 2-hop ssh tunnel to allocation, (above) through
 # login and run xstartup there
 if [[ "$cooley_shell" == tcsh ]]; then
-    ssh -f -L 22590:$nodid:5900 cooley "ssh $nodid 'setenv DISPLAY :0.0; ~/.vnc/xstartup'"
+    ssh -f -L 22590:$nodid:5900 cooley "nohup ssh $nodid 'setenv DISPLAY :0.0; ~/.vnc/xstartup' >& /dev/null &"
 else
-    ssh -f -L 22590:$nodid:5900 cooley "ssh $nodid 'export DISPLAY=:0.0; ~/.vnc/xstartup'"
+    ssh -f -L 22590:$nodid:5900 cooley "nohup ssh $nodid 'export DISPLAY=:0.0; ~/.vnc/xstartup' >& /dev/null &"
 fi
+sleep 5 
 
 if [[ "$localos" == osx ]]; then
     open vnc://localhost:22590
