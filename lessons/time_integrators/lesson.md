@@ -19,7 +19,8 @@ order impact the cost?        |on time to solution/flop count  |a lot of work
 
 ## The problem being solved
 
-The example application here, [transient-heat.cpp](transient-heat.cpp.numbered.txt),
+The example application here,
+[transient-heat.cpp](https://github.com/mfem/mfem/blob/atpesc-dev/examples/atpesc/sundials/transient-heat.cpp),
 uses [MFEM](http://mfem.org) and the ARKode package from SUNDIALS as a vehicle
 to demonstrate the use of the
 [SUNDIALS](https://computation.llnl.gov/projects/sundials) suite
