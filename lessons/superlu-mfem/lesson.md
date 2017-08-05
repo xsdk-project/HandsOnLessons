@@ -1,6 +1,6 @@
-# Lesson Title
+# Sparse Direct Solver
 
-## At A Glance (Expected # minutes to complete)
+## At A Glance (10 minutes)
 
 ```
 Questions                  |Objectives                      |Key Points
@@ -18,132 +18,136 @@ only list here the ones that are _most_ important.
 
 ## The problem being solved
 
-The example application here, [transient-heat.cpp](transient-heat.cpp.numbered.txt),
-uses MFEM and SuperLU_DIST(http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
+The example is modeling the steady state convection-diffusion equation in 2D
+with a constant velocity.  This equation is used to model the concentration
+of something in a fluid as it diffuses and flows through the fluid.
+The equation is as follows:
+    Del dot (kappa Del u) – Del dot (v u) + R = 0
+
+Where u is the concentration that we are tracking, kappa is the diffusion rate,
+v is the velocity of the flow and R is a concentration source.
+ 
+In the application the velocity vector is pointing at +x and the magnitude is
+set by the user (default of 100).  The kappa is fixed at 1.0, and the source
+is 0.0 everywhere except for a small disc centered at the middle of the
+domain where it is 1.0.
+ 
+This problem is well known to give iterative solvers trouble. 
+We use MFEM and SuperLU_DIST (http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
 to demonstrate the use of a direct solver to solve very ill-conditioned
 linear systems. 
-
-
-Describe the problem(s) that will be solved in this lesson.
-If possible, include a picture or graphic here describing the physical problem setup. If the application
-or tool being used can deal with a variety of input physical problems, its fine to mention
-that but here just include a picture of the problem they will be running in the _runs_
-below. Maybe include the equation being solved as well.
 
 ![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)
 
 ## The Example Source Code
 
-Describe the application, its command-line arguments, have a link to view the actual source code
-or, if you prefer, include snipits of the source code here in a code-highlighted box as below
-
-```c++
-Geometry::~Geometry()
-{
-   for (int i = 0; i < NumGeom; i++)
-   {
-      delete PerfGeomToGeomJac[i];
-      delete GeomVert[i];
-   }
-}
-```
-
 ## Running the Example
 
-### Run 1 (Problem Name)
-
-Give the command-line to run the example
-
-#### Expected Behavior/Output
-
-Include here what learner should expect to happen
-
-* How long might it take to run
-* How long might they have to wait for resources before it can run
-* What should they seen on their terminal
-
-#### Examining Results
-
-Include here examples of either plots or data you expect learners to observe.
-
-![An Image](basic0000.png)
-
-Or, if you need to control the size, or have multiple images next to each other
-use a Markdown table and raw html...
-
-|<img src="basic0000.png" width="200">|<img src="basic0000.png" width="400">|
-
-**Note:** You can create [gif animations](https://www.tjhsst.edu/~dhyatt/supercomp/n401a.html)
-with ImageMagick tool available on most systems as `convert` command as in...
+### Run 1: default setting with GMRES solver, velocity = 100
 
 ```
-convert -delay 20 -loop 0 image*.<ext> animation.gif
+$ ./convdiff
+
+Options used:
+   --refine 0
+   --order 1
+   --velocity 100
+   --no-visit
+   --no-superlu
+   --slu-colperm 0
+Number of unknowns: 10201
+=============================================
+Setup phase times:
+=============================================
+GMRES Setup:
+  wall clock time = 0.010000 seconds
+  wall MFLOPS     = 0.000000
+  cpu clock time  = 0.010000 seconds
+  cpu MFLOPS      = 0.000000
+
+L2 norm of b: 9.500000e-04
+Initial L2 norm of residual: 9.500000e-04
+=============================================
+
+Iters     resid.norm     conv.rate  rel.res.norm
+-----    ------------    ---------- ------------
+    1    4.065439e-04    0.427941   4.279409e-01
+    2    1.318995e-04    0.324441   1.388415e-01
+    3    4.823031e-05    0.365660   5.076874e-02
+    ...
+   23    2.436775e-16    0.249025   2.565027e-13
+
+Final L2 norm of residual: 2.436857e-16
+
+=============================================
+Solve phase times:
+=============================================
+GMRES Solve:
+  wall clock time = 0.030000 seconds
+  wall MFLOPS     = 0.000000
+  cpu clock time  = 0.020000 seconds
+  cpu MFLOPS      = 0.000000
+
+GMRES Iterations = 23
+Final GMRES Relative Residual Norm = 2.56511e-13
+Time required for solver:  0.0362886 (s)
 ```
 
-![Gif Animations](animated_basic_heat.gif)
+### Run 2: increase velocity to 1000, GMRES does not converge anymore
 
-Alternatively, you can upload videos to YouTube and embed them here 
+```
+Options used:
+   --refine 0
+   --order 1
+   --velocity 1000
+   --no-visit
+   --no-superlu
+   --slu-colperm 0
+Number of unknowns: 10201
+=============================================
+Setup phase times:
+=============================================
+GMRES Setup:
+  wall clock time = 0.020000 seconds
+  wall MFLOPS     = 0.000000
+  cpu clock time  = 0.010000 seconds
+  cpu MFLOPS      = 0.000000
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/bsSFYrDXK0k" frameborder="0" allowfullscreen></iframe>
+L2 norm of b: 9.500000e-04
+Initial L2 norm of residual: 9.500000e-04
+=============================================
 
-#### Questions
+Iters     resid.norm     conv.rate  rel.res.norm
+-----    ------------    ---------- ------------
+    1    9.500000e-04    1.000000   1.000000e+00
+    2    9.500000e-04    1.000000   1.000000e+00
+    3    9.500000e-04    1.000000   1.000000e+00
+    ...
+  200    9.500000e-04    1.000000   1.000000e+00
+```
 
-> **Question #1?** (triple-click box below to reveal answer)
+### Run 3: Now use SuperLU_DIST, with default options
+```
+$ ./convdiff -slu --velocity 1000
 
-**Note:** These Questions and _Answer Boxes_ are somewhat cheesey for time being.
-We can expand our use of Jekyll and improve look and feel after ATPESC. In meantime,
-in order for these _Answer Boxes_ to behave as desired (e.g. hidden text which
-gets revealed by user triple-clicking in box), they have to be all on a single
-line with no line breaks and have to be white text on white backgroud. Yeah, its
-cheesey but will work for now.
+Options used:
+   --refine 0
+   --order 1
+   --velocity 1000
+   --no-visit
+   --superlu
+   --slu-colperm 0
+Number of unknowns: 10201
 
-|<font color="white">Answer to Question #1</font>|
+** Memory Usage **********************************
+** NUMfact space (MB): (sum-of-all-processes)
+    L\U :           41.12 |  Total :    50.72
+** Total highmark (MB):
+    Sum-of-all :    62.27 | Avg :    62.27  | Max :    62.27
+**************************************************
+Time required for solver:  38.201 (s)
+```
 
-> **Question #2?** (triple-click box below to reveal answer)
-
-|<font color="white">Answer to Question #2</font>|
-
----
-
-### Run 2 (Problem Name)
-
-#### Expected Behavior/Output
-
-#### Examining Results
-
-Include here examples of either plots or data you expect learners to observe.
-
-#### Questions
-
-> **Question #1?** (triple-click box below to reveal answer)
-
-|<font color="white">Answer to Question #1</font>|
-
-> **Question #2?** (triple-click box below to reveal answer)
-
-|<font color="white">Answer to Question #2</font>|
-
----
-
-### Run 3
-
-#### Expected Behavior/Output
-
-#### Examining Results
-
-Include here examples of either plots or data you expect learners to observe.
-
-#### Questions
-
-> **Question #1?** (triple-click box below to reveal answer)
-
-|<font color="white">Answer to Question #1</font>|
-
-> **Question #2?** (triple-click box below to reveal answer)
-
-|<font color="white">Answer to Question #2</font>|
-
----
 
 ## Out-Brief
 

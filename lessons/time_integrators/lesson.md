@@ -1,6 +1,7 @@
 # Time Integrators
 
-## At A Glance (15 minutes)
+## At a Glance
+<!-- (Expected # minutes to complete) %% temporarily omit -->
 
 ```
 Questions                     |Objectives                      |Key Points
@@ -62,20 +63,20 @@ The main loop of this application is shown here...
 312    for (int ti = 1; !last_step; ti++)
 313    {
 319       ode_solver->Step(u, t, dt);
-320 
+320
 327       u_gf.SetFromTrueDofs(u);
-328 
+328
 336       oper.SetParameters(u);
 337       last_step = (t >= t_final - 1e-8*dt);
 338    }
 ```
 
-Later in this lesson, we'll show the lines of code that permit the 
+Later in this lesson, we'll show the lines of code that permit the
 application great flexibility in how it employs
 [SUNDIALS](https://computation.llnl.gov/projects/sundials) to handle
 time integration.
 
-### Getting Help 
+### Getting Help
 ```
 $ ./transient-heat --help
 Usage: ./transient-heat [options] ...
@@ -113,7 +114,7 @@ Options:
 **Note:** This application may be used to solve the same equation used in
 [Lesson 1](../hand_coded_heat/lesson.md) by using command line options
 `-d 1 -alpha 0`. The role of [Lesson 1's](../hand_coded_heat/lesson.md)
-![](http://latex.codecogs.com/gif.latex?%5Calpha) is played by 
+![](http://latex.codecogs.com/gif.latex?%5Calpha) is played by
 ![](http://latex.codecogs.com/gif.latex?%5Ckappa) here.
 For all of the runs here, the application's default behavior is to set
 ![](http://latex.codecogs.com/gif.latex?%5Calpha) to 0.2 and
@@ -489,7 +490,7 @@ Floating point ops = 119982846
 
 ---
 
-### Run 6: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6 
+### Run 6: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6
 
 In this run, we'll combine **both** the advantages of an _implicit_ algorithm and an _adaptive_ time step.
 
@@ -707,16 +708,16 @@ We have used MFEM as a demonstration vehicle for illustrating the value in robus
 time integration methods in numerical algorithms. In particular, we have used
 the [SUNDIALS](https://computation.llnl.gov/projects/sundials) suite of solvers to
 compare and contrast both the effects of _adaptive_ time stepping as well as the
-role the order of the time integration plays in time to solution and number of time 
+role the order of the time integration plays in time to solution and number of time
 steps in the adaptive case.  In addition, we have demonstrated the ability of implicit
-methods to run at higher time steps than explicit and also demonstrated the cost of 
+methods to run at higher time steps than explicit and also demonstrated the cost of
 nonlinear solvers in implicit approaches.
 
 The use of _adaptation_ here was confined to _discretzation_ of time. Other lessons
 here demonstrate the advantages _adaptation_ can play in the _discretization_ of
 _space_.
 
-Other lessons will demonstrate some of the options for _nonlinear_ and 
+Other lessons will demonstrate some of the options for _nonlinear_ and
 _linear_ solvers needed for implicit integration approaches.
 
 Finally, it is worth reminding the learner that the application demonstrated here can
@@ -729,3 +730,11 @@ around with various command-line options to affect various scenarios.
 [Users guides for CVODE, ARKode, and IDA](https://computation.llnl.gov/projects/sundials/sundials-software)
 
 [Publications](https://computation.llnl.gov/projects/sundials/publications)
+
+<!-- Insert space, horizontal line, and link to HandsOnLesson table -->
+
+&nbsp;
+
+---
+
+[Back to all HandsOnLessons](../lessons.md)
