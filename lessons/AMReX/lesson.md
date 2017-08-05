@@ -199,11 +199,10 @@ inputs_2d -- the inputs file
 The inputs file currently has 
 
 ```
-nsteps = 20000
-n_cell = 256
-max_grid_size = 128
-plot_int = 1000
-is_periodic = 1 0
+max_step = 120
+amr.n_cell = 64
+amr.max_grid_size = 32
+amr.plot_int = 10
 
 ```
 
