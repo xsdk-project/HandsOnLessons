@@ -79,11 +79,11 @@ type: seq
 A more complicated example for power grid application is in `src/ts/examples/power_grid/stability_9bus/ex9busopt.c`.
 
 
-## Example 2: Hybrid dynamical system:
+## Example 2: Hybrid Dynamical System:
 
 This code demonstrates how to compute the adjoint sensitivity for a complex dynamical system involving discontinuities with TSEvent, TSAdjoint and TS. The dynamics are described by the ODE
 
-![equation](http://latex.codecogs.com/gif.latex?%5Cdot%7Bx%7D%20%3D%20A_i%20x.),
+![equation](http://latex.codecogs.com/gif.latex?%5Cdot%7Bx%7D%20%3D%20A_i%20x)
 
 where ![equation](http://latex.codecogs.com/gif.latex?x%20%3D%20%5Bx_1%2C%20x_2%5D%5ET) and the matrix A change from
 
@@ -133,7 +133,7 @@ We can also monitor the timestepping for the adjoint calculation by doing
 The example `ex3fwd.c` in the same folder illustrates the forward sensitivity approach for the same problem.
 
 
-## Example 3: Diffusion-reaction problem
+## Example 3: Diffusion-Reaction Problem
 
 This code demonstrates parallel adjoint calculation for a system of time-dependent PDEs on a 2D rectangular grid.
 We need only to write the right-hand-side function and the Jacobian and compile the code once. All the tasks in the following can be accomplished using command line options.
