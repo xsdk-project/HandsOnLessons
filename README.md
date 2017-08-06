@@ -15,7 +15,7 @@ We slowly build upon
 these simple, early examples introducing additional complexities such as inhomogenieties,
 higher-order solutions, time-variabilities, nonlinearities, and complex geometries in higher
 dimensions. We demonstrate the use of a variety of numerical software packages to address these
-issues and the advantages they offer over hand-coded software.  
+issues and the advantages they offer over hand-coded software.
 
 Throughout the currently designed lesson plans, we use the [MFEM](http://mfem.org) (unstructured)
 and [AMReX](https://github.com/AMReX-Codes/AMReX-Codes.github.io) (structured, adaptive)
