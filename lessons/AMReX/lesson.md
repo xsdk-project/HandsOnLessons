@@ -125,7 +125,9 @@ to your liking, then click ``Save''.
 
 Your image should look similar to that below.
 
-<img src = "VisIt_2D.jpg" width ="300">
+|Figure 1|
+|:---:|
+|[<img src = "VisIt_2D.pdf" width ="300">](VisIt_2D.pdf)|
 
 
 ## What does this do in parallel
@@ -222,7 +224,9 @@ To see the 2-d solution, use Visit to look at plt00000 and plt00060, for example
 You should see something like this (though these pictures are
 made using a different visualization program.)
 
-<img src = "phi_adv_noref.0.jpg" width ="300"> <img src = "phi_adv_noref.60.jpg" width ="300">
+|Time Step 0|Time Step 60|
+|:---:|:---:|
+|[<img src = "phi_adv_noref.0.jpg" width ="300">](phi_adv_noref.0.jpg)|[<img src = "phi_adv_noref.60.jpg" width ="300">](phi_adv_noref.60.jpg)
 
 ## Now let's turn on AMR.
 
@@ -233,7 +237,9 @@ Let's now run with
 
 and again visualize the results.  
 
-<img src = "phi_adv_ref.0.jpg" width ="300"> <img src = "phi_adv_ref.60.jpg" width ="300">
+|Time Step 0|Time Step 60|
+|:---:|:---:|
+|[<img src = "phi_adv_ref.0.jpg" width ="300">](phi_adv_ref.0.jpg)|[<img src = "phi_adv_ref.60.jpg" width ="300">](phi_adv_ref.60.jpg)
 
 ### Further Reading
 
