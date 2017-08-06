@@ -25,7 +25,8 @@ PETSC_OPTIONS="-pc_type jacobi -ksp_max_it 25" ./ex2p -petscopts rc_ex2p --mesh 
 ```
 #### Questions
 > **Is the iteration converging?**
-> **Read the output at the bottom from -ksp_view, what Krylov method and preconditioner is it using??**
+
+> **Read the output at the bottom from -ksp_view, what Krylov method and preconditioner is it using?**
 
 ### Run 2: Run with the algebraic multigrid preconditioner
 
