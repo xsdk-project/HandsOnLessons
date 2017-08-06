@@ -133,6 +133,10 @@ Iters     resid.norm     conv.rate  rel.res.norm
   200    9.500000e-04    1.000000   1.000000e+00
 ```
 
+Below, we plot behavior of the GMRES method for velocity values in the
+range [100,1000] at incriments, _dv_, of 25 and also show an animation
+of the solution GMRES gives as velocity increases
+
 |Solutions @_dv_=25 in [100,1000]|Contours of Solution @ _vel=1000_|
 |:---:||:---:|
 |<video src="gmres.mpg" width="400" height="300" controls preload></video>|[<img src="mfem-superlu0003.png" width="400">](mfem-superlu0003.png)|
@@ -140,6 +144,10 @@ Iters     resid.norm     conv.rate  rel.res.norm
 |Time to Solution|L2 norm of final residual|
 |:---:||:---:|
 |[<img src="gmres_time.png" width="400">](gmres_time.png)|[<img src="gmres_residual.png" width="400">](gmres_residual.png)|
+
+> **What do you think is happening?**
+
+|<font color="white">GMRES method works ok for low velocity values. As velocity increases, GMRES method eventually crosses a threshold where it can no longer provide a useful result.</font>|
 
 ### Run 3: Now use SuperLU_DIST, with default options
 ```
