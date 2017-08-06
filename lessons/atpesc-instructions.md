@@ -1,11 +1,11 @@
 
-# Setup Instructions for Numerical Package Hands-on session
+# Instructions for Numerical Package Hands-on
 
 ## Basic Instructions
 
 Hands-on exercises are primarily run on cooley cluster at ALCF. Please do the following initial setup
 
- - login to cooley.
+ - login to cooley
 ```
 ssh username@cooley.alcf.anl.gov
 ```
@@ -18,11 +18,11 @@ PATH+=/projects/ATPESC2017/NumericalPackages/spack/bin
 MPIRUN_SPACK=/projects/ATPESC2017/NumericalPackages/spack/opt/spack/linux-rhel6-x86_64/gcc-4.8.1/openmpi-2.1.1-5b4k4f3vzgwz5qmektcqja2av4c4bjrg/bin/mpiexec
 MPIRUN=/usr/bin/mpirun
 ```
-  - run the following command to make the above change to _~/.soft.cooley_ effective.
+  - run the following command to make the above change to _~/.soft.cooley_ effective
 ```
 resoft
 ```
-  - obtain compute nodes in interactive mode to run the hands on exercises by running the following `qsub` command. [for ex: requesting 3 nodes for 12h]
+  - obtain compute nodes in interactive mode to run the hands on exercises by running the following `qsub` command. For example, requesting 3 nodes for 12h
 ```
 qsub -I -n 3 -t 720 -A ATPESC2017
 ```
@@ -56,21 +56,21 @@ We have a devloped a script (to be run on your laptop) that can help with settin
  - Reserves 3 nodes for 12h on cooley.
  - Sets up a VNC connection to those nodes
 
-   Please download the script from <<URL>> and run it as:
+   Please download the script from <<URL>> and run
 ```
 ./morning_setup.sh your_cooley_userid
 ```
 
 ### Notes
-  - If allocating nodes via this script - please deallocate nodes that you might have previously allocated [via basic instructions]
+  - If allocating nodes via this script - please deallocate nodes that you might have previously allocated
 
 ### Troubleshooting
-  - If you have a different preferred Linux VNC client - you should be able to use it to connect to the VNC connection that is already setup by this script. For eg:
+  - If you have a different preferred Linux VNC client - you should be able to use it to connect to the VNC connection that is already setup by this script. For example,
 ```
 krdc vnc://localhost:22590
 ```
-  - When rerunning the script - if the ssh command to setup VNC tunnel fails - you might have to kill the 'ssh control master' process and restart again. On Linux - one can discover process this with:
+  - When rerunning the script - if the ssh command to setup VNC tunnel fails - you might have to kill the 'ssh control master' process and restart again. On Linux - one can discover process this with
 ```
-netstat -tp |grep cooley
+netstat -tp | grep cooley
 ```
 

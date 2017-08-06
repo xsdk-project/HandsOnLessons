@@ -70,11 +70,15 @@ export HANDSON=/projects/ATPESC2017/NumericalPackages/handson/
 xterm -fn 10x20 &
 twm
 EOF
-ssh ${cooley_username}@cooley-nph "chmod u+x ~/.vnc/xstartup; cat >> ~/.soft.cooley" << EOF
-#added by NumericalPackagesHandsOn
-+gcc-4.8.1
-@visit
-EOF
+ssh ${cooley_username}@cooley-nph "chmod u+x ~/.vnc/xstartup"
+#
+# Update users .soft.cooley file for basic setup
+#
+#ssh ${cooley_username}@cooley-nph "cat >> ~/.soft.cooley" << EOF
+##added by NumericalPackagesHandsOn
+#+gcc-4.8.1
+#@visit
+#EOF
 #
 # Get a temporary password from user and confirm its intended
 #
