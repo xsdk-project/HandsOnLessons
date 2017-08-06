@@ -133,9 +133,13 @@ Iters     resid.norm     conv.rate  rel.res.norm
   200    9.500000e-04    1.000000   1.000000e+00
 ```
 
-|Contour Plot of Computed Result|
-|:---:|
-|[<img src="mfem-superlu0003.png" width="400">](mfem-superlu0003.png)|
+|Solutions @_dv_=25 in [100,1000]|Contours of Solution @ _vel=1000_|
+|:---:||:---:|
+|<video src="gmres.mpg" width="400" height="300" controls preload></video>|[<img src="mfem-superlu0003.png" width="400">](mfem-superlu0003.png)|
+
+|Time to Solution|L2 norm of final residual|
+|:---:||:---:|
+|[<img src="gmres_time.png" width="400">](gmres_time.png)|[<img src="gmres_residual.png" width="400">](gmres_residual.png)|
 
 ### Run 3: Now use SuperLU_DIST, with default options
 ```
