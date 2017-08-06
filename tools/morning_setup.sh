@@ -7,7 +7,7 @@ cooley_username=mcmiller
 localos=`uname`
 linuxvnc=''
 if [[ "$localos" == "Linux" ]]; then
-    if [  -f /usr/bin/vinagre ]; then
+    if [  -f /usr/bin/vncviewer ]; then
         linuxvnc=vncviewer
     #elif [  -f /usr/bin/vinagre ]; then
     #    linuxvnc=vinagre
