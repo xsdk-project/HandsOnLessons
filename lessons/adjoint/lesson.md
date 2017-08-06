@@ -182,7 +182,7 @@ The output corresponds to the schedule depicted by the following diagram:
 |<font color="white">Looking at the output, we will find that the new schedule uses both RAM and disk for checkpointing and takes two less recomputations.</font>|
 
 ### Run 3: Implicit time integration method
-Now we switch to implicit method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)) using fixed stepsize, which is the default setting in the code. At each time step, a nonlinear system is solved by the PETSc nonlinear solver `SNES`.
+Now we switch to an implicit method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)) using fixed stepsize, which is the default setting in the code. At each time step, a nonlinear system is solved by the PETSc nonlinear solver `SNES`.
 ```
 mpirun -n 12 ./ex5adj -da_grid_x 1024 -da_grid_y 1024 -ts_max_steps 10 -snes_monitor -log_view
 ```
