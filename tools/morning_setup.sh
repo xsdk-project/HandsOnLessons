@@ -12,7 +12,7 @@ if [[ "$localos" == "Linux" ]]; then
     #elif [  -f /usr/bin/vinagre ]; then
     #    linuxvnc=vinagre
     else
-         Please install vncviewer (from TigerVNC) and rerun the script
+         echo "Please install vncviewer (from TigerVNC) and rerun the script"
          exit 1
     fi
 fi
