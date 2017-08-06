@@ -203,7 +203,7 @@ In this directory you'll see
 
 ```
 main2d.gnu.MPI.ex -- the executable
-inputs_2d -- the inputs file
+inputs -- the inputs file
 ```
 
 The inputs file currently has
@@ -223,7 +223,7 @@ This problem happens to be set-up to have homogeneous Neumann boundary condition
 Let's try running this 2-d problem with no refinement
 
 ```
-./main2d.gnu.MPI.ex inputs_2d amr.max_level=0
+./main2d.gnu.MPI.ex inputs amr.max_level=0
 ```
 
 To see the 2-d solution, use Visit to look at plt00000 and plt00060, for example.
@@ -238,7 +238,7 @@ made using a different visualization program.)
 
 Let's now run with
 ```
-./main2d.gnu.MPI.ex inputs_2d amr.max_level=2
+./main2d.gnu.MPI.ex inputs amr.max_level=2
 ```
 
 and again visualize the results.  
