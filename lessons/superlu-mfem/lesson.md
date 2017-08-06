@@ -12,9 +12,10 @@ performance?               |                                | can vary a lot
 
 ## The problem being solved
 
-The example is modeling the steady state convection-diffusion equation in 2D
+The [convdiff.c](https://github.com/mfem/mfem/blob/atpesc-dev/examples/atpesc/superlu/convdiff.cpp)
+application is modeling the steady state convection-diffusion equation in 2D
 with a constant velocity.  This equation is used to model the concentration
-of something in a fluid as it diffuses and flows through the fluid.
+of something like a _die_ in a _moving_ fluid as it diffuses and flows th  the fluid.
 The equation is as follows:
 
 |![](http://latex.codecogs.com/gif.latex?%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%5Cnabla%20u%29%20-%20%5Cnabla%20%5Ccdot%20%28%5Coverrightarrow%7Bv%7Du%29%2BR%3D0)|(1)|
