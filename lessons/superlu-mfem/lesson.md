@@ -5,16 +5,10 @@
 ```
 Questions                  |Objectives                      |Key Points
 ---------------------------|--------------------------------|----------
-Question 1?                |Objective 1                     |Key Point 1
-Question 2?                |Objective 2                     |Key Point 2
-Question 3?                |Objective 3                     |Key Point 3
+Why need direct solver?    | Can obtain accurate solution   | Robust for difficult problems
+What parameters affect     | Try different ordering options | Performance (time & memory) 
+performance?               |                                | can vary a lot
 ```
-
-* **Questions** are the those things we want learners to know the answers to by the end of the lesson.
-We don't have to list all possible questions here...only the two or three _most_ important.
-* **Objectives** are those things we want learners to actually do or observe during the lesson. Again,
-only list here the ones that are _most_ important.
-* **Key Points** are those things we want learners to take-away from the lesson.
 
 ## The problem being solved
 
@@ -22,6 +16,7 @@ The example is modeling the steady state convection-diffusion equation in 2D
 with a constant velocity.  This equation is used to model the concentration
 of something in a fluid as it diffuses and flows through the fluid.
 The equation is as follows:
+
     Del dot (kappa Del u) – Del dot (v u) + R = 0
 
 Where u is the concentration that we are tracking, kappa is the diffusion rate,
