@@ -33,7 +33,23 @@ qsub -I -n 3 -t 720 -A ATPESC2017
 
 ## Optional Visualization Instructions
 
-Some of the hands-on exercises have optional visualization instructions. This requires a VNC connection from your laptop to cooley. We have a convince script (to be run on your laptop) that can help with setting up a VNC connection to cooley. It can work on MacOS, and with some Linux VNC clients (vinagre, vncviewer). However the script is fragile and might not work with everyones setup - hence this is optional. This script will do several things
+Some of the hands-on exercises have optional visualization instructions
+and use a variety of visualization tools.
+
+Getting a room of more than 70 people with different laptops working with
+remote visualization from cooley is not something either our tight agenda or
+our staff are prepared to support. In addition, where necessary, the hands-on
+leader(s) will demonstrate the use of some tools and learners can follow 
+along at those points.
+
+There is a whole day of activity devoted to visualization resources and
+tools in the ATPESC agenda on August 9th.
+
+Nonetheless, we are providing here some instructions and tools for those
+would like to persue getting remote visualization working for these
+exercises.
+
+We have a devloped a script (to be run on your laptop) that can help with setting up a VNC connection to cooley. It can work on MacOS, and with some Linux VNC clients (vinagre, vncviewer). However the script is fragile and might not work with everyones setup - hence this is optional. This script will do several things
 
  - Logs you into cooley once with your token
  - Sets up SSH Control Master so you only have to log into cooley with your token once for the whole day and password-less will work thereafter
