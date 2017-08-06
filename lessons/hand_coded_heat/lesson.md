@@ -1,6 +1,7 @@
 # Hand Coded 1D Heat Equation
 
-## At A Glance (15 mins)
+## At a Glance
+<!-- (Expected # minutes to complete) %% temporarily omit -->
 
 ```
 Questions                 |Objectives                           |Key Points
@@ -8,7 +9,7 @@ Questions                 |Objectives                           |Key Points
 What is a numerical alg.? |Understand performance metrics       |HPC numerical software involves complex
                           |                                     |algorithms and data structures.
                           |                                     |
-What is discretization?   |Understand algorithmic trade-offs    |Robust software requires significant 
+What is discretization?   |Understand algorithmic trade-offs    |Robust software requires significant
                           |                                     |software quality engineering (SQE).
                           |                                     |
 What is stability?        |Understand value of software packages|Numerical packages simplify app dev.,
@@ -108,8 +109,8 @@ the next time, _k+1_, from temperatures at the current time, _k_, as
 |![](http://latex.codecogs.com/gif.latex?u_i%5E%7Bk%2B1%7D%20%3D%20ru_%7Bi%2B1%7D%5Ek%2B%281-2r%29u_i%5Ek%2Bru_%7Bi-1%7D%5Ek)|(6)|
 
 where ![](http://latex.codecogs.com/gif.latex?r%3D%5Calpha%5Cfrac%7B%5CDelta%20t%7D%7B%5CDelta%20x%5E2%7D)
-Note that this equation now defines the solution at spatial position _i_ and time _k+1_ 
-in terms of values of u at time _k_ .  This is an 
+Note that this equation now defines the solution at spatial position _i_ and time _k+1_
+in terms of values of u at time _k_ .  This is an
 [_explicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods)
 numerical method. Explicit methods have some nice properties:
 
@@ -338,7 +339,7 @@ we arrive at the following discretization of equation 2...
 
 where ![](http://latex.codecogs.com/gif.latex?r%3D%20%5Calpha%20%5Cfrac%7B%5CDelta%20t%7D%7B2%20%5CDelta%20x%5E2%7D)
 
-In equation 7, the solution at spatial position _i_ and time _k+1_ 
+In equation 7, the solution at spatial position _i_ and time _k+1_
 now depends not only on values of u at time _k_ but also on other
 values of u at time _k+1_.
 This means each time we advance the solution in time we must
@@ -346,10 +347,10 @@ solve a linear system; in other words we must solve for all of the
 values at time _k+1_ in one step.
 This is an example of an [_implicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods) method.
 In this case, the system of equations is [_tri-diagonal_](https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm) --
-since each update for u at _i_ only uses u at _i-1_ , _i_ and _i+1_ -- 
+since each update for u at _i_ only uses u at _i-1_ , _i_ and _i+1_ --
 so it is easier to implement than a general matrix solve but is still more complicated than an explicit update.
 
-The code to implement this method is more involved because it involves 
+The code to implement this method is more involved because it involves
 doing a tri-diagonal solve.
 
 ```c
@@ -506,7 +507,7 @@ to support more complex situations such as...
   * More complex domains
     * Much larger objects involving billions of discretization points and
       requiring _scalability_ in all phases of the solution.
-    * Domains that perehaps aren't square and may have 
+    * Domains that perehaps aren't square and may have
       features with highly variable spatial resolutions requiring unstructured
       and/or adaptive meshing.
   * Parallelism and complex computational settings on high-performance architectures
@@ -519,14 +520,14 @@ to support more complex situations such as...
     * Multiphysics, multiscale, multidomain, multiresolution
     * Work toward predictive simulation, optimization, and design
   * More agile and sustainable software, addressing
-    * Understandability of code, with encapsulation of complexities 
+    * Understandability of code, with encapsulation of complexities
     * Robustness, efficiency, scalability, portability, reproducibility
     * Ease of debugging
     * Thorough testing
     * Extensibility to exploit application-specific knowledge
-    * Interoperability with complementary software 
- 
-Addressing these issues for large-scale simulations in science and engineering is 
+    * Interoperability with complementary software
+
+Addressing these issues for large-scale simulations in science and engineering is
 one of the key values of _numerical packages_.  Many of the details of these
 issues have been resolved and _vetted_ within the scientific computing community
 within widely used software packages. Numerical packages can help to simplify the development of
@@ -548,9 +549,9 @@ algorithms will be introduced and discussed in later lessons.
 
 We have explained some of the drawbacks of developing completely hand-coded solutions
 as well as some of the advantages of using community adopted numerical
-packages for application development. 
+packages for application development.
 
-The remainder of the lessons 
+The remainder of the lessons
 focus on the use of various software packages in the solution of ever
 more complex settings.
 
@@ -588,7 +589,7 @@ In some cases, it is possible to define the problem such that an
 _analytic_ solution exists either for a given time or for all time. That is, an
 _exact_ solution that can be written down as a mathematical formula.
 These cases are attractive because they allow us to assess the accuracy of
-our implementation of any numerical algorithm. 
+our implementation of any numerical algorithm.
 
 For example, for the case of _bc0=0_, _bc1=0_, _ic=const(U0)_, the analytic
 solution **for all time, _t_**, is given by...
@@ -609,7 +610,7 @@ a simple linear interpolation between temperature values at the ends...
 
 ### Simple Examples
 
-The following explain some basics related to the heat equation but do not address the complexities needed for high-performance numerical software. 
+The following explain some basics related to the heat equation but do not address the complexities needed for high-performance numerical software.
 
 #### CPDS-Heat
 [There is a GitHub site which appears to have custom codes for solving 1D/2D heat
@@ -621,3 +622,11 @@ equation with a variety of algorithms and with MPI, OpenMP and Cuda](https://git
 results from _explicit_ numerical algorithms.](http://www.math.ubc.ca/~costanza/HeatEqTutorial.html)
 
 [An example Excel spreadsheet is available.](1d_heat_equation.xlsx)
+
+<!-- Insert space, horizontal line, and link to HandsOnLesson table -->
+
+&nbsp;
+
+---
+
+[Back to all HandsOnLessons](../lessons.md)
