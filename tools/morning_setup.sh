@@ -1,9 +1,9 @@
 #!/bin/sh -x
 
 acct=ATPESC17_Instructors
-cooley_username=mcmiller
 nnodes=1
-tl=5
+tl=20
+cooley_username=mcmiller
 cooley_shell=tcsh
 localos=osx
 
