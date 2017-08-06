@@ -26,10 +26,15 @@ resoft
 ```
 qsub -I -n 3 -t 720 -A ATPESC2017
 ```
-   - < more instructions - copy files - lable which tutorial corresponds to which file etc>     
+   - copy over precompiled binaries to your home dir.
+```
+cp -r /projects/ATPESC2017/NumericalPackages/handson ~/
+```
 
    - Now proceed to run the Hands-On exercises as instructed at <<URL?>>
 
+### Note
+  - For basic graphics exercises - you should be able to use X11 over ssh. i.e `ssh -X cooley.alcf.anl.gov, ssh -X compute_node_allocated` and run the graphics part of the exercise
 
 ## Optional Visualization Instructions
 
