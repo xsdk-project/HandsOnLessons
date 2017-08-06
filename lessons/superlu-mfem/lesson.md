@@ -17,7 +17,7 @@ with a constant velocity.  This equation is used to model the concentration
 of something in a fluid as it diffuses and flows through the fluid.
 The equation is as follows:
 
-|![](http://latex.codecogs.com/gif.latex?%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%5Cnabla%20u%29%20-%20%5Cnabla%20%5Ccdot%20%28%5Coverrightarrow%7Bv%7Du%29%2BR)|(1)|
+|![](http://latex.codecogs.com/gif.latex?%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%5Cnabla%20u%29%20-%20%5Cnabla%20%5Ccdot%20%28%5Coverrightarrow%7Bv%7Du%29%2BR%3D0)|(1)|
 
 Where _u_ is the concentration that we are tracking,
 ![](http://latex.codecogs.com/gif.latex?%5Ckappa) is the diffusion rate,
