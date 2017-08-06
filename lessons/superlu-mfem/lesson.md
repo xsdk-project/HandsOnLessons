@@ -143,64 +143,66 @@ Number of unknowns: 10201
 ** Total highmark (MB):
     Sum-of-all :    62.27 | Avg :    62.27  | Max :    62.27
 **************************************************
-Time required for solver:  38.201 (s)
+Time required for solver:  38.2684 (s)
+Final L2 norm of residual: 1.55553e-18
 ```
 
 ### Run 4: Now use SuperLU_DIST, with MMD(A'+A) ordering.
 ```
-$ ./convdiff -slu --slu-colperm 2
+$ ./convdiff -slu --velocity 1000 --slu-colperm 2
 
 Options used:
    --refine 0
    --order 1
-   --velocity 100
+   --velocity 1000
    --no-visit
    --superlu
    --slu-colperm 2
 Number of unknowns: 10201
-       Nonzeros in L       435290
-       Nonzeros in U       435290
-       nonzeros in L+U     860379
-       nonzeros in LSUB    149244
+       Nonzeros in L       594238
+       Nonzeros in U       580425
+       nonzeros in L+U     1164462
+       nonzeros in LSUB    203857
 
 ** Memory Usage **********************************
 ** NUMfact space (MB): (sum-of-all-processes)
-    L\U :            7.48 |  Total :    13.85
+    L\U :           10.07 |  Total :    16.19
 ** Total highmark (MB):
-    Sum-of-all :    13.85 | Avg :    13.85  | Max :    13.85
+    Sum-of-all :    16.19 | Avg :    16.19  | Max :    16.19
 **************************************************
-Time required for solver:  0.568197 (s)
-Final L2 norm of residual: 6.27902e-18
+Time required for solver:  0.780516 (s)
+Final L2 norm of residual: 1.52262e-18
 ```
-Note the number of nonzeros in L+U is much smaller than natural ordering.
+NOTE: the number of nonzeros in L+U is much smaller than natural ordering.
 This affects the memory usage and runtime.
 
 ### Run 5: Now use SuperLU_DIST, with Metis(A'+A) ordering.
 ```
-$ ./convdiff -slu --slu-colperm 4
+$ ./convdiff -slu --velocity 1000 --slu-colperm 4
 
 Options used:
    --refine 0
    --order 1
-   --velocity 100
+   --velocity 1000
    --no-visit
    --superlu
    --slu-colperm 4
 Number of unknowns: 10201
-       Nonzeros in L       411734
-       Nonzeros in U       411734
-       nonzeros in L+U     813267
-       nonzeros in LSUB    172231
+       Nonzeros in L       522306
+       Nonzeros in U       527748
+       nonzeros in L+U     1039853
+       nonzeros in LSUB    218211
 
 ** Memory Usage **********************************
 ** NUMfact space (MB): (sum-of-all-processes)
-    L\U :            7.32 |  Total :    12.69
+    L\U :            9.24 |  Total :    15.64
 ** Total highmark (MB):
-    Sum-of-all :    12.69 | Avg :    12.69  | Max :    12.69
+    Sum-of-all :    15.64 | Avg :    15.64  | Max :    15.64
 **************************************************
-Time required for solver:  0.701967 (s)
-Final L2 norm of residual: 6.21352e-18
+Time required for solver:  0.786936 (s)
+Final L2 norm of residual: 1.55331e-18
 ```
+
 ### Run 6: Now use SuperLU_DIST, with Metis(A'+A) ordering, using 4 MPI tasks,
     on a larger problem.
 ```
