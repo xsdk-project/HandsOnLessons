@@ -212,50 +212,28 @@ The grid here is a cube consisting of 64 x 64 cells, consisting of 4 subgrids ea
 of size 32x32 cells.  The problem is periodic in the x-direction and not in the y-direction.
 This problem happens to be set-up to have homogeneous Neumann boundary conditions when not periodic.
 
-Let's try running this 2-d problem and animating the 1-d slices.
+Let's try running this 2-d problem with no refinement
 
 ```
-./main2d.gnu.MPI.ex inputs_2d  
+./main2d.gnu.MPI.ex inputs_2d amr.max_level=0 
 ```
 
-To see the 2-d solution, use Visit to open up a plotfile.
+To see the 2-d solution, use Visit to look at plt00000 and plt00060, for example.
+You should see something like this (though these pictures are
+made using a different visualization program.)
 
-```
-Select ``File'' then ``Open file ...'',
-then select the Header file associated the the plotfile of interest (e.g., _plt00000/Header_
-Here are instructions (from the Users Guide) for making a simple plot:
-
-To view the data, select ``Add'' then ``Pseudocolor'' then ``phi'' then ``Draw''.
-
-To view the grid structure (not particularly interesting yet, but when we add AMR it will be), select
-``subset'' then ``levels''.  Then double-click the text ``Subset - levels'',
-enable the ``Wireframe'' option, select ``Apply'', select ``Dismiss'', and then select ``Draw''.
-
-To save the image, select ``File'' then ``Set save options'', then customize the image format
-to your liking, then click ``Save''.
-```
-
-Your image should look similar to that below.
-
-<img src = "phi_diff.jpg" width ="300">
+<img src = "phi_adv_noref.0.jpg" width ="300"> <img src = "phi_adv_noref.60.jpg" width ="300">
 
 ## Now let's turn on AMR.
 
-Before we had 
-```
-amr.max_level = 0
-```
-in the inputs file.
-
 Let's now run with 
 ```
-./main2d.gnu.MPI.ex inputs_2d amr.max_level=1
+./main2d.gnu.MPI.ex inputs_2d amr.max_level=2
 ```
 
-and again visualize the results.  You should see something like this (though these pictures are
-made using a different visualization program.)
+and again visualize the results.  
 
-<img src = "phi_adv.0.jpg" width ="300"> <img src = "phi_adv.60.jpg" width ="300">
+<img src = "phi_adv_ref.0.jpg" width ="300"> <img src = "phi_adv_ref.60.jpg" width ="300">
 
 ### Further Reading
 
