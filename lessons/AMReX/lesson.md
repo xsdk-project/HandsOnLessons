@@ -1,13 +1,14 @@
 # AMReX -- a block-structured Adaptive Mesh Refinement (AMR) framework
 
-## At A Glance (Expected 10 minutes to complete)
+## At a Glance
+<!-- (Expected # minutes to complete) %% temporarily omit -->
 
 
 ```
 Questions                  |Objectives                           |Key Points
 --------------------------|----------- -------------------------|--------------------------
 How do I start to use     | Understand easy set-up              | It's not hard to get started
-AMReX?                    |                                     | 
+AMReX?                    |                                     |
                           |                                     |
 How do I 'turn on' AMR?   | Understand minimum specs for AMR    | When the algorithm is correctly designed
                           |                                     | and implemented, AMR 'just works'
@@ -16,7 +17,7 @@ How do I visualize AMR    | Use Visit for AMR results           | Visualization 
 results?
 ```
 
-## Example: Single-Level Heat Equation 
+## Example: Single-Level Heat Equation
 
 ### The Equation and the Discretization
 
@@ -30,7 +31,7 @@ This algorithm should look familiar to you -- in each time step we call the foll
         fluxx(i,j) = ( phi(i,j) - phi(i-1,j) ) / dx(1)
      end do
   end do
- 
+
   ! y-fluxes
   do    j = lo(2), hi(2)+1
      do i = lo(1), hi(1)
@@ -43,11 +44,11 @@ and
 ```
   do    j = lo(2), hi(2)
      do i = lo(1), hi(1)
- 
+
         phinew(i,j) = phiold(i,j) &
              + dtdx(1) * (fluxx(i+1,j  ) - fluxx(i,j)) &
              + dtdx(2) * (fluxy(i  ,j+1) - fluxy(i,j))
- 
+
      end do
   end do
 
@@ -78,10 +79,10 @@ main2d.gnu.MPI.ex -- the executable
 inputs_2d -- the inputs file
 fextract -- an executable that extracts a 1-d slice from 2-d or 3-d data
 extract_slice -- a simple script that calls fextract on each of our plotfiles
-plot_phi -- a simple gnuplot script to read and animate the 1-d slices 
+plot_phi -- a simple gnuplot script to read and animate the 1-d slices
 ```
 
-The inputs file currently has 
+The inputs file currently has
 
 ```
 nsteps = 20000
@@ -103,7 +104,7 @@ Let's try running this 2-d problem and animating the 1-d slices.
 source extract_slice
 gnuplot
 ```
-and when you get the gnuplot prompt, type 
+and when you get the gnuplot prompt, type
 ```
 load 'plot_phi'
 ```
@@ -136,7 +137,7 @@ Your image should look similar to that below.
 
 ## What does this do in parallel
 
-Let's now try 
+Let's now try
 ```
 mpirun -n 1 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
 mpirun -n 2 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
@@ -154,7 +155,7 @@ If this didn't scale perfectly, why not?
 
 ### The Equation and the Discretization
 
-Now let's consider scalar advection with a specified time-dependent velocity field.  In this 
+Now let's consider scalar advection with a specified time-dependent velocity field.  In this
 example we'll be using AMR.
 
 This algorithm should also look familiar to you -- in each time step we construct fluxes and use them to update the solution.
@@ -171,7 +172,7 @@ This algorithm should also look familiar to you -- in each time step we construc
 
 Here the construction of the fluxes is a little more complicated, and because we are going to use AMR, we
 must save the fluxes at each level so that we can use them in a refluxing operation. The subcycling in time
-algorithm, which we haven't really had time to talk about, looks like 
+algorithm, which we haven't really had time to talk about, looks like
 ```C++
     if (lev < finest_level)
     {
@@ -180,13 +181,13 @@ algorithm, which we haven't really had time to talk about, looks like
         {
             timeStep(lev+1, time+(i-1)*dt[lev+1], i);
         }
- 
+
         if (do_reflux)
         {
             // update lev based on coarse-fine flux mismatch
             flux_reg[lev+1]->Reflux(*phi_new[lev], 1.0, 0, 0, phi_new[lev]->nComp(), geom[lev]);
         }
- 
+
         AverageDownTo(lev); // average lev+1 down to lev
     }
 ```
@@ -202,7 +203,7 @@ main2d.gnu.MPI.ex -- the executable
 inputs_2d -- the inputs file
 ```
 
-The inputs file currently has 
+The inputs file currently has
 
 ```
 max_step = 120
@@ -219,7 +220,7 @@ This problem happens to be set-up to have homogeneous Neumann boundary condition
 Let's try running this 2-d problem with no refinement
 
 ```
-./main2d.gnu.MPI.ex inputs_2d amr.max_level=0 
+./main2d.gnu.MPI.ex inputs_2d amr.max_level=0
 ```
 
 To see the 2-d solution, use Visit to look at plt00000 and plt00060, for example.
@@ -232,7 +233,7 @@ made using a different visualization program.)
 
 ## Now let's turn on AMR.
 
-Let's now run with 
+Let's now run with
 ```
 ./main2d.gnu.MPI.ex inputs_2d amr.max_level=2
 ```
@@ -247,3 +248,10 @@ and again visualize the results.
 
 Learn more about AMReX [here](https://www.github.com/AMReX-codes/amrex) and take a look at the Users Guide in Docs.
 
+<!-- Insert space, horizontal line, and link to HandsOnLesson table -->
+
+&nbsp;
+
+---
+
+[Back to all HandsOnLessons](../lessons.md)

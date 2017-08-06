@@ -1,6 +1,7 @@
 # Using adjoint for optimization
 
-## At A Glance (10 mins)
+## At a Glance
+<!-- (Expected # minutes to complete) %% temporarily omit -->
 
 ```
 Questions                 |Objectives                     |Key Points
@@ -235,3 +236,11 @@ Because this example uses `DMDA`, Jacobian can be efficiently approxiated using 
 We have used [PETSc](https://www.mcs.anl.gov/petsc/) to demonstrate the adjoint capability as an enabling technology for dynamic-constrained optimization. In particular, we focused on time-depdent problems including complex dynamical systems with discontinuities and a large scale hyperbolic PDE.
 
 We have shown the basic usage of the adjoint solver as well as functionalities that can facilitate rapid development, diagnosis and performance profiling.
+
+<!-- Insert space, horizontal line, and link to HandsOnLesson table -->
+
+&nbsp;
+
+---
+
+[Back to all HandsOnLessons](../lessons.md)
