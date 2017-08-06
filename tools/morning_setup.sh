@@ -13,6 +13,7 @@ if [[ "$localos" == "Linux" ]]; then
     #    linuxvnc=vinagre
     else
          Please install vncviewer (from TigerVNC) and rerun the script
+         exit 1
     fi
 fi
 
