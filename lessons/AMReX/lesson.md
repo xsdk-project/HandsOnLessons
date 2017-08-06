@@ -237,7 +237,7 @@ to your liking, then click ``Save''.
 
 Your image should look similar to that below.
 
-<img src = "VisIt_2D_adv.jpg" width ="300">
+<img src = "phi_diff.jpg" width ="300">
 
 ## Now let's turn on AMR.
 
@@ -252,9 +252,12 @@ Let's now run with
 ./main2d.gnu.MPI.ex inputs_2d amr.max_level=1
 ```
 
-and again visualize the results.
+and again visualize the results.  You should see something like this (though these pictures are
+made using a different visualization program.)
+
+<img src = "phi_adv.0.jpg" width ="300"> <img src = "phi_adv.60.jpg" width ="300">
 
 ### Further Reading
 
-Learn more about [AMReX](https://www.github.com/AMReX-codes/amrex) and take a look at the Users Guide in Docs.
+Learn more about AMReX [here](https://www.github.com/AMReX-codes/amrex) and take a look at the Users Guide in Docs.
 
