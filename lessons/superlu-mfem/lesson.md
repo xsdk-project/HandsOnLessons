@@ -12,9 +12,10 @@ performance?               |                                | can vary a lot
 
 ## The problem being solved
 
-The example is modeling the steady state convection-diffusion equation in 2D
+The [convdiff.c](https://github.com/mfem/mfem/blob/atpesc-dev/examples/atpesc/superlu/convdiff.cpp)
+application is modeling the steady state convection-diffusion equation in 2D
 with a constant velocity.  This equation is used to model the concentration
-of something in a fluid as it diffuses and flows through the fluid.
+of something like a _die_ in a _moving_ fluid as it diffuses and flows th  the fluid.
 The equation is as follows:
 
 |![](http://latex.codecogs.com/gif.latex?%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%5Cnabla%20u%29%20-%20%5Cnabla%20%5Ccdot%20%28%5Coverrightarrow%7Bv%7Du%29%2BR%3D0)|(1)|
@@ -35,8 +36,8 @@ domain where it is 1.0.
  
 This problem is well known to cause convergence problems for iterative solvers,
 for larger v. We use MFEM as a vehicle to demonstrate the use of distributed,
-parallel [SuperLU_DIST](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
 to show the use of a direct solver to solve very ill-conditioned linear systems. 
+parallel [SuperLU_DIST](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
 
 ## The Example Source Code
 
@@ -240,20 +241,55 @@ Final L2 norm of residual: 1.55331e-18
 |:---:||:---:|
 |[<img src="slu_metis_time.png" width="400">](slu_metis_time.png)|[<img src="slu_metis_residual.png" width="400">](slu_metis_residual.png)|
 
-### Run 6: Now use SuperLU_DIST, with Metis(A'+A) ordering, using 4 MPI tasks,
+### Run 6: Now use SuperLU_DIST, with Metis(A'+A) ordering, using 16 MPI tasks,
     on a larger problem.
+
+By adding `--refine 2`, each element in the mesh is subdivided twice yielding a 16x larger problem.
+Here, we'll run on 16 tasks and just grep the output form some key values of interest.
+
 ```
-$ mpirun -np 4 ./convdiff --refine 2 --velocity 1000 -slu --slu-colperm 4
-
-
+$ mpirun -np 16 ./convdiff --refine 2 --velocity 1000 -slu --slu-colperm 4 >& junk.out
+$ grep 'Time required for solver:' junk.out 
+Time required for solver:  10.3593 (s)
+Time required for solver:  16.3567 (s)
+Time required for solver:  11.6391 (s)
+Time required for solver:  10.669 (s)
+Time required for solver:  10.0605 (s)
+Time required for solver:  10.1216 (s)
+Time required for solver:  20.0721 (s)
+Time required for solver:  10.6205 (s)
+Time required for solver:  13.8445 (s)
+Time required for solver:  11.8943 (s)
+Time required for solver:  16.1552 (s)
+Time required for solver:  13.0849 (s)
+Time required for solver:  14.0008 (s)
+Time required for solver:  13.238 (s)
+Time required for solver:  12.387 (s)
+Time required for solver:  9.81836 (s)
+$ grep 'Final L2 norm of residual:' junk.out
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
+Final L2 norm of residual: 3.06951e-18
 ```
 
 ## Out-Brief
 
-Here, re-emphasize the lesson objectives and key points.
-
-Its fine to go into greater detail about questions or objectives this lesson
-did not fully cover.
+In this lesson, we have used [MFEM](http://mfem.org) as a vehicle to demonstrate
+the value of direct solvers from the [SuperLU_DIST](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
+numerical package.
 
 ### Further Reading
 
