@@ -17,6 +17,9 @@ if [[ ! -e ~/.ssh/config ]]; then
     chmod 700 ~/.ssh/config
 fi
 
+#
+# Append stuff to ~/.ssh/config for ssh control master to cooley
+#
 cat >> ~/.ssh/config << EOF
 Host cooley cooley.alcf.anl.gov
     User $cooley_username
@@ -27,12 +30,15 @@ Host cooley cooley.alcf.anl.gov
     ControlPath ~/.ssh/cm_socket/%r@cooley.alcf.anl.gov:%p
 EOF
 
-# open login to cooley (will prompt) and put in bg
-# keep open all day
+#
+# open login to cooley (will prompt) and put in bg and keep open all day
+# This is the login that all others will use shared authentication with
+#
 ssh -N -f cooley.alcf.anl.gov 
 
-# copy vnc dot files to cooley
-# prompt for desired vnc password
+#
+# copy vnc dot files to cooley prompt for desired vnc password
+#
 ssh cooley "cat > ~/.vnc/xstartup" << EOF
 #!/bin/sh
 xterm &
@@ -40,6 +46,9 @@ twm
 EOF
 ssh cooley "chmod u+x ~/.vnc/xstartup"
 
+#
+# Get a temporary password from user and confirm its intended
+#
 while true; do
     read -p "Create temporary VNC Password: " pw
     echo "You have entered \"$pw\", is this correct?"
@@ -49,12 +58,17 @@ while true; do
         esac
     done
 done
+# Push the password to cooley and vncpasswd encode it
 ssh cooley "rm -f ~/.vnc/passwd; echo $pw | vncpasswd -f > ~/.vnc/passwd; chmod 600 ~/.vnc/passwd"
 
+#
 # Reserve 3 nodes for interactive use all day
-# get back allocation machine 'name' and start
-# xvnc server there
+#
 ssh -t -t -f cooley "qsub -I -n $nnodes -t $tl -A $acct" > ./qsub-interactive.out 2>&1 &
+
+#
+# Loop watching output from above to get allocation node name
+#
 nodid=""
 while [[ -z "$nodid" ]] ; do
     echo "Checking for allocation completion"
@@ -69,8 +83,9 @@ echo "Got allocation at $nodid"
 ssh cooley "nohup ssh $nodid x0vncserver --display=:0.0 --NeverShared=1 --geometry=2400x1500+0+0 --PasswordFile=/home/$cooley_username/.vnc/passwd --MaxProcessorUsage=100 >& /dev/null &"
 sleep 5 
 
-# Set up 2-hop ssh tunnel to allocation, (above) through
-# login and run xstartup there
+#
+# Set up 2-hop ssh tunnel to allocation, (above) through login and run xstartup there
+#
 if [[ "$cooley_shell" == tcsh ]]; then
     ssh -f -L 22590:$nodid:5900 cooley "nohup ssh $nodid 'setenv DISPLAY :0.0; ~/.vnc/xstartup' >& /dev/null &"
 else
@@ -78,6 +93,9 @@ else
 fi
 sleep 5 
 
+#
+# finally, start the vnc client on local machine
+#
 if [[ "$localos" == osx ]]; then
     open vnc://localhost:22590
 elif [[ "$localos" == linux ]]; then
