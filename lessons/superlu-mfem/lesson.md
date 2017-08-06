@@ -232,6 +232,14 @@ Time required for solver:  0.786936 (s)
 Final L2 norm of residual: 1.55331e-18
 ```
 
+|Solutions @_dv_=25 in [100,1000]|Steady State Solution @ _vel=1000_|
+|:---:||:---:|
+|<video src="slu_metis.mpg" width="400" height="300" controls preload></video>|[<img src="mfem-superlu0004.png" width="400">](mfem-superlu0004.png)|
+
+|Time to Solution|L2 norm of final residual|
+|:---:||:---:|
+|[<img src="slu_metis_time.png" width="400">](slu_metis_time.png)|[<img src="slu_metis_residual.png" width="400">](slu_metis_residual.png)|
+
 ### Run 6: Now use SuperLU_DIST, with Metis(A'+A) ordering, using 4 MPI tasks,
     on a larger problem.
 ```
