@@ -88,7 +88,7 @@ is_periodic = 1 0
 
 ```
 
-The grid is a cube consisting of 256 x 256 cells, consisting of 8 subgrids each
+The grid is a cube consisting of 256 x 256 cells, consisting of 4 subgrids each
 of size 128x128 cells.  The problem is periodic in the x-direction and not in the y-direction.
 This problem happens to be set-up to have homogeneous Neumann boundary conditions when not periodic.
 
@@ -208,53 +208,34 @@ amr.plot_int = 10
 
 Here we'll skip the 1-d slices and use VisIt to visualize the solution.
 
-The grid here is a cube consisting of 64 x 64 cells, consisting of 8 subgrids each
+The grid here is a cube consisting of 64 x 64 cells, consisting of 4 subgrids each
 of size 32x32 cells.  The problem is periodic in the x-direction and not in the y-direction.
 This problem happens to be set-up to have homogeneous Neumann boundary conditions when not periodic.
 
-Let's try running this 2-d problem and animating the 1-d slices.
+Let's try running this 2-d problem with no refinement
 
 ```
-./main2d.gnu.MPI.ex inputs_2d  
+./main2d.gnu.MPI.ex inputs_2d amr.max_level=0 
 ```
 
-To see the 2-d solution, use Visit to open up a plotfile.
+To see the 2-d solution, use Visit to look at plt00000 and plt00060, for example.
+You should see something like this (though these pictures are
+made using a different visualization program.)
 
-```
-Select ``File'' then ``Open file ...'',
-then select the Header file associated the the plotfile of interest (e.g., _plt00000/Header_
-Here are instructions (from the Users Guide) for making a simple plot:
-
-To view the data, select ``Add'' then ``Pseudocolor'' then ``phi'' then ``Draw''.
-
-To view the grid structure (not particularly interesting yet, but when we add AMR it will be), select
-``subset'' then ``levels''.  Then double-click the text ``Subset - levels'',
-enable the ``Wireframe'' option, select ``Apply'', select ``Dismiss'', and then select ``Draw''.
-
-To save the image, select ``File'' then ``Set save options'', then customize the image format
-to your liking, then click ``Save''.
-```
-
-Your image should look similar to that below.
-
-<img src = "VisIt_2D_adv.jpg" width ="300">
+<img src = "phi_adv_noref.0.jpg" width ="300"> <img src = "phi_adv_noref.60.jpg" width ="300">
 
 ## Now let's turn on AMR.
 
-Before we had 
-```
-amr.max_level = 0
-```
-in the inputs file.
-
 Let's now run with 
 ```
-./main2d.gnu.MPI.ex inputs_2d amr.max_level=1
+./main2d.gnu.MPI.ex inputs_2d amr.max_level=2
 ```
 
-and again visualize the results.
+and again visualize the results.  
+
+<img src = "phi_adv_ref.0.jpg" width ="300"> <img src = "phi_adv_ref.60.jpg" width ="300">
 
 ### Further Reading
 
-Learn more about [AMReX](https://www.github.com/AMReX-codes/amrex) and take a look at the Users Guide in Docs.
+Learn more about AMReX [here](https://www.github.com/AMReX-codes/amrex) and take a look at the Users Guide in Docs.
 
