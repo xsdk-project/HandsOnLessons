@@ -1,20 +1,15 @@
 # Sparse Direct Solver
 
-## At A Glance (10 minutes)
+## At a Glance
+<!-- (Expected # minutes to complete) %% temporarily omit -->
 
 ```
 Questions                  |Objectives                      |Key Points
 ---------------------------|--------------------------------|----------
-Question 1?                |Objective 1                     |Key Point 1
-Question 2?                |Objective 2                     |Key Point 2
-Question 3?                |Objective 3                     |Key Point 3
+Why need direct solver?    | Can obtain accurate solution   | Robust for difficult problems
+What parameters affect     | Try different ordering options | Performance (time & memory) 
+performance?               |                                | can vary a lot
 ```
-
-* **Questions** are the those things we want learners to know the answers to by the end of the lesson.
-We don't have to list all possible questions here...only the two or three _most_ important.
-* **Objectives** are those things we want learners to actually do or observe during the lesson. Again,
-only list here the ones that are _most_ important.
-* **Key Points** are those things we want learners to take-away from the lesson.
 
 ## The problem being solved
 
@@ -22,20 +17,21 @@ The example is modeling the steady state convection-diffusion equation in 2D
 with a constant velocity.  This equation is used to model the concentration
 of something in a fluid as it diffuses and flows through the fluid.
 The equation is as follows:
+
     Del dot (kappa Del u) – Del dot (v u) + R = 0
 
 Where u is the concentration that we are tracking, kappa is the diffusion rate,
 v is the velocity of the flow and R is a concentration source.
- 
+
 In the application the velocity vector is pointing at +x and the magnitude is
 set by the user (default of 100).  The kappa is fixed at 1.0, and the source
 is 0.0 everywhere except for a small disc centered at the middle of the
 domain where it is 1.0.
- 
-This problem is well known to give iterative solvers trouble. 
+
+This problem is well known to give iterative solvers trouble.
 We use MFEM and SuperLU_DIST (http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
 to demonstrate the use of a direct solver to solve very ill-conditioned
-linear systems. 
+linear systems.
 
 ![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)
 
@@ -159,3 +155,11 @@ did not fully cover.
 ### Further Reading
 
 Include links to other online sources you might want to include.
+
+<!-- Insert space, horizontal line, and link to HandsOnLesson table -->
+
+&nbsp;
+
+---
+
+[Back to all HandsOnLessons](../lessons.md)

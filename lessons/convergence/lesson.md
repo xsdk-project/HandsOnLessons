@@ -1,6 +1,7 @@
 # Finite Elements and Convergence
 
-## At A Glance (10 mins)
+## At a Glance
+<!-- (Expected # minutes to complete) %% temporarily omit -->
 
 ```
 Questions                    |Objectives                      |Key Points
@@ -259,3 +260,11 @@ the effect of the polynomial order of the basis functions on convergence rates.
 ### Further Reading
 
 To learn more about MFEM including examples and miniapps visit [mfem.org](mfem.org).
+
+<!-- Insert space, horizontal line, and link to HandsOnLesson table -->
+
+&nbsp;
+
+---
+
+[Back to all HandsOnLessons](../lessons.md)
