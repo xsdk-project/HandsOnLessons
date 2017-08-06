@@ -97,19 +97,22 @@ The grid is a cube consisting of 256 x 256 cells, consisting of 4 subgrids each
 of size 128x128 cells.  The problem is periodic in the x-direction and not in the y-direction.
 This problem happens to be set-up to have homogeneous Neumann boundary conditions when not periodic.
 
-Let's try running this 2-d problem and animating the 1-d slices.
+Let's try running this 2-d problem and animating the 1-d slices.  
 
 ```
 ./main2d.gnu.MPI.ex inputs_2d  
+```
+
+Then let's extract 1-d slices and animate them
+
+```
 source extract_slice
-gnuplot
-```
-and when you get the gnuplot prompt, type
-```
-load 'plot_phi'
+gnuplot plot_phi
 ```
 
 Do you see the solution evolving in time?
+
+|[<img src="phi.gif" width="400">](phi.gif)
 
 If you'd like to see the 2-d solution, use Visit to open up a plotfile.
 
