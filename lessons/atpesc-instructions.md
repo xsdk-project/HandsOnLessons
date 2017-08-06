@@ -22,19 +22,17 @@ MPIRUN=/usr/bin/mpirun
 ```
 resoft
 ```
-  - obtain compute nodes in interactive mode to run the hands on exercises by running the following `qsub` command. For example, requesting 3 nodes for 12h
+  - obtain 3 compute nodes in _interactive_ (`-I`) mode to run the hands on exercises by running the following `qsub` command...
 ```
 qsub -I -n 3 -t 720 -A ATPESC2017
 ```
-   - copy over precompiled binaries to your home dir.
+   - copy over precompiled binaries and data files to your home dir.
 ```
 cp -r /projects/ATPESC2017/NumericalPackages/handson ~/
 ```
-
-   - Now proceed to run the Hands-On exercises as instructed at <<URL?>>
-
-### Note
-  - For basic graphics exercises - you should be able to use X11 over ssh. i.e `ssh -X cooley.alcf.anl.gov, ssh -X compute_node_allocated` and run the graphics part of the exercise
+   - Now proceed to run the Hands-On exercises as instructed. Each lesson will
+     indicate the path in the `handson` directory you copied above you should
+     `cd` to in order to begin the lesson.
 
 ## Optional Visualization Instructions
 
@@ -54,6 +52,13 @@ Nonetheless, we are providing here some instructions and tools for those
 would like to persue getting remote visualization working for these
 exercises.
 
+### Note
+  - For basic graphics exercises - you should be able to use X11 over ssh.
+    i.e `ssh -C -X -Y cooley.alcf.anl.gov, ssh -X compute_node_allocated`
+    and run the graphics part of the exercise. That said, many post-2014
+    X servers have _INdirect GLX_ disabled in them breaking tools like
+    paraview, VisIt and glvis.
+
 We have a devloped a script (to be run on your laptop) that can help with setting up a VNC connection to cooley. It can work on MacOS, and with some Linux VNC clients (vinagre, vncviewer). However the script is fragile and might not work with everyones setup - hence this is optional. This script will do several things
 
  - Logs you into cooley once with your token
@@ -61,7 +66,10 @@ We have a devloped a script (to be run on your laptop) that can help with settin
  - Reserves 3 nodes for 12h on cooley.
  - Sets up a VNC connection to those nodes
 
-   Please download the script from <<URL>> and run
+   Mac and Linux users are welcome download and run this script to
+   setup a VNC connection. Doing so will permit quick use of tools
+   like VisIt, paraview and/or glvis. 
+
 ```
 ./morning_setup.sh your_cooley_userid
 ```
