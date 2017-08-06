@@ -8,6 +8,7 @@ As described in [Welcome to HandsOnLessons](../README.md), hosted here are a ser
 * [Structured Mesh](AMReX/lesson.md)
 * [Time Integrators](time_integrators/lesson.md)
 * [Iterative Solvers](iterativesolvers/lesson.md)
+* [Direct Solvers](superlu-mfem/lesson.md)
 * [Algebraic Multigrid](AMG/lesson.md)
 * [Finite Elements Convergence](convergence/lesson.md)
 * [Adjoint Solvers](adjoint/lesson.md)
