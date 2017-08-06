@@ -9,7 +9,10 @@ Questions                  |Objectives                           |Key Points
 How do I start to use     | Understand easy set-up              | It's not hard to get started
 AMReX?                    |                                     | 
                           |                                     |
-How do I ``turn on'' AMR? | Understand minimum specs for AMR    ! It's not hard to use AMR
+How do I 'turn on' AMR?   | Understand minimum specs for AMR    | 
+                          |                                     |
+How do I visualize AMR    | Try using Visit for AMR results     ! 
+results?
 ```
 
 ## Example: Single-Level Heat Equation 
