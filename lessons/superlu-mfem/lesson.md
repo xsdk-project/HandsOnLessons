@@ -1,6 +1,6 @@
 # Sparse Direct Solver
 
-## At A Glance (10 minutes)
+## At A Glance
 
 ```
 Questions                  |Objectives                      |Key Points
@@ -159,6 +159,10 @@ Number of unknowns: 10201
 Time required for solver:  38.2684 (s)
 Final L2 norm of residual: 1.55553e-18
 ```
+
+|Stead State For _vel=1000_|
+|:---:|
+|[<img src="mfem-superlu0004.png" width="400">](mfem-superlu0004.png)|
 
 ### Run 4: Now use SuperLU_DIST, with MMD(A'+A) ordering.
 ```
