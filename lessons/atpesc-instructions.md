@@ -59,7 +59,11 @@ exercises.
     X servers have _INdirect GLX_ disabled in them breaking tools like
     paraview, VisIt and glvis.
 
-We have a devloped a script (to be run on your laptop) that can help with setting up a VNC connection to cooley. It can work on MacOS, and with some Linux VNC clients (vinagre, vncviewer). However the script is fragile and might not work with everyones setup - hence this is optional. This script will do several things
+We have a devloped a script (to be run on your laptop) that can help with
+setting up a VNC connection to cooley. It can work on MacOS, and with some
+Linux VNC clients (vinagre, vncviewer). However the script is fragile and
+might not work with everyones setup - hence this is optional. This script
+will do several things
 
  - Logs you into cooley once with your token
  - Sets up SSH Control Master so you only have to log into cooley with your token once for the whole day and password-less will work thereafter
@@ -70,12 +74,33 @@ We have a devloped a script (to be run on your laptop) that can help with settin
    setup a VNC connection. Doing so will permit quick use of tools
    like VisIt, paraview and/or glvis. 
 
+To try this setup script...
+
+On Linux,
 ```
-./morning_setup.sh your_cooley_userid
+wget https://raw.githubusercontent.com/xsdk-project/HandsOnLessons/master/tools/atpesc2017_cooley_vnc_setup.sh
+```
+
+On Mac,
+
+```
+curl https://raw.githubusercontent.com/xsdk-project/HandsOnLessons/master/tools/atpesc2017_cooley_vnc_setup.sh > atpesc2017_cooley_vnc_setup.sh
+```
+
+Ensure the script has execute permissions...
+```
+chmod 755 atpesc2017_cooley_vnc_setup.sh
+```
+
+Now, try running the script
+
+```
+./atpesc2017_cooley_vnc_setup.sh <your_cooley_username>
 ```
 
 ### Notes
   - If allocating nodes via this script - please deallocate nodes that you might have previously allocated
+    by simply logging out of the interactive allocation.
 
 ### Troubleshooting
   - If you have a different preferred Linux VNC client - you should be able to use it to connect to the VNC connection that is already setup by this script. For example,
