@@ -21,10 +21,10 @@ fi
 if [[ "$localos" == "Linux" ]]; then
     if [  -f /usr/bin/vncviewer ]; then
         linuxvnc=vncviewer
-    #elif [  -f /usr/bin/vinagre ]; then
-    #    linuxvnc=vinagre
+    elif [  -f /usr/bin/vinagre ]; then
+        linuxvnc=vinagre
     else
-         echo "Please install vncviewer (from TigerVNC) and rerun the script"
+         echo "Please install vncviewer (from TigerVNC) or vinagre and rerun the script"
          exit 1
     fi
 fi
@@ -62,19 +62,18 @@ ssh -N -f ${cooley_username}@cooley.alcf.anl.gov
 #
 # copy vnc dot files to cooley prompt for desired vnc password
 #
-ssh ${cooley_username}@cooley-nph "mkdir   ~/.vnc; cat > ~/.vnc/xstartup" << EOF
+ssh ${cooley_username}@cooley-nph "mkdir -p  ~/.vnc; cat > ~/.vnc/xstartup" << EOF
 #!/bin/bash
 #created by NumericalPackagesHandsOn
 export DISPLAY=:0.0
 export HANDSON=/projects/ATPESC2017/NumericalPackages/handson/
-xterm &
+xterm -fn 10x20 &
 twm
 EOF
-ssh ${cooley_username}@cooley-nph "chmod u+x ~/.vnc/xstartup"
-
-ssh ${cooley_username}@cooley-nph "mkdir   ~/.vnc; cat >> ~/.soft.cooley" << EOF
+ssh ${cooley_username}@cooley-nph "chmod u+x ~/.vnc/xstartup; cat >> ~/.soft.cooley" << EOF
 #added by NumericalPackagesHandsOn
 +gcc-4.8.1
+@visit
 EOF
 #
 # Get a temporary password from user and confirm its intended
@@ -122,6 +121,7 @@ sleep 5
 #
 # finally, start the vnc client on local machine
 #
+echo "Attempting to connect VNC to localhost:22590 - If this fails you can reattempt this manually"
 if [[ "$localos" == Darwin ]]; then
     open vnc://localhost:22590
 elif [[ "$localos" == Linux ]]; then
