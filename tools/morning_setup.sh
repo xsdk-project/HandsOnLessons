@@ -1,11 +1,20 @@
 #!/bin/sh -x
 
-acct=ATPESC17_Instructors
+acct=ATPESC2017
 nnodes=1
 tl=20
 cooley_username=mcmiller
-cooley_shell=tcsh
-localos=osx
+localos=`uname`
+linuxvnc=''
+if [[ "$localos" == "Linux" ]]; then
+    if [  -f /usr/bin/vinagre ]; then
+        linuxvnc=vncviewer
+    #elif [  -f /usr/bin/vinagre ]; then
+    #    linuxvnc=vinagre
+    else
+         Please install vncviewer (from TigerVNC) and rerun the script
+    fi
+fi
 
 # Ensure ~/.ssh/config exists and has limited permissions
 if [[ ! -e ~/.ssh/config ]]; then
@@ -21,10 +30,10 @@ fi
 # Append stuff to ~/.ssh/config for ssh control master to cooley
 #
 cat >> ~/.ssh/config << EOF
+#added by NumericalPackagesHandsOn
 Host cooley cooley.alcf.anl.gov
     User $cooley_username
     Compression yes
-    CompressionLevel 9
     ControlMaster auto
     ControlPersist 12h
     ControlPath ~/.ssh/cm_socket/%r@cooley.alcf.anl.gov:%p
@@ -39,13 +48,20 @@ ssh -N -f cooley.alcf.anl.gov
 #
 # copy vnc dot files to cooley prompt for desired vnc password
 #
-ssh cooley "cat > ~/.vnc/xstartup" << EOF
-#!/bin/sh
+ssh cooley "mkdir   ~/.vnc; cat > ~/.vnc/xstartup" << EOF
+#!/bin/bash
+#created by NumericalPackagesHandsOn
+export DISPLAY=:0.0
+export HANDSON=/projects/ATPESC2017/NumericalPackages/handson/
 xterm &
 twm
 EOF
 ssh cooley "chmod u+x ~/.vnc/xstartup"
 
+ssh cooley "mkdir   ~/.vnc; cat >> ~/.soft.cooley" << EOF
+#added by NumericalPackagesHandsOn
++gcc-4.8.1
+EOF
 #
 # Get a temporary password from user and confirm its intended
 #
@@ -86,25 +102,16 @@ sleep 5
 #
 # Set up 2-hop ssh tunnel to allocation, (above) through login and run xstartup there
 #
-if [[ "$cooley_shell" == tcsh ]]; then
-    ssh -f -L 22590:$nodid:5900 cooley "nohup ssh $nodid 'setenv DISPLAY :0.0; ~/.vnc/xstartup' >& /dev/null &"
-else
-    ssh -f -L 22590:$nodid:5900 cooley "nohup ssh $nodid 'export DISPLAY=:0.0; ~/.vnc/xstartup' >& /dev/null &"
-fi
+ssh -f -L 22590:$nodid:5900 cooley "nohup ssh $nodid ~/.vnc/xstartup >& /dev/null &"
 sleep 5 
 
 #
 # finally, start the vnc client on local machine
 #
-if [[ "$localos" == osx ]]; then
+if [[ "$localos" == Darwin ]]; then
     open vnc://localhost:22590
-elif [[ "$localos" == linux ]]; then
-    echo "not implemented"
+elif [[ "$localos" == Linux ]]; then
+    $linuxvnc localhost::22590
 elif [[ "$localos" == windows ]]; then
     echo "not implemented"
 fi
-
-echo "WARNING: soft add +gcc-4.8.1"
-echo "WARNING: set path=($path /projects/ATPESC2017/NumericalPackages/spack/bin)"
-echo "WARNING: set path to root of hands on"
-
