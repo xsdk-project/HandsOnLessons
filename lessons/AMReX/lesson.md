@@ -9,9 +9,10 @@ Questions                  |Objectives                           |Key Points
 How do I start to use     | Understand easy set-up              | It's not hard to get started
 AMReX?                    |                                     | 
                           |                                     |
-How do I 'turn on' AMR?   | Understand minimum specs for AMR    | 
+How do I 'turn on' AMR?   | Understand minimum specs for AMR    | When the algorithm is correctly designed
+                          |                                     | and implemented, AMR 'just works'
                           |                                     |
-How do I visualize AMR    | Try using Visit for AMR results     ! 
+How do I visualize AMR    | Use Visit for AMR results           | Visualization tools exist for AMR data.
 results?
 ```
 
