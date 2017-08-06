@@ -17,23 +17,26 @@ with a constant velocity.  This equation is used to model the concentration
 of something in a fluid as it diffuses and flows through the fluid.
 The equation is as follows:
 
-![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)
+|![](http://latex.codecogs.com/gif.latex?%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%5Cnabla%20u%29%20-%20%5Cnabla%20%5Ccdot%20%28%5Coverrightarrow%7Bv%7Du%29%2BR)|(1)|
 
-    Del dot (kappa Del u) – Del dot (v u) + R = 0
-
-Where u is the concentration that we are tracking, kappa is the diffusion rate,
-v is the velocity of the flow and R is a concentration source.
+Where _u_ is the concentration that we are tracking,
+![](http://latex.codecogs.com/gif.latex?%5Ckappa) is the diffusion rate,
+_v_ is the velocity of the flow and _R_ is a concentration source.
  
-In the application the velocity vector is pointing at +x and the magnitude is
-set by the user (default of 100).  The kappa is fixed at 1.0, and the source
-is 0.0 everywhere except for a small disc centered at the middle of the
+In the application we use here, the velocity vector is pointing at _+x_ and
+the magnitude is set by the user (default of 100),
+![](http://latex.codecogs.com/gif.latex?%5Ckappa) is fixed at 1.0, and the
+source is 0.0 everywhere except for a small disc centered at the middle of the
 domain where it is 1.0.
+
+|Initial Condition|
+|:---:|
+|[<img src="mfem-superlu0000.png" width="400">](mfem-superlu0000.png)|
  
-This problem is well known to cause convergence problem for iterative solvers,
-for larger v.
-We use MFEM and SuperLU_DIST (http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
-to demonstrate the use of a direct solver to solve very ill-conditioned
-linear systems. 
+This problem is well known to cause convergence problems for iterative solvers,
+for larger v. We use MFEM as a vehicle to demonstrate the use of distributed,
+parallel [SuperLU_DIST](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
+to show the use of a direct solver to solve very ill-conditioned linear systems. 
 
 ## The Example Source Code
 
@@ -89,6 +92,12 @@ Final GMRES Relative Residual Norm = 2.56511e-13
 Time required for solver:  0.0362886 (s)
 ```
 
+|Steady State|
+|:---:|
+|[<img src="mfem-superlu0005.png" width="400">](mfem-superlu0005.png)|
+
+---
+
 ### Run 2: increase velocity to 1000, GMRES does not converge anymore
 
 ```
@@ -123,6 +132,10 @@ Iters     resid.norm     conv.rate  rel.res.norm
     ...
   200    9.500000e-04    1.000000   1.000000e+00
 ```
+
+|Contour Plot of Computed Result|
+|:---:|
+|[<img src="mfem-superlu0003.png" width="400">](mfem-superlu0003.png)|
 
 ### Run 3: Now use SuperLU_DIST, with default options
 ```

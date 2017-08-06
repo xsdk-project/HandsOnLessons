@@ -1,11 +1,22 @@
-#!/bin/sh -x
-
+#!/bin/sh
 acct=ATPESC2017
-nnodes=1
-tl=20
-cooley_username=mcmiller
+nnodes=3
+tl=720
 localos=`uname`
 linuxvnc=''
+
+if [[ -z "$1" ]]; then
+    echo "Usage: ./morning_setup <cooley_username>"
+    exit 1
+fi
+cooley_username=$1
+
+if [[ "$2" == debug ]]; then
+    set -x
+    nnodes=1
+    tl=20
+fi
+
 if [[ "$localos" == "Linux" ]]; then
     if [  -f /usr/bin/vncviewer ]; then
         linuxvnc=vncviewer
@@ -30,6 +41,7 @@ fi
 #
 # Append stuff to ~/.ssh/config for ssh control master to cooley
 #
+if [[ -z "$(grep cooley-nph ~/.ssh/config)" ]]; then
 cat >> ~/.ssh/config << EOF
 #added by NumericalPackagesHandsOn
 Host cooley-nph cooley.alcf.anl.gov
@@ -38,6 +50,7 @@ Host cooley-nph cooley.alcf.anl.gov
     ControlPersist 12h
     ControlPath ~/.ssh/cm_socket/%r@cooley.alcf.anl.gov:%p
 EOF
+fi
 
 #
 # open login to cooley (will prompt) and put in bg and keep open all day
