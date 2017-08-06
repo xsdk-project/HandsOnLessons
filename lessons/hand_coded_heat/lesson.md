@@ -102,11 +102,11 @@ the second derivative of _u_ with respect to space, _x_, by the equation...
 
 |![](http://latex.codecogs.com/gif.latex?%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D%5CBigr%7C_%7Bx_i%7D%20%5Capprox%20%5Calpha%20%5Cfrac%7Bu_%7Bi-1%7D%5Ek-2u_i%5Ek%2Bu_%7Bi%2B1%7D%5Ek%7D%7B%5CDelta%20x%5E2%7D)|(4)|
 
-Setting equations 4 and 5 equal to each other and re-arranging terms, we
+Setting equations 3 and 4 equal to each other and re-arranging terms, we
 arrive at the following update scheme for producing the temperatures at
 the next time, _k+1_, from temperatures at the current time, _k_, as
 
-|![](http://latex.codecogs.com/gif.latex?u_i%5E%7Bk%2B1%7D%20%3D%20ru_%7Bi%2B1%7D%5Ek%2B%281-2r%29u_i%5Ek%2Bru_%7Bi-1%7D%5Ek)|(6)|
+|![](http://latex.codecogs.com/gif.latex?u_i%5E%7Bk%2B1%7D%20%3D%20ru_%7Bi%2B1%7D%5Ek%2B%281-2r%29u_i%5Ek%2Bru_%7Bi-1%7D%5Ek)|(5)|
 
 where ![](http://latex.codecogs.com/gif.latex?r%3D%5Calpha%5Cfrac%7B%5CDelta%20t%7D%7B%5CDelta%20x%5E2%7D)
 Note that this equation now defines the solution at spatial position _i_ and time _k+1_

@@ -1,0 +1,76 @@
+
+# Instructions for Numerical Package Hands-on
+
+## Basic Instructions
+
+Hands-on exercises are primarily run on cooley cluster at ALCF. Please do the following initial setup
+
+ - login to cooley
+```
+ssh username@cooley.alcf.anl.gov
+```
+ - setup software environment on cooley by adding the following to  _~/.soft.cooley_ (preferably before `@default` line)
+```
++mvapich2
++gcc-4.8.1
+@visit
+PATH+=/projects/ATPESC2017/NumericalPackages/spack/bin
+MPIRUN_SPACK=/projects/ATPESC2017/NumericalPackages/spack/opt/spack/linux-rhel6-x86_64/gcc-4.8.1/openmpi-2.1.1-5b4k4f3vzgwz5qmektcqja2av4c4bjrg/bin/mpiexec
+MPIRUN=/usr/bin/mpirun
+```
+  - run the following command to make the above change to _~/.soft.cooley_ effective
+```
+resoft
+```
+  - obtain compute nodes in interactive mode to run the hands on exercises by running the following `qsub` command. For example, requesting 3 nodes for 12h
+```
+qsub -I -n 3 -t 720 -A ATPESC2017
+```
+   - < more instructions - copy files - lable which tutorial corresponds to which file etc>     
+
+   - Now proceed to run the Hands-On exercises as instructed at <<URL?>>
+
+
+## Optional Visualization Instructions
+
+Some of the hands-on exercises have optional visualization instructions
+and use a variety of visualization tools.
+
+Getting a room of more than 70 people with different laptops working with
+remote visualization from cooley is not something either our tight agenda or
+our staff are prepared to support. In addition, where necessary, the hands-on
+leader(s) will demonstrate the use of some tools and learners can follow 
+along at those points.
+
+There is a whole day of activity devoted to visualization resources and
+tools in the ATPESC agenda on August 9th.
+
+Nonetheless, we are providing here some instructions and tools for those
+would like to persue getting remote visualization working for these
+exercises.
+
+We have a devloped a script (to be run on your laptop) that can help with setting up a VNC connection to cooley. It can work on MacOS, and with some Linux VNC clients (vinagre, vncviewer). However the script is fragile and might not work with everyones setup - hence this is optional. This script will do several things
+
+ - Logs you into cooley once with your token
+ - Sets up SSH Control Master so you only have to log into cooley with your token once for the whole day and password-less will work thereafter
+ - Reserves 3 nodes for 12h on cooley.
+ - Sets up a VNC connection to those nodes
+
+   Please download the script from <<URL>> and run
+```
+./morning_setup.sh your_cooley_userid
+```
+
+### Notes
+  - If allocating nodes via this script - please deallocate nodes that you might have previously allocated
+
+### Troubleshooting
+  - If you have a different preferred Linux VNC client - you should be able to use it to connect to the VNC connection that is already setup by this script. For example,
+```
+krdc vnc://localhost:22590
+```
+  - When rerunning the script - if the ssh command to setup VNC tunnel fails - you might have to kill the 'ssh control master' process and restart again. On Linux - one can discover process this with
+```
+netstat -tp | grep cooley
+```
+

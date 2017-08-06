@@ -34,6 +34,8 @@ make ex3opt
 ```
 The source code is included in [ex3opt.c](./ex3opt.c)
 
+All the example codes need to compiled only once. Different tasks can be accomplished using command line options.
+
 ### Command line options
 You can determine the command line options available for this particular example by doing
 ```
@@ -139,7 +141,8 @@ The example `ex1fwd.c` in the same folder illustrates the forward sensitivity ap
 ## Example 3: Diffusion-Reaction Problem
 
 This code demonstrates parallel adjoint calculation for a system of time-dependent PDEs on a 2D rectangular grid.
-We need only to write the right-hand-side function and the Jacobian and compile the code once. All the tasks in the following can be accomplished using command line options.
+The adjoint solution corresponds to the sensitivities of one component in the final solution w.r.t. the initial conditions.
+We will use this example to illustrate the performance considerations for realistic large-scale applications. In particular, we will show how to play with checkpointing and how to profile/tune the performance.
 
 ### Compile the code
 This example is in `src/ts/examples/advection-diffusion-reaction`. The source code is included in [ex5adj.c](./ex5adj.c)
@@ -179,9 +182,9 @@ The output corresponds to the schedule depicted by the following diagram:
 |<font color="white">Looking at the output, we will find that the new schedule uses both RAM and disk for checkpointing and takes two less recomputations.</font>|
 
 ### Run 3: Implicit time integration method
-Now we switch to implicit method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)) using fixed stepsize, which is the default setting in the code. At each time step, a nonlinear system is solved by the PETSc nonlinear solver `SNES`.
+Now we switch to an implicit method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)) using fixed stepsize, which is the default setting in the code. At each time step, a nonlinear system is solved by the PETSc nonlinear solver `SNES`.
 ```
-mpirun -n 12 ./ex5adj -da_grid_x 1024 -da_grid_y 1024 -ts_max_steps 10 -snes_monitor -log_view
+mpirun -n 12 ./ex5adj -da_grid_x 1024 -da_grid_y 1024 -ts_max_steps 10 -snes_monitor -log_view -ts_monitor
 ```
 * `-snes_monitor` shows the progress of `SNES`
 * `-log_view` prints a summary of the logging
@@ -236,6 +239,10 @@ Because this example uses `DMDA`, Jacobian can be efficiently approxiated using 
 We have used [PETSc](https://www.mcs.anl.gov/petsc/) to demonstrate the adjoint capability as an enabling technology for dynamic-constrained optimization. In particular, we focused on time-depdent problems including complex dynamical systems with discontinuities and a large scale hyperbolic PDE.
 
 We have shown the basic usage of the adjoint solver as well as functionalities that can facilitate rapid development, diagnosis and performance profiling.
+
+## Further Reading
+
+[PETSc Documentation](http://www.mcs.anl.gov/petsc/documentation/)
 
 <!-- Insert space, horizontal line, and link to HandsOnLesson table -->
 
