@@ -16,72 +16,26 @@ use the adjoint method?   |for adjoint calculation        |
                           |checkpointing                  |checkpointing at large scale.
 ```
 
-## Example 1: Generator Stability Analysis:
+## Example 1: Structural Mechanics Beam Deflection:
 
-This code uses [PETSc/TAO](https://www.mcs.anl.gov/petsc/) to demonstrates how to solve an ODE-constrained optimization problem with the Toolkit for Advanced Optimization (TAO), TSEvent, TSAdjoint and TS.
-The objective is to maximize the mechanical power input subject to the generator swing equations and a constraint on the maximum rotor angle deviation, which is reformulated as a minimization problem
+This code uses MFEM and [PETSc/TAO](https://www.mcs.anl.gov/petsc/) to demonstrates convergence of Krylov methods.
 
-![equation](http://latex.codecogs.com/gif.latex?%5Cbegin%7Balign%2A%7D%0D%0A%20%20%5Cmin%20%26%20%5C%7B-P_m%20%2B%20%5Csigma%5Cdisplaystyle%20%5Cint_%7Bt_0%7D%5E%7Bt_F%7D%20%5Cmax%5Cleft%280%2C%20%5Ctheta%20-%20%5Ctheta_%7Bmax%7D%5Cright%29%5E%5Ceta%20%5C%20%5Cmathrm%7Bd%7Dt%20%5C%7D%5C%5C%0D%0A%20%20%5Cnonumber%20%7E%7E%20%5Ctext%7Bs.t.%7D%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Ctheta%7D%7Bdt%7D%20%3D%20%5Comega_B%5Cleft%28%5Comega%20-%20%5Comega_s%5Cright%29%20%5C%5C%0D%0A%20%20%26%20%5Cqquad%20%5Cfrac%7Bd%20%5Comega%7D%7Bdt%7D%20%3D%20%5Cfrac%7B%5Comega_s%7D%7B2H%7D%5Cleft%28P_m%20-%20P_%7Bmax%7D%5Csin%28%5Ctheta%29%20-%20D%28%5Comega%20-%20%5Comega_s%29%5Cright%29%0D%0A%5Cend%7Balign%2A%7D)
+The source code is included in [ex2p.c](./ex2p.c)
 
-Disturbance (a fault) is applied to the generator at time 0.1 and cleared at time 0.2.
-The objective function contains an integral function.
-The gradient is computed with the discrete adjoint of an implicit time stepping method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)).
-
-### Compile the code
-During ATPESC, participants do not need to compile code because binaries are available in the ATPESC project folder on Cooley. In case you are using your own copy of PETSc, this example is located in `src/ts/examples/power_grid/`. To compile, run the following in the source folder
-```
-make ex3opt
-```
-The source code is included in [ex3opt.c](./ex3opt.c)
-
-### Command line options
-You can determine the command line options available for this particular example by doing
-```
-./ex3opt -help
-```
-and show the options related to TAO only by doing
-```
-./ex3opt -help | grep tao
-```
-
-### Run 1: Monitor the optimization progress
+### Run 1: Run with Jacobi preconditioner
 
 ```
-./ex3opt -tao_monitor -tao_view
-iter =   0, Function value: 2.03778,  Residual: 144.125
-iter =   1, Function value: -0.552947,  Residual: 43.1456
-iter =   2, Function value: -0.911654,  Residual: 18.3028
-iter =   3, Function value: -1.00401,  Residual: 2.48745
-iter =   4, Function value: -1.00649,  Residual: 1.17916
-iter =   5, Function value: -1.00732,  Residual: 0.125532
-iter =   6, Function value: -1.00733,  Residual: 0.00012392
-iter =   7, Function value: -1.00733,  Residual: 1.3024e-08
-iter =   8, Function value: -1.00733,  Residual: 3.46501e-12
-Tao Object: 1 MPI processes
-type: blmvm
-Gradient steps: 0
-TaoLineSearch Object: 1 MPI processes
-type: more-thuente
-Active Set subset type: subvec
-convergence tolerances: gatol=1e-08,   steptol=0.,   gttol=0.
-Residual in Function/Gradient:=3.46501e-12
-Objective value=-1.00733
-total number of iterations=8,                          (max: 2000)
-total number of function/gradient evaluations=9,      (max: 4000)
-Solution converged:    ||g(X)|| <= gatol
-Vec Object: 1 MPI processes
-type: seq
-1.00793
+PETSC_OPTIONS="-pc_type jacobi -ksp_max_it 25" ./ex2p -petscopts rc_ex2p --mesh /projects/ATPESC2017/NumericalPackages/handson/mfem/data/beam-tri.mesh 
 ```
 #### Questions
-> **Examine the source code and find the user-provided functions for TAO, TS, and TSAdjoint respectively.**
+> **Is the iteration converging?**
+> **Read the output at the bottom from -ksp_view, what Krylov method and preconditioner is it using??**
 
-|<font color="white">Essential functions we have provided are FormFunctionGradient for TAO, TSIFunction and TSIJacobian for TS,  RHSJacobianP for TSAdjoint. Because of the integral in the objective function, extra functions including CostIntegrand, DRDYFunction and DRDPFunction are given to TSAdjoint.</font>|
+### Run 2: Run with the algebraic multigrid preconditioner
 
-### Further information
-
-A more complicated example for power grid application is in `src/ts/examples/power_grid/stability_9bus/ex9busopt.c`.
-
+```
+./ex2p -petscopts rc_ex2p --mesh /projects/ATPESC2017/NumericalPackages/handson/mfem/data/beam-tri.mesh 
+```
 
 ## Example 2: Hybrid Dynamical System:
 
