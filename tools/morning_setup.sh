@@ -32,8 +32,7 @@ fi
 #
 cat >> ~/.ssh/config << EOF
 #added by NumericalPackagesHandsOn
-Host cooley cooley.alcf.anl.gov
-    User $cooley_username
+Host cooley-nph cooley.alcf.anl.gov
     Compression yes
     ControlMaster auto
     ControlPersist 12h
@@ -44,12 +43,12 @@ EOF
 # open login to cooley (will prompt) and put in bg and keep open all day
 # This is the login that all others will use shared authentication with
 #
-ssh -N -f cooley.alcf.anl.gov 
+ssh -N -f ${cooley_username}@cooley.alcf.anl.gov
 
 #
 # copy vnc dot files to cooley prompt for desired vnc password
 #
-ssh cooley "mkdir   ~/.vnc; cat > ~/.vnc/xstartup" << EOF
+ssh ${cooley_username}@cooley-nph "mkdir   ~/.vnc; cat > ~/.vnc/xstartup" << EOF
 #!/bin/bash
 #created by NumericalPackagesHandsOn
 export DISPLAY=:0.0
@@ -57,9 +56,9 @@ export HANDSON=/projects/ATPESC2017/NumericalPackages/handson/
 xterm &
 twm
 EOF
-ssh cooley "chmod u+x ~/.vnc/xstartup"
+ssh ${cooley_username}@cooley-nph "chmod u+x ~/.vnc/xstartup"
 
-ssh cooley "mkdir   ~/.vnc; cat >> ~/.soft.cooley" << EOF
+ssh ${cooley_username}@cooley-nph "mkdir   ~/.vnc; cat >> ~/.soft.cooley" << EOF
 #added by NumericalPackagesHandsOn
 +gcc-4.8.1
 EOF
@@ -76,12 +75,12 @@ while true; do
     done
 done
 # Push the password to cooley and vncpasswd encode it
-ssh cooley "rm -f ~/.vnc/passwd; echo $pw | vncpasswd -f > ~/.vnc/passwd; chmod 600 ~/.vnc/passwd"
+ssh ${cooley_username}@cooley-nph "rm -f ~/.vnc/passwd; echo $pw | vncpasswd -f > ~/.vnc/passwd; chmod 600 ~/.vnc/passwd"
 
 #
 # Reserve 3 nodes for interactive use all day
 #
-ssh -t -t -f cooley "qsub -I -n $nnodes -t $tl -A $acct" > ./qsub-interactive.out 2>&1 &
+ssh -t -t -f ${cooley_username}@cooley-nph "qsub -I -n $nnodes -t $tl -A $acct" > ./qsub-interactive.out 2>&1 &
 
 #
 # Loop watching output from above to get allocation node name
@@ -97,13 +96,13 @@ echo "Got allocation at $nodid"
 #
 # Startup xvncserver on the allocation
 #
-ssh cooley "nohup ssh $nodid x0vncserver --display=:0.0 --NeverShared=1 --geometry=2400x1500+0+0 --PasswordFile=/home/$cooley_username/.vnc/passwd --MaxProcessorUsage=100 >& /dev/null &"
+ssh ${cooley_username}@cooley-nph "nohup ssh $nodid x0vncserver --display=:0.0 --NeverShared=1 --geometry=2400x1500+0+0 --PasswordFile=/home/$cooley_username/.vnc/passwd --MaxProcessorUsage=100 >& /dev/null &"
 sleep 5 
 
 #
 # Set up 2-hop ssh tunnel to allocation, (above) through login and run xstartup there
 #
-ssh -f -L 22590:$nodid:5900 cooley "nohup ssh $nodid ~/.vnc/xstartup >& /dev/null &"
+ssh -f -L 22590:$nodid:5900 ${cooley_username}@cooley-nph "nohup ssh $nodid ~/.vnc/xstartup >& /dev/null &"
 sleep 5 
 
 #
