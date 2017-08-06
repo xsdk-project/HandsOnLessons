@@ -5,7 +5,7 @@
 
 
 ```
-Questions                  |Objectives                           |Key Points
+Questions                 |Objectives                           |Key Points
 --------------------------|----------- -------------------------|--------------------------
 How do I start to use     | Understand easy set-up              | It's not hard to get started
 AMReX?                    |                                     |
@@ -130,9 +130,9 @@ to your liking, then click ``Save''.
 
 Your image should look similar to that below.
 
-|Figure 1|
-|:---:|
-|[<img src = "phi_diff.jpg" width ="300">](VisIt_2D.pdf)|
+|Time Step 0|Time Step 10000|
+|:---:|:---:|
+|[<img src = "phi_diff_0.jpg" width ="300">](phi_diff_0.jpg)|[<img src = "phi_diff_10000.jpg" width ="300">](phi_diff_10000.jpg)
 
 
 ## What does this do in parallel
