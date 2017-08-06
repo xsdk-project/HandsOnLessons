@@ -23,6 +23,9 @@ The source code is included in [ex2p.c](./ex2p.c)
 ```
 PETSC_OPTIONS="-pc_type jacobi -ksp_max_it 25" ./ex2p -petscopts rc_ex2p --mesh /projects/ATPESC2017/NumericalPackages/handson/mfem/data/beam-tri.mesh 
 ```
+
+The first column of the output is the residual norm. The next two are the maximum and minimum estimated eigenvalues of the operator and the final column is the condition number.
+
 #### Questions
 > **Is the iteration converging?**
 
