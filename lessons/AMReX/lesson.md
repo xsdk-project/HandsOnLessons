@@ -212,8 +212,6 @@ amr.plot_int = 10
 
 ```
 
-Here we'll skip the 1-d slices and use VisIt to visualize the solution.
-
 The grid here is a cube consisting of 64 x 64 cells, consisting of 4 subgrids each
 of size 32x32 cells.  The problem is periodic in the x-direction and not in the y-direction.
 This problem happens to be set-up to have homogeneous Neumann boundary conditions when not periodic.
