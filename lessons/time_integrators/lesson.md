@@ -5,7 +5,7 @@
 
 ```
 Questions                     |Objectives                      |Key Points
-------------------------------|--------------------------------|----------
+------------------------------|--------------------------------|-----------------------------------
 How does the choice of        |Compare performance of explicit |Time integration considerations
 explicit vs. implicit impact  |and implicit methods at step    |play a role in time to solution
 step size?                    |sizes near the stability limit  |
@@ -380,7 +380,7 @@ Take note of the number of non-linear solution iterations here, 524 and total fl
 
 > **How does the flop count in this _implicit_ fixed time step method compare with the _explicit_ fixed time step method?**
 
-|<font color="white">Well, at a dt=0.001, the explicit method failed due to stability issues. But, it suceeded with a dt=0.0005, which required twice as many steps to reach t=0.1 where the _implicit_ succeeds with dt=0.001 but still requires about 33% more flops due to the implicit solves needed on each step.</font>|
+|<font color="white">Well, at a dt=0.001, the explicit method failed due to stability issues. But, it suceeded with a dt=0.0005, which required twice as many steps to reach t=0.1 where the _implicit_ succeeds with dt=0.001 but still requires about 33% more flops due to the implicit solves needed on each step.  The cost of the implicit method may be reduced by using looser tolerances if those are appropriate for the application needs.</font>|
 
 > **How is all the flexiblity demonstrated here possible?**
 
@@ -473,13 +473,13 @@ Integer ops        = 1482885073
 Floating point ops = 119982846
 ```
 
-> **This second order method succeeds in about 1/2 the number of flops. Why?**
+> **This second order method succeeds in about 1/2 the number of flops and nonlinear iterations. Why?**
 
 |<font color="white">High order time-integration is not always required or the best approach. By paying attention to the time-integration order requirements of your particular application, you can indeed reduce flop counts required.</font>|
 
 ---
 
-### Run 6: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6
+### Run 6: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6, 4th Order
 
 In this run, we'll combine **both** the advantages of an _implicit_ algorithm and an _adaptive_ time step.
 
@@ -541,7 +541,7 @@ Floating point ops = 115569416
 
 > **A plot of dt vs. time is shown above. Why is it able to continue increasing dt?**
 
-|<font color="white">This is using an implicit method which is uncondtionally stable. As time increases, the solution changes more slowly allow the time-integration to continue to increase. Contrast this with adaptive time stepping for the explicit case where it would try to increase the step size and then constantly have to back up to maintain stability.</font>|
+|<font color="white">This is using a stable implicit method. As time increases, the solution changes more slowly allow the time-integration to continue to increase. Contrast this with adaptive time stepping for the explicit case where it would try to increase the step size and then constantly have to back up to maintain stability.</font>|
 
 ---
 
@@ -611,7 +611,7 @@ Floating point ops = 218387843
 
 ---
 
-### Run 8: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6, 5nd Order
+### Run 8: Implicit, Adaptive ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t), Tolerances 1e-6, 5th Order
 
 Here, for a final comparison, we _increase_ to order 5 and observe the impact.
 
