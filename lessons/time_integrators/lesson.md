@@ -54,7 +54,13 @@ Compare this equation with that of the [hand-coded heat equation](../hand_coded_
 
 |![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20-%20%5Cnabla%20%5Ccdot%20%5Calpha%20%5Cnabla%20u%20%3D%200)|(2)|
 
-and we see this is a _much more generalized_ form of the heat equation
+which we simplifed to...
+
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%3D%20%5Calpha%20%5Cfrac%7B%5Cpartial%5E2%20u%7D%7B%5Cpartial%20x%5E2%7D)|(3)|
+
+and we see
+[transient-heat.cpp](https://github.com/mfem/mfem/blob/atpesc-dev/examples/atpesc/sundials/transient-heat.cpp)
+a _much more generalized_ form of the heat equation than [heat.c](../hand_coded_heat/heat.c.numbered.txt)
 
 * It supports 1, 2 and 3 dimensions
 * It supports inhomogeneous materal _thermal diffusivity_
