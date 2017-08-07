@@ -37,12 +37,15 @@ model _heat_ conduction through a wall as pictured here ...
 
 |[<img src="problem_setup.png" width="400">](problem_setup.png)|[<img src="spikes_animated.gif" width="400">](spikes_animated.gif)
 
+where the initial condition is two _spikes_ of heat at two, non-symmetrically
+positioned points in _x_.
+
 ### Governing Equations
 
 In general, heat [conduction](https://en.wikipedia.org/wiki/Thermal_conduction) is governed
 by the partial differential (PDE)...
 
-|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20-%20%5Cnabla%20%5Ccdot%20%5Calpha%20%5Cnabla%20u%20%3D+0)|(1)|
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20-%20%5Cnabla%20%5Ccdot%20%5Calpha%20%5Cnabla%20u%20%3D%200)|(1)|
 
 where _u_ is the temperature within the wall at spatial positions, _x_, and times, _t_,
 ![](http://latex.codecogs.com/gif.latex?%5Calpha) is the _thermal diffusivity_
@@ -114,6 +117,11 @@ the next time, _k+1_, from temperatures at the current time, _k_, as
 |![](http://latex.codecogs.com/gif.latex?u_i%5E%7Bk%2B1%7D%20%3D%20ru_%7Bi%2B1%7D%5Ek%2B%281-2r%29u_i%5Ek%2Bru_%7Bi-1%7D%5Ek)|(5)|
 
 where ![](http://latex.codecogs.com/gif.latex?r%3D%5Calpha%5Cfrac%7B%5CDelta%20t%7D%7B%5CDelta%20x%5E2%7D)
+
+> **Is there anything in the discrete form of the PDE that looks like a _mesh_?**
+
+|<font color="white">In the process of discretizing the PDE, we have defined a fixed spacing in x and a fixed spacing in t. This is essentially a uniform mesh. Later lessons here address more sophisticated discretizations in space and in time which depart from these all too inflexible fixed spacings.</font>|
+
 Note that this equation now defines the solution at spatial position _i_ and time _k+1_
 in terms of values of u at time _k_ .  This is an
 [_explicit_](https://en.wikipedia.org/wiki/Explicit_and_implicit_methods)
@@ -210,7 +218,12 @@ Memory used        = 194 bytes
 ```
 
 Take note of number of flops and memory used so we can compare these
-metrics to other runs later.
+metrics to other runs later. The solution is plotted below for some
+key timesteps.
+
+|Time 0| Time 0.1| Time 0.5|
+|:---:|:---:|:---:|
+|[<img src="spikes0000.png" width="400">](spikes0000.png)|[<img src="spikes0001.png" width="400">](spikes0001.png)|[<img src="spikes0003.png" width="400">](spikes0003.png)|
 
 > **Are the results correct? How would we assess that?**
 
