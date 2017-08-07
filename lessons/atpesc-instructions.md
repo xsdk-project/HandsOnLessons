@@ -7,8 +7,10 @@ Hands-on exercises are primarily run on cooley cluster at ALCF. Please do the fo
 
  - login to cooley
 ```
-ssh username@cooley.alcf.anl.gov
+ssh -C -X -Y username@cooley.alcf.anl.gov
 ```
+ - `-C` means to use compression
+ - `-X` means to forward X11, `-Y` means _trusted_ X11 forwarding
  - setup software environment on cooley by adding the following to  _~/.soft.cooley_ (preferably before `@default` line)
 ```
 +mvapich2

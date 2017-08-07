@@ -17,6 +17,11 @@ What is stability?        |Understand value of software packages|Numerical packa
                           |                                     |and enable app-specific customization.
 ```
 
+**Note:** To run the application in this lesson
+```
+cd handson/handheat
+```
+
 **Note:** After each run, there are sometimes Q&A sections. To reveal answers,
 triple-click in the box below the answer.
 
