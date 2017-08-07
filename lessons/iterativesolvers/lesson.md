@@ -84,7 +84,7 @@ PETSC_OPTIONS="-log_view -ksp_norm_type preconditioned -ksp_type gmres -ksp_gmre
 ## Example 2: Nonlinear Problem:
 
 ```
-PETSC_OPTS="-snes_rtol 1.e-10 -snes_view  -pc_type bjacobi -sub_pc_type ilu " ./ex10p -m ../../data/beam-quad.mesh --petscopts rc_ex10p -s 3 -rs 2 -dt 3 | more
+PETSC_OPTS="-snes_rtol 1.e-10 -snes_view  -pc_type bjacobi -sub_pc_type ilu " ${MPIEXEC_OMPI} -n 4 ./ex10p -m ../../data/beam-quad.mesh --petscopts rc_ex10p -s 3 -rs 2 -dt 3 | more
 ```
 
 Note the quadratic convergence; the residual norm exponent doubles until it runs out of digits to double.
