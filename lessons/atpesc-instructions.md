@@ -26,7 +26,12 @@ resoft
 ```
 qsub -I -n 3 -t 720 -A ATPESC2017
 ```
-   - copy over precompiled binaries and data files to your home dir.
+   - **Note**: Once the allocation has started, you will be logged into
+     the reserved nodes and see a new prompt with a differnt hostname such as
+     `cc122`.
+   - The allocation should remain _reserved_ for the whole day. However,
+     you can delete it simply by logging out of the interactive shell it put you in.
+   - Now, copy over precompiled binaries and data files to your home dir.
 ```
 cp -r /projects/ATPESC2017/NumericalPackages/handson ~/
 ```
