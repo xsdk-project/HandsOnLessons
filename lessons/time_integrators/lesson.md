@@ -50,15 +50,27 @@ as in [Lesson 1](../hand_coded_heat/lesson.md) plus a term
 ![](http://latex.codecogs.com/gif.latex?%5Calpha%7Bu%7D) which varies with
 temperature, _u_, introducing the option of solving systems involving non-linearity.
 
-The initial condition is a _pyramid_ or _ramp_ with value of _1_ at the
-apex in the _middle_ of the computational domain and zero on the boundaries as
-pictured in Figure 1.
+Compare this equation with that of the [hand-coded heat equation](../hand_coded_heat/lesson.md)
+
+|![](http://latex.codecogs.com/gif.latex?%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20-%20%5Cnabla%20%5Ccdot%20%5Calpha%20%5Cnabla%20u%20%3D%200)|(2)|
+
+and we see this is a _much more generalized_ form of the heat equation
+
+* It supports 1, 2 and 3 dimensions
+* It supports inhomogeneous materal _thermal diffusivity_
+* It supports thermal diffusivity that varies with temperature
+
+Here, all the runs solve a problem with an initial condition is a _pyramid_ with
+value of _1_ at the apex in the _middle_ of the computational domain and zero on
+the boundaries as pictured in Figure 1.
 
 |Figure 1|Figure 2|
 |:---:|:---:|
 |[<img src="mfem_sundials_explicit0000.png" width="400">](mfem_sundials_explicit0000.png)|[<img src="pyramid_animated.gif" width="400">](pyramid_animated.gif)|
 
-The main loop of this application is shown here...
+The main loop of
+[transient-heat.cpp](https://github.com/mfem/mfem/blob/atpesc-dev/examples/atpesc/sundials/transient-heat.cpp)
+is shown here...
 
 ```c++
 304    // Perform time-integration
