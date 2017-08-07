@@ -89,7 +89,7 @@ wget https://raw.githubusercontent.com/xsdk-project/HandsOnLessons/master/tools/
 On Mac,
 
 ```
-curl https://raw.githubusercontent.com/xsdk-project/HandsOnLessons/master/tools/atpesc2017_cooley_vnc_setup.sh > atpesc2017_cooley_vnc_setup.sh
+curl -O https://raw.githubusercontent.com/xsdk-project/HandsOnLessons/master/tools/atpesc2017_cooley_vnc_setup.sh
 ```
 
 Ensure the script has execute permissions...

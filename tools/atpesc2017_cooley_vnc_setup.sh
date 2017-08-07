@@ -6,7 +6,7 @@ localos=`uname`
 linuxvnc=''
 
 if [[ -z "$1" ]]; then
-    echo "Usage: ./morning_setup <cooley_username> [debug]"
+    echo "Usage: $0 <cooley_username> [debug]"
     echo "    if 'debug' present reduces allocation to 1 node @ 20 mins"
     exit 1
 fi
