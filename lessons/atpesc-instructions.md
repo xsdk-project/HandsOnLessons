@@ -26,6 +26,7 @@ MPIEXEC=/soft/libraries/mpi/mvapich2/gcc/bin/mpiexec
 ```
 resoft
 ```
+  - **WARNING: Do not attempt next step until after 9:30 am, when our cooley reservation begins.**
   - Obtain 2 compute nodes in _interactive_ (`-I`) mode to run the hands on exercises by running the following `qsub` command...
 ```
 qsub -I -n 2 -t 720 -A ATPESC2017
