@@ -117,7 +117,7 @@ echo "Got allocation at $nodid"
 #
 # Startup xvncserver on the allocation
 #
-ssh ${cooley_username}@cooley-nph "nohup ssh $nodid x0vncserver --display=:0.0 --NeverShared=1 --geometry=2400x1500+0+0 --PasswordFile=/home/$cooley_username/.vnc/passwd --MaxProcessorUsage=100 >& /dev/null &"
+ssh ${cooley_username}@cooley-nph "nohup ssh $nodid x0vncserver --display=:0.0 --NeverShared=1 --geometry=1200x900+0+0 --PasswordFile=/home/$cooley_username/.vnc/passwd --MaxProcessorUsage=100 >& /dev/null &"
 sleep 5 
 
 #
