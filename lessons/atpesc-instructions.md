@@ -1,6 +1,8 @@
 
 # Instructions for Numerical Package Hands-on
 
+ATPESC participants will work in groups of 2 for hands-on exercises.  Forming groups of 2 helps us to cut in half the number of IT issues that may arise during hands-on exercises.  Moreover, [pair programming](https://en.wikipedia.org/wiki/Pair_programming) (the practice of having two people work together on one machine, each taking turns between typing and commenting) results in real-time code review, which [research has shown](http://www.sciencedirect.com/science/article/pii/S0950584909000123) results in higher productivity. If you are not using an OSX or Linux laptop, it would be best to try to pair with someone who is.  
+
 ## Basic Instructions
 
 Hands-on exercises are primarily run on the [Cooley](https://www.alcf.anl.gov/user-guides/cooley) cluster at ALCF. Please do the following initial setup.
