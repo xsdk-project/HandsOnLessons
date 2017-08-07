@@ -1,7 +1,7 @@
 #!/bin/sh
 acct=ATPESC2017
 nnodes=2
-tl=720
+tl=600
 localos=`uname`
 linuxvnc=''
 
@@ -98,7 +98,7 @@ ssh ${cooley_username}@cooley-nph "rm -f ~/.vnc/passwd; echo $pw | vncpasswd -f 
 #
 # Reserve 2 nodes for interactive use all day
 #
-ssh -t -t -f ${cooley_username}@cooley-nph "qsub -I -n $nnodes -t $tl -A $acct" > ./qsub-interactive.out 2>&1 &
+ssh -t -t -f ${cooley_username}@cooley-nph "qsub -I -n $nnodes -t $tl -A $acct" -q training > ./qsub-interactive.out 2>&1 &
 
 #
 # Loop watching output from above to get allocation node name
