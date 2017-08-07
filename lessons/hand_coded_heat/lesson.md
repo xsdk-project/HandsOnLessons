@@ -154,6 +154,12 @@ solution_update_ftcs(int n,
 
 The FTCS update method is implemented around line 360 in the example application, [heat.c](heat.c.numbered.txt).
 
+#### Compiling heat.c
+
+```
+gcc -O3 -DHAVE_FEENABLEEXCEPT heat.c -o heat -lm
+```
+
 ### Getting Help
 
 At any point, you can get help regarding various options the
