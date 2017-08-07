@@ -107,8 +107,13 @@ Now, try running the script
 ```
 krdc vnc://localhost:22590
 ```
-  - When rerunning the script - if the ssh command to setup VNC tunnel fails - you might have to kill the 'ssh control master' process and restart again. On Linux - one can discover process this with
+  - When rerunning the script - if the ssh command to setup VNC tunnel fails - you
+    might have to kill the _ssh control master_ process and restart again. Its easiest
+    to simply find all ssh logins to cooley and kill them
 ```
-netstat -tp | grep cooley
+$ ps -ef | grep cooley
+3640  7348   694   0  4:58PM ttys003    0:00.01 grep cooley
+3640  7345 62009   0  4:58PM ttys004    0:00.03 ssh -C -X -Y cooley.alcf.anl.gov
+3640  7347 62009   0  4:58PM ttys004    0:00.03 ssh -L 22590:cc122:5900 cooley.alcf.anl.gov
+$ kill -9 7345 7347
 ```
-
