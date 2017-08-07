@@ -6,13 +6,16 @@
 ```
 Questions                 |Objectives                     |Key Points
 --------------------------|-------------------------------|-------------------------------------
-Does the preconditioner   | See that the preconditioner   | Experimenting with
- affect the convergence   |  can be crucial for           | algorithms is essential
- rate?                    |  convergence.                 | for good performance.
-
+Does the preconditioner   | See that the preconditioner   | Through a single interface,
+affect the convergence    | can be crucial for            | PETSc supports runtime choices 
+rate of Krylov solvers?   | convergence.                  | of algorithms and options.
+                          |                               |
+How can I choose algs.    | Learn the basics of using     | Experimenting with
+and options at runtime    | PETSc solvers & understanding | algorithms is essential
+when using PETSc?         | output.                       | for good performance.
 ```
 
-Before running the examples you must switch to the bash shell by using
+Before running the examples, you must switch to the bash shell by using
 
 ```
 bash
@@ -80,10 +83,9 @@ PETSC_OPTIONS="-log_view -ksp_norm_type preconditioned -ksp_type gmres -ksp_gmre
 
 ## Out-Brief
 
-We have used [PETSc](https://www.mcs.anl.gov/petsc/) to demonstrate Krylov methods \ methods. Many examples are available for various aspects of PETSc functionality, including
-* [Krylov solver examples] (http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tutorials)
-* [Nonlinear solver examples]
-(http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials/index.html)
+We have used [PETSc](https://www.mcs.anl.gov/petsc/) to demonstrate the use of preconditioned Krylov methods. Many examples are available for various aspects of PETSc functionality, including
+* [Krylov solver examples](http://www.mcs.anl.gov/petsc/petsc-current/src/ksp/ksp/examples/tutorials)
+* [Nonlinear solver examples](http://www.mcs.anl.gov/petsc/petsc-current/src/snes/examples/tutorials)
 
 
 <!-- Insert space, horizontal line, and link to HandsOnLesson table -->
