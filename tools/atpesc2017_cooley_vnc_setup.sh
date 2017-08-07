@@ -1,7 +1,7 @@
 #!/bin/sh
 acct=ATPESC2017
 nnodes=2
-tl=720
+tl=600
 localos=`uname`
 linuxvnc=''
 
