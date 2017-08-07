@@ -58,6 +58,21 @@ PETSC_OPTIONS="-ksp_norm_type preconditioned -ksp_type richardson -ksp_max_it 25
 
 #### Questions
 > **Is the iteration now converging?**
+
+### Run 4: Run with the algebraic multigrid preconditioner but with GMRES and a restart of 10
+
+```
+PETSC_OPTIONS="-ksp_norm_type preconditioned -ksp_type gmres -ksp_gmres_restart 10"  ./ex2p -petscopts rc_ex2p --mesh /projects/ATPESC2017/NumericalPackages/handson/mfem/data/beam-tri.mesh 
+```
+
+Now run with a gmres restart of 30
+
+```
+PETSC_OPTIONS="-ksp_norm_type preconditioned -ksp_type gmres -ksp_gmres_restart 30"  ./ex2p -petscopts rc_ex2p --mesh /projects/ATPESC2017/NumericalPackages/handson/mfem/data/beam-tri.mesh 
+```
+
+Note the convergence is now very similar to that with CG.
+
 ## Out-Brief
 
 We have used [PETSc](https://www.mcs.anl.gov/petsc/) to demonstrate Krylov methods and nonlinear solver methods.
