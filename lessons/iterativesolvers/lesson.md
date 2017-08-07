@@ -24,7 +24,7 @@ This code uses MFEM and [PETSc/TAO](https://www.mcs.anl.gov/petsc/) to demonstra
 
 The source code is included in [ex2p.c](./ex2p.c)
 
-Notes: Normally PETSc options can be passed in as command line arguments but MFEM turns off this capability, thus they must be passed either in a file or in the PETSC_OPTIONS environmental variable.
+Notes: Normally PETSc options can be passed in as command line arguments but MFEM turns off this capability, thus they must be passed either in a file or in the PETSC_OPTIONS environmental variable. See the file rc_ex2p for the PETSc options that are supplied to the application in these examples.
 
 ### Run 1: Run with Jacobi preconditioner
 
