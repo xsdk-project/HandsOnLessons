@@ -125,7 +125,7 @@ Apply for an interactive allocation (skip this if you already got one)
 ```
 $ qsub -I -t 60 -n 1 -A <project_name>
 ```
-For example, if my interactive allocation gives me node cc115, open a new terminal and do the following:
+For example, if your interactive allocation gives you node cc115, open a new terminal and do the following:
 ```
 $ ssh -C -X -Y cooley.alcf.anl.gov
 ```
