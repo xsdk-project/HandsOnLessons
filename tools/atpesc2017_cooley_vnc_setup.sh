@@ -45,7 +45,8 @@ fi
 if [[ -z "$(grep cooley-nph ~/.ssh/config)" ]]; then
 cat >> ~/.ssh/config << EOF
 #added by NumericalPackagesHandsOn
-Host cooley-nph cooley.alcf.anl.gov
+Host cooley-nph
+    Hostname cooley.alcf.anl.gov
     Compression yes
     ControlMaster auto
     ControlPersist 12h
@@ -57,7 +58,7 @@ fi
 # open login to cooley (will prompt) and put in bg and keep open all day
 # This is the login that all others will use shared authentication with
 #
-ssh -N -f ${cooley_username}@cooley.alcf.anl.gov
+ssh -N -f ${cooley_username}@cooley-nph
 
 #
 # copy vnc dot files to cooley prompt for desired vnc password
