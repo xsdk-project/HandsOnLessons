@@ -118,6 +118,21 @@ This example is in `src/ts/examples/hybrid`. The source code is included in [ex1
 make ex1adj
 ```
 
+### Make the graghics work via interactive mode on cooley
+Graphics is tricky. HPC users often do it offline. In order to make it work with cooley, your computer must have X11 (Mac users can install XQuartz). If you do not have it now, just skip the graphics parts since they are not essential.
+
+Apply for an interactive allocation (skip this if you already got one)
+```
+$ qsub -I -t 60 -n 1 -A <project_name>
+```
+For example, if my interactive allocation gives me node cc115, open a new terminal and do the following:
+```
+$ ssh -C -X -Y cooley.alcf.anl.gov
+```
+```
+$ ssh -X cc115
+```
+
 ### Run 1: Monitor solution graphically with phase diagram
 
 ```
