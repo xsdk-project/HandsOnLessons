@@ -198,11 +198,7 @@ The first few time steps of this explicit algorithm are plotted below.
 ### Run 2: Explicit, Smaller ![](http://latex.codecogs.com/gif.latex?%5CDelta%20t) of 0.0005
 
 ```
-[mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_2
-make EXEC=transient-heat PROB=transient_heat_2 EXEC_ARGS="-dt 0.0005 --arkode-order 4 --explicit" EXEC_OUTON=-v run
-make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
-./transient-heat -dt 0.0005 --arkode-order 4 --explicit
-~/tmp/transient_heat_2 ~/tmp
+[mcmiller@cooleylogin1 ~/tmp]$ ./transient-heat -dt 0.0005 --arkode-order 4 --explicit
 Options used:
    --dim 2
    --refine 0
@@ -262,11 +258,7 @@ Now, we will switch to an _adaptive_ time stepping method using the `-adt`
 command-line option but keeping all other options the same.
 
 ```
-[mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_3
-make EXEC=transient-heat PROB=transient_heat_3 EXEC_ARGS="-adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --explicit" EXEC_OUTON=-v run
-make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
-./transient-heat -adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --explicit
-~/tmp/transient_heat_3 ~/tmp
+[mcmiller@cooleylogin1 ~/tmp]$ ./transient-heat -adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --explicit
 Options used:
    --dim 2
    --refine 0
@@ -333,11 +325,7 @@ Floating point ops = 199642899
 Now, lets switch to an _implicit_ method and see how that effects behavior of the numerical algorithms.
 
 ```
-[mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_4
-make EXEC=transient-heat PROB=transient_heat_4 EXEC_ARGS="-dt 0.001 --arkode-order 4 --implicit" EXEC_OUTON=-v run
-make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
-./transient-heat -dt 0.001 --arkode-order 4 --implicit
-~/tmp/transient_heat_4 ~/tmp
+[mcmiller@cooleylogin1 ~/tmp]$ ./transient-heat -dt 0.001 --arkode-order 4 --implicit
 Options used:
    --dim 2
    --refine 0
@@ -436,11 +424,7 @@ step whereas the default is an _adaptive_ timestep.
 Here, we reduce the order of the time-integration from 4 to 2 and observe the behavior.
 
 ```
-[mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_5
-make EXEC=transient-heat PROB=transient_heat_5 EXEC_ARGS="-dt 0.001 --arkode-order 2 --implicit" EXEC_OUTON=-v run
-make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
-./transient-heat -dt 0.001 --arkode-order 2 --implicit
-~/tmp/transient_heat_5 ~/tmp
+[mcmiller@cooleylogin1 ~/tmp]$ ./transient-heat -dt 0.001 --arkode-order 2 --implicit
 Options used:
    --dim 2
    --refine 0
@@ -500,11 +484,7 @@ Floating point ops = 119982846
 In this run, we'll combine **both** the advantages of an _implicit_ algorithm and an _adaptive_ time step.
 
 ```
-[mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_6
-make EXEC=transient-heat PROB=transient_heat_6 EXEC_ARGS="-adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit" EXEC_OUTON=-v run
-make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
-./transient-heat -adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit
-~/tmp/transient_heat_6 ~/tmp
+[mcmiller@cooleylogin1 ~/tmp]$ ./transient-heat -adt --arkode-order 4 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit
 Options used:
    --dim 2
    --refine 0
@@ -570,11 +550,7 @@ Floating point ops = 115569416
 Here, like Run 5, we compare to the preceding run with a 2nd order method.
 
 ```
-[mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_7
-make EXEC=transient-heat PROB=transient_heat_7 EXEC_ARGS="-adt --arkode-order 2 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit" EXEC_OUTON=-v run
-make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
-./transient-heat -adt --arkode-order 2 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit
-~/tmp/transient_heat_7 ~/tmp
+[mcmiller@cooleylogin1 ~/tmp]$ ./transient-heat -adt --arkode-order 2 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit
 Options used:
    --dim 2
    --refine 0
@@ -640,11 +616,7 @@ Floating point ops = 218387843
 Here, for a final comparison, we _increase_ to order 5 and observe the impact.
 
 ```
-[mcmiller@cooleylogin1 ~/tmp]$ make transient_heat_8
-make EXEC=transient-heat PROB=transient_heat_8 EXEC_ARGS="-adt --arkode-order 5 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit" EXEC_OUTON=-v run
-make[1]: Entering directory `/gpfs/mira-home/mcmiller/tmp'
-./transient-heat -adt --arkode-order 5 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit
-~/tmp/transient_heat_8 ~/tmp
+[mcmiller@cooleylogin1 ~/tmp]$ ./transient-heat -adt --arkode-order 5 --arkode-abstol 1e-6 --arkode-reltol 1e-6 --implicit
 Options used:
    --dim 2
    --refine 0
