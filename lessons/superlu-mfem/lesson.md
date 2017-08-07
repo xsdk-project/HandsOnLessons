@@ -155,6 +155,12 @@ of the solution GMRES gives as velocity increases
 
 |<font color="white">GMRES method works ok for low velocity values. As velocity increases, GMRES method eventually crosses a threshold where it can no longer provide a useful result.</font>|
 
+> **Why does time to solution show smoother transition than L2 norm?**
+
+|<font color="white">As instability is approached, more GMRES iterations are required to reach desired norm. So GMRES is still able to manage the solve and achieve a near-zero L2 norm. It just takes more and more iterations. Once GMRES is unable to solve the L2 norm explodes.</font>|
+
+---
+
 ### Run 3: Now use SuperLU_DIST, with default options
 ```
 $ ./convdiff -slu --velocity 1000
