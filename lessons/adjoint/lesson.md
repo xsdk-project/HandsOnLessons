@@ -132,6 +132,7 @@ $ ssh -C -X -Y cooley.alcf.anl.gov
 ```
 $ ssh -X cc115
 ```
+Then continue to run the applications in this new terminal.
 
 ### Run 1: Monitor solution graphically with phase diagram
 
