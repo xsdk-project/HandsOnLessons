@@ -1,7 +1,7 @@
 
-# Instructions for Numerical Package Hands-on
+# Instructions for Numerical Package Hands-on Setup (ATPESC 2017)
 
-ATPESC participants will work in groups of 2 for hands-on exercises.  Forming groups of 2 helps us to cut in half the number of IT issues that may arise during hands-on exercises.  Moreover, [pair programming](https://en.wikipedia.org/wiki/Pair_programming) (the practice of having two people work together on one machine, each taking turns between typing and commenting) results in real-time code review, which [research has shown](http://www.sciencedirect.com/science/article/pii/S0950584909000123) results in higher productivity. If you are not using an OSX or Linux laptop, it would be best to try to pair with someone who is.  
+Participants in [ATPESC 2017](https://extremecomputingtraining.anl.gov) will work in groups of 2 for hands-on exercises.  Forming groups of 2 helps us to cut in half the number of IT issues that may arise during hands-on exercises.  Moreover, [pair programming](https://en.wikipedia.org/wiki/Pair_programming) (the practice of having two people work together on one machine, each taking turns between typing and commenting) results in real-time code review, which [research has shown](http://www.sciencedirect.com/science/article/pii/S0950584909000123) results in higher productivity. If you are not using an OSX or Linux laptop, it would be best to try to pair with someone who is.  
 
 ## Basic Instructions
 
@@ -26,7 +26,7 @@ MPIEXEC=/soft/libraries/mpi/mvapich2/gcc/bin/mpiexec
 ```
 resoft
 ```
-  - **WARNING: Do not attempt next step until after 9:30 am, when our cooley reservation begins.**
+  - **WARNING: Do not attempt next step until after 9:30 am, when our Cooley reservation begins.  Please be sure to work in pairs for the node reservations so that we have sufficient nodes for each pair to use 2 compute nodes for the exercises throughout the day.**
   - Obtain 2 compute nodes in _interactive_ (`-I`) mode to run the hands on exercises by running the following `qsub` command...
 ```
 qsub -I -n 2 -t 720 -A ATPESC2017
