@@ -1,6 +1,6 @@
 #!/bin/sh
 acct=ATPESC2017
-nnodes=3
+nnodes=2
 tl=720
 localos=`uname`
 linuxvnc=''
@@ -96,7 +96,7 @@ done
 ssh ${cooley_username}@cooley-nph "rm -f ~/.vnc/passwd; echo $pw | vncpasswd -f > ~/.vnc/passwd; chmod 600 ~/.vnc/passwd"
 
 #
-# Reserve 3 nodes for interactive use all day
+# Reserve 2 nodes for interactive use all day
 #
 ssh -t -t -f ${cooley_username}@cooley-nph "qsub -I -n $nnodes -t $tl -A $acct" > ./qsub-interactive.out 2>&1 &
 
