@@ -8,7 +8,7 @@ Questions                 |Objectives                     |Key Points
 --------------------------|-------------------------------|-------------------------------------
 Does the preconditioner   | See that the preconditioner   |
  affect the convergence   |  can be crucial for           |
- rate?                    |  convergence                             |
+ rate?                    |  convergence                  |
                          
 ```
 
@@ -72,6 +72,11 @@ PETSC_OPTIONS="-ksp_norm_type preconditioned -ksp_type gmres -ksp_gmres_restart 
 ```
 
 Note the convergence is now very similar to that with CG.
+
+Now attempt to run this parallelly and obtain solver performance data
+```
+PETSC_OPTIONS="-log_view -ksp_norm_type preconditioned -ksp_type gmres -ksp_gmres_restart 30" ${MPIEXEC_OMPI} -n 4 ./ex2p -petscopts rc_ex2p --mesh /projects/ATPESC2017/NumericalPackages/handson/mfem/data/beam-tri.mesh
+```
 
 ## Out-Brief
 
