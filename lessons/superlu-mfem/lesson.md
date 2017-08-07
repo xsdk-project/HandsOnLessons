@@ -248,9 +248,9 @@ Final L2 norm of residual: 1.55331e-18
 |:---:||:---:|
 |<video src="slu_metis.mpg" width="400" height="300" controls preload></video>|[<img src="mfem-superlu0004.png" width="400">](mfem-superlu0004.png)|
 
-|Time to Solution|L2 norm of final residual|
-|:---:||:---:|
-|[<img src="slu_metis_time.png" width="400">](slu_metis_time.png)|[<img src="slu_metis_residual.png" width="400">](slu_metis_residual.png)|
+|Time to Solution|
+|:---:|
+|[<img src="slu_metis_time.png" width="400">](slu_metis_time.png)|
 
 ### Run 6: Now use SuperLU_DIST, with Metis(A'+A) ordering, using 16 MPI tasks,
     on a larger problem.
