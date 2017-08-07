@@ -38,6 +38,9 @@ if [[ ! -e ~/.ssh/config ]]; then
     touch ~/.ssh/config
     chmod 700 ~/.ssh/config
 fi
+if [[ ! -e ~/.ssh/cm_socket ]]; then
+    mkdir ~/.ssh/cm_socket
+fi
 
 #
 # Append stuff to ~/.ssh/config for ssh control master to cooley
