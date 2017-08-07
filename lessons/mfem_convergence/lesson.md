@@ -275,7 +275,7 @@ approximate it better.
 The previous two runs used a 2D mesh in serial, but the same code can be used to run a 3D problem in parallel.
 
 ```
-mpiexec -n 4 ./convergence -r 4 -o 2 -m ../../../data/inline-hex.mesh
+${MPIEXEC_OMPI} -n 4 ./convergence -r 4 -o 2 -m ../../../data/inline-hex.mesh
 Options used:
    --mesh ../../../data/inline-hex.mesh
    --order 2

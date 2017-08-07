@@ -259,7 +259,7 @@ By adding `--refine 2`, each element in the mesh is subdivided twice yielding a 
 Here, we'll run on 16 tasks and just grep the output form some key values of interest.
 
 ```
-$ mpiexec -n 16 ./convdiff --refine 2 --velocity 1000 -slu --slu-colperm 4 >& junk.out
+$ ${MPIEXEC_OMPI} -n 16 ./convdiff --refine 2 --velocity 1000 -slu --slu-colperm 4 >& junk.out
 $ grep 'Time required for solver:' junk.out 
 Time required for solver:  10.3593 (s)
 Time required for solver:  16.3567 (s)
