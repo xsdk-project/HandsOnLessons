@@ -246,7 +246,7 @@ VecNorm              401 1.0 7.1590e-01 1.9 1.40e+08 1.0 0.0e+00 0.0e+00 4.0e+02
 
 > **How expensive is it to do an adjoint step?**
 
-|<font color="white">For this particular run, an adjoint step takes about 70% of the running time of a forward step (compare the time between TSAdjointStep and TSStep). </font>|
+|<font color="white">For this particular run, an adjoint step takes about 60-70% of the running time of a forward step (compare the time between TSAdjointStep and TSStep). </font>|
 
 > **How can we improve performance?**
 
