@@ -17,8 +17,8 @@ ssh -C -X -Y username@cooley.alcf.anl.gov
 +gcc-4.8.1
 @visit
 PATH+=/projects/ATPESC2017/NumericalPackages/spack/bin
-MPIRUN_SPACK=/projects/ATPESC2017/NumericalPackages/spack/opt/spack/linux-rhel6-x86_64/gcc-4.8.1/openmpi-2.1.1-5b4k4f3vzgwz5qmektcqja2av4c4bjrg/bin/mpiexec
-MPIRUN=/soft/libraries/mpi/mvapich2/gcc/bin/mpiexec
+MPIEXEC_OMPI=/projects/ATPESC2017/NumericalPackages/spack/opt/spack/linux-rhel6-x86_64/gcc-4.8.1/openmpi-2.1.1-5b4k4f3vzgwz5qmektcqja2av4c4bjrg/bin/mpiexec
+MPIEXEC=/soft/libraries/mpi/mvapich2/gcc/bin/mpiexec
 ```
   - run the following command to make the above change to _~/.soft.cooley_ effective
 ```
