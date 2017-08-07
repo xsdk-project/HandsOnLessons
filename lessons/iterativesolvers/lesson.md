@@ -81,6 +81,14 @@ Now attempt to run this in parallel and obtain solver performance data
 PETSC_OPTIONS="-log_view -ksp_norm_type preconditioned -ksp_type gmres -ksp_gmres_restart 30" ${MPIEXEC_OMPI} -n 4 ./ex2p -petscopts rc_ex2p --mesh /projects/ATPESC2017/NumericalPackages/handson/mfem/data/beam-tri.mesh
 ```
 
+## Example 2: Nonlinear Problem:
+
+```
+PETSC_OPTS="-snes_rtol 1.e-10 -snes_view  -pc_type bjacobi -sub_pc_type ilu " ./ex10p -m ../../data/beam-quad.mesh --petscopts rc_ex10p -s 3 -rs 2 -dt 3 | more
+```
+
+Note the quadratic convergence; the residual norm exponent doubles until it runs out of digits to double.
+
 ## Out-Brief
 
 We have used [PETSc](https://www.mcs.anl.gov/petsc/) to demonstrate the use of preconditioned Krylov methods. Many examples are available for various aspects of PETSc functionality, including
