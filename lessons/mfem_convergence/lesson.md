@@ -19,23 +19,23 @@ What is convergence?         |Understand how convergence and  |High order method
 
 **Note:** To begin this lesson...
 ```
-cd handson/mfem/examples
+cd handson/mfem/examples/atpesc/mfem
 ```
 
 ## A Widely Applicable Equation
 
 In this lesson, we demonstrate the discretization of a simple Poisson problem using
 the [MFEM library](http://mfem.org) and examine the finite element approximation error
-under uniform refinement. An example of this equation is steady-state heat conduction.
+under uniform refinement. An example of this equation is steady-state [heat](../hand_coded_heat/lesson.md)
+[conduction](../time_integrators/lesson.md).
 
-|[<img src="ex8.png">](ex8.png)| &nbsp; |[<img src="diffusion.png">](diffusion.png)|
+|[<img src="ex8.png">](ex8.png)| [<img src="diffusion.png">](diffusion.png)|
 
 ### Governing Equation
 
 The [_Poisson Equation_](https://en.wikipedia.org/wiki/Poisson's_equation) is a partial
-differential equation (PDE) that can be used to model
-[steady-state heat conduction](../time_integrators/lesson.md), electric potentials
-and gravitational fields. In mathematical terms ...
+differential equation (PDE) that can be used to model steady-state heat conduction,
+electric potentials and gravitational fields. In mathematical terms ...
 
 |![](http://latex.codecogs.com/gif.latex?-%5Cnabla%5E2u%20%3D%20f)|(1)|
 
@@ -45,7 +45,7 @@ of the [_Laplace Equation_](https://en.wikipedia.org/wiki/Laplace%27s_equation).
 ### Finite element basics
 
 To solve the above continuous equation using computers we need to
-[_discretize_](https://en.wikipedia.org/wiki/Discretization) it by introducing a finite
+[discretize](https://en.wikipedia.org/wiki/Discretization) it by introducing a finite
 (discrete) number of unknowns to compute for.
 In the [_Finite Element Method_](https://en.wikipedia.org/wiki/Finite_element_method) (FEM), this is
 done using the concept of _basis functions_.
@@ -124,7 +124,7 @@ and Equation (6)
 ```
 
 This defines the matrix A and the vector b. We then solve the linear
-system for our solution vector x using [AMG](../AMG/lesson.md)-preconditioned PCG iterartion.
+system for our solution vector x using [AMG-preconditioned](../AMG/lesson.md) PCG iteration.
 
 ```c++
    // FEM -> Linear System
@@ -167,10 +167,11 @@ is a mesh-independent constant and ![](http://latex.codecogs.com/gif.latex?r) is
 [_convergence rate_](https://en.wikipedia.org/wiki/Rate_of_convergence).
 
 Given approximations at two different mesh resolutions, we can  estimate the convergence rate as
-follows (C doesn't change  when we refine the mesh and compare runs):
+follows (![](http://latex.codecogs.com/gif.latex?C) doesn't change when we refine the mesh and compare runs):
 
 |![](http://latex.codecogs.com/gif.latex?r%20%5Capprox%20%5Cfrac%7B%5Clog%5C%20%5Cfrac%7B%20%5Cleft%20%5C%7C%20u_%7B%5Cmbox%7Bexact%7D%7D%20-%20u_%7Bh_%7B%5Cmbox%7Bnew%7D%7D%7D%20%5Cright%20%5C%7C_%7BL_2%7D%7D%7B%5Cleft%20%5C%7C%20u_%7B%5Cmbox%7Bexact%7D%7D%20-%20u_%7Bh_%7B%5Cmbox%7Bold%7D%7D%7D%20%5Cright%20%5C%7C_%7BL_2%7D%7D%7D%7B%20%5Clog%20%5Cfrac%7Bh_%7B%5Cmbox%7Bnew%7D%7D%7D%7Bh_%7B%5Cmbox%7Bold%7D%7D%7D%7D)|(11)|
 
+In code this is implemented in a refinement loop as follows:
 
 ```c++
    double l2_err = x.ComputeL2Error(u);
@@ -185,7 +186,7 @@ follows (C doesn't change  when we refine the mesh and compare runs):
 
 ## Running the Convergence Study
 
-The convergence study has the following options
+The convergence study in `handson/mfem/examples/atpesc/mfem` has the following options
 
 ```
 ./convergence --help
@@ -211,7 +212,7 @@ Options:
 ### Run 1 (Low order)
 
 In this run, we will examine the error after 7 uniform refinements in both the L2 and H1 norms using
-first order (linear) basis functions. We use the `star.mesh` in 2D.
+first order (linear) basis functions. We use the `star.mesh` 2D mesh file.
 
 ```
 ./convergence -r 7
@@ -234,7 +235,7 @@ DOFs            h               L^2 error       L^2 rate        H^1 error       
 82561           0.007619        9.441e-05       2               0.04402         0.9999
 ```
 
-Note that the L2 error is converging at a rate of 2 and the H1 error is only converging at a rate of 1.
+Note that the L2 error is converging at a rate of 2 while the H1 error is only converging at a rate of 1.
 
 ### Run 2 (High order)
 
@@ -267,7 +268,7 @@ approximate it better.
 
 #### Questions
 
-> **How many unknowns do we need in runs 1 and 2 to get 4 digits of accuracy? Which method is more efficient: low-order or high-order**
+> **How many unknowns do we need in runs 1 and 2 to get 4 digits of accuracy? Which method is more efficient: low-order or high-order?**
 
 |<font color="white">The high-order methods is more efficient. It needs only 3001 unknowns compared to 82561 unknowns for the low-order method!</font>|
 
@@ -287,10 +288,9 @@ Options used:
 DOFs            h               L^2 error       L^2 rate        H^1 error       H^1 rate
 ----------------------------------------------------------------------------------------
 729             0.25            0.001386        0               0.02215         0
-4913            0.125           0.0001772       2.967           0.00531         2.061
-35937           0.0625          2.227e-05       2.993           0.001306        2.024
-
-274625          0.03125         2.787e-06       2.998           0.0006911       2
+4913            0.125           0.0001772       2.967           0.005815        1.93
+35937           0.0625          2.227e-05       2.993           0.001351        2.105
+274625          0.03125         2.787e-06       2.998           0.0003377       2
 ```
 
 #### Questions
