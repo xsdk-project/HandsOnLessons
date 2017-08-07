@@ -10,6 +10,11 @@ What parameters affect     | Try different ordering options | Performance (time 
 performance?               |                                | can vary a lot
 ```
 
+**Note**: To begin this lesson
+```
+cd handson/mfem/examples/atpesc/superlu
+```
+
 ## The problem being solved
 
 The [convdiff.c](https://github.com/mfem/mfem/blob/atpesc-dev/examples/atpesc/superlu/convdiff.cpp)
