@@ -24,12 +24,12 @@ MPIEXEC=/soft/libraries/mpi/mvapich2/gcc/bin/mpiexec
 ```
 resoft
 ```
-  - Obtain 3 compute nodes in _interactive_ (`-I`) mode to run the hands on exercises by running the following `qsub` command...
+  - Obtain 2 compute nodes in _interactive_ (`-I`) mode to run the hands on exercises by running the following `qsub` command...
 ```
-qsub -I -n 3 -t 720 -A ATPESC2017
+qsub -I -n 2 -t 720 -A ATPESC2017
 ```
      - **Note**: Once the allocation has started, you will be logged into
-       the reserved nodes and see a new prompt with a differnt hostname such as
+       the reserved nodes and see a new prompt with a different hostname such as
        `cc122`.
      - The allocation should remain _reserved_ for the whole day. However,
        you can delete it simply by logging out of the interactive shell it put you in.
