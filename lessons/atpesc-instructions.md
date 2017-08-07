@@ -35,7 +35,7 @@ qsub -I -n 3 -t 720 -A ATPESC2017
 ```
 cp -r /projects/ATPESC2017/NumericalPackages/handson ~/
 ```
-   - Now proceed to run the Hands-On exercises as instructed. Each lesson will
+   - Now proceed to run the [Hands-On exercises](lessons.md) as instructed. Each lesson will
      indicate the path in the `handson` directory you copied above you should
      `cd` to in order to begin the lesson.
 
@@ -122,3 +122,7 @@ $ ps -ef | grep cooley
 3640  7347 62009   0  4:58PM ttys004    0:00.03 ssh -L 22590:cc122:5900 cooley.alcf.anl.gov
 $ kill -9 7345 7347
 ```
+
+---
+
+[Back to all HandsOnLessons](lessons.md)
