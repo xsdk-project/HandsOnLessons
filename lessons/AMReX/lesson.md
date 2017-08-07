@@ -70,7 +70,10 @@ See if it makes sense what order all of these are called in.
 
 ### Running the Problem
 
-Copy the directory AMReX_Diffusion from PATH_TO_AMREX_DIFFUSION
+**Note:** To run this part of the lesson
+```
+cd handson/amrex/AMReX_diffusion
+```
 
 In this directory you'll see
 
@@ -197,7 +200,10 @@ algorithm, which we haven't really had time to talk about, looks like
 
 ### Running the Problem
 
-Copy the directory AMReX_Advection from PATH_TO_AMREX_ADVECTION
+**Note:** To run this part of the lesson
+```
+cd handson/amrex/AMReX_advection
+```
 
 In this directory you'll see
 

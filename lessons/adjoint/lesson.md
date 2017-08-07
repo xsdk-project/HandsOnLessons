@@ -16,6 +16,11 @@ use the adjoint method?   |for adjoint calculation        |
                           |checkpointing                  |checkpointing at large scale.
 ```
 
+**Note:** To begin this lesson...
+```
+cd handson/adjoint
+```
+
 ## Example 1: Generator Stability Analysis:
 
 This code uses [PETSc/TAO](https://www.mcs.anl.gov/petsc/) to demonstrates how to solve an ODE-constrained optimization problem with the Toolkit for Advanced Optimization (TAO), TSEvent, TSAdjoint and TS.

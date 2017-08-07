@@ -17,6 +17,11 @@ What is convergence?         |Understand how convergence and  |High order method
                              |convergence rate is calculated  |faster for smooth solutions
 ```
 
+**Note:** To begin this lesson...
+```
+cd handson/mfem/examples
+```
+
 ## A Widely Applicable Equation
 
 In this lesson, we demonstrate the discretization of a simple Poisson problem using
