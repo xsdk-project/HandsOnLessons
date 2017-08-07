@@ -29,7 +29,7 @@ resoft
   - **WARNING: Do not attempt next step until after 9:30 am, when our Cooley reservation begins.  Please be sure to work in pairs for the node reservations so that we have sufficient nodes for each pair to use 2 compute nodes for the exercises throughout the day.**
   - Obtain 2 compute nodes in _interactive_ (`-I`) mode to run the hands on exercises by running the following `qsub` command...
 ```
-qsub -I -n 2 -t 720 -A ATPESC2017
+qsub -I -n 2 -t 720 -A ATPESC2017 -q training
 ```
      - **Note**: Once the allocation has started, you will be logged into
        the reserved nodes and see a new prompt with a different hostname such as
