@@ -48,7 +48,7 @@ parallel [SuperLU_DIST](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
 
 ## Running the Example
 
-### Run 1: default setting with GMRES solver, velocity = 100
+### Run 1: default setting with GMRES solver, preconditioned by hypre, velocity = 100
 
 ```
 $ ./convdiff
@@ -252,8 +252,7 @@ Final L2 norm of residual: 1.55331e-18
 |:---:||:---:|
 |[<img src="slu_metis_time.png" width="400">](slu_metis_time.png)|[<img src="slu_metis_residual.png" width="400">](slu_metis_residual.png)|
 
-### Run 6: Now use SuperLU_DIST, with Metis(A'+A) ordering, using 16 MPI tasks,
-    on a larger problem.
+### Run 6: Now use SuperLU_DIST, with Metis(A'+A) ordering, using 16 MPI tasks, on a larger problem.
 
 By adding `--refine 2`, each element in the mesh is subdivided twice yielding a 16x larger problem.
 Here, we'll run on 16 tasks and just grep the output form some key values of interest.
