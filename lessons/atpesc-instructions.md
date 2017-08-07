@@ -9,8 +9,8 @@ Hands-on exercises are primarily run on cooley cluster at ALCF. Please do the fo
 ```
 ssh -C -X -Y username@cooley.alcf.anl.gov
 ```
- - `-C` means to use compression
- - `-X` means to forward X11, `-Y` means _trusted_ X11 forwarding
+   - `-C` means to use compression
+   - `-X` means to forward X11, `-Y` means _trusted_ X11 forwarding
  - setup software environment on cooley by adding the following to  _~/.soft.cooley_ (preferably before `@default` line)
 ```
 +mvapich2
@@ -28,11 +28,11 @@ resoft
 ```
 qsub -I -n 3 -t 720 -A ATPESC2017
 ```
-   - **Note**: Once the allocation has started, you will be logged into
-     the reserved nodes and see a new prompt with a differnt hostname such as
-     `cc122`.
-   - The allocation should remain _reserved_ for the whole day. However,
-     you can delete it simply by logging out of the interactive shell it put you in.
+     - **Note**: Once the allocation has started, you will be logged into
+       the reserved nodes and see a new prompt with a differnt hostname such as
+       `cc122`.
+     - The allocation should remain _reserved_ for the whole day. However,
+       you can delete it simply by logging out of the interactive shell it put you in.
    - Now, copy over precompiled binaries and data files to your home dir.
 ```
 cp -r /projects/ATPESC2017/NumericalPackages/handson ~/

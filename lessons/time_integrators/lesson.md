@@ -18,9 +18,9 @@ order impact the cost?        |on time to solution/flop count  |a lot of work
                               |and number of steps             |
 ```
 
-**Note:** To begin this lesson
+**Note:** To begin this lesson...
 ```
-handson/mfem/examples/atpesc/sundials
+cd handson/mfem/examples/atpesc/sundials
 ```
 
 ## The problem being solved

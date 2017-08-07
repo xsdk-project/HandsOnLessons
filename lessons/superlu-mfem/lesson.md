@@ -10,7 +10,7 @@ What parameters affect     | Try different ordering options | Performance (time 
 performance?               |                                | can vary a lot
 ```
 
-**Note**: To begin this lesson
+**Note:** To begin this lesson
 ```
 cd handson/mfem/examples/atpesc/superlu
 ```
