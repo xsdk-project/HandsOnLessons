@@ -145,9 +145,9 @@ Your images should look similar to those below.
 
 Let's now try
 ```
-mpirun -n 1 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
-mpirun -n 2 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
-mpirun -n 4 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
+mpiexec -n 1 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
+mpiexec -n 2 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
+mpiexec -n 4 ./main2d.gnu.MPI.ex inputs_2d plot_int=-1 max_step= 1000  | grep "Run time"
 ```
 and see how the timings compare.
 

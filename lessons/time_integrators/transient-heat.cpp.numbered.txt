@@ -4,18 +4,18 @@
      4	// Compile with: make ex16p
      5	//
      6	// Sample runs:
-     7	//     mpirun -np 4 ex16p
-     8	//     mpirun -np 4 ex16p -m ../../data/inline-tri.mesh
-     9	//     mpirun -np 4 ex16p -m ../../data/disc-nurbs.mesh -tf 2
-    10	//     mpirun -np 4 ex16p -s 12 -a 0.0 -k 1.0
-    11	//     mpirun -np 4 ex16p -s 1 -a 1.0 -k 0.0 -dt 4e-6 -tf 2e-2 -vs 50
-    12	//     mpirun -np 8 ex16p -s 2 -a 0.5 -k 0.5 -o 4 -dt 8e-6 -tf 2e-2 -vs 50
-    13	//     mpirun -np 4 ex16p -s 3 -dt 2.0e-4 -tf 4.0e-2
-    14	//     mpirun -np 16 ex16p -m ../../data/fichera-q2.mesh
-    15	//     mpirun -np 16 ex16p -m ../../data/escher-p2.mesh
-    16	//     mpirun -np 8 ex16p -m ../../data/beam-tet.mesh -tf 10 -dt 0.1
-    17	//     mpirun -np 4 ex16p -m ../../data/amr-quad.mesh -o 4 -rs 0 -rp 0
-    18	//     mpirun -np 4 ex16p -m ../../data/amr-hex.mesh -o 2 -rs 0 -rp 0
+     7	//     mpiexec -n 4 ex16p
+     8	//     mpiexec -n 4 ex16p -m ../../data/inline-tri.mesh
+     9	//     mpiexec -n 4 ex16p -m ../../data/disc-nurbs.mesh -tf 2
+    10	//     mpiexec -n 4 ex16p -s 12 -a 0.0 -k 1.0
+    11	//     mpiexec -n 4 ex16p -s 1 -a 1.0 -k 0.0 -dt 4e-6 -tf 2e-2 -vs 50
+    12	//     mpiexec -n 8 ex16p -s 2 -a 0.5 -k 0.5 -o 4 -dt 8e-6 -tf 2e-2 -vs 50
+    13	//     mpiexec -n 4 ex16p -s 3 -dt 2.0e-4 -tf 4.0e-2
+    14	//     mpiexec -n 16 ex16p -m ../../data/fichera-q2.mesh
+    15	//     mpiexec -n 16 ex16p -m ../../data/escher-p2.mesh
+    16	//     mpiexec -n 8 ex16p -m ../../data/beam-tet.mesh -tf 10 -dt 0.1
+    17	//     mpiexec -n 4 ex16p -m ../../data/amr-quad.mesh -o 4 -rs 0 -rp 0
+    18	//     mpiexec -n 4 ex16p -m ../../data/amr-hex.mesh -o 2 -rs 0 -rp 0
     19	//
     20	// Description:  This example solves a time dependent nonlinear heat equation
     21	//               problem of the form du/dt = C(u), with a non-linear diffusion

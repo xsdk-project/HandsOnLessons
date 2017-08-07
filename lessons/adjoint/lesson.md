@@ -159,7 +159,7 @@ make ex5adj
 ### Run 1: Monitor solution graphically
 
 ```
-mpirun -n 4 ./ex5adj -forwardonly -implicitform 0 -ts_type rk \
+mpiexec -n 4 ./ex5adj -forwardonly -implicitform 0 -ts_type rk \
                      -ts_monitor -ts_monitor_draw_solution
 ```
 
@@ -172,7 +172,7 @@ mpirun -n 4 ./ex5adj -forwardonly -implicitform 0 -ts_type rk \
 By default, the checkpoints are stored in binary files on disk. Of course, this may not be a good choice for large-scale applications running on high-performance machines where I/O cost is significant. We can make the solver use RAM for checkpointing and specify the maximum allowable checkpoints so that an optimal adjoint checkpointing schedule that minimizes the number of recomputations will be generated.
 
 ```
-mpirun -n 4 ./ex5adj -implicitform 0 -ts_type rk -ts_adapt_type none \
+mpiexec -n 4 ./ex5adj -implicitform 0 -ts_type rk -ts_adapt_type none \
                      -ts_max_steps 10 -ts_monitor -ts_adjoint_monitor \
                      -ts_trajectory_type memory -ts_trajectory_max_cps_ram 3 \
                      -ts_trajectory_monitor -ts_trajectory_view
@@ -189,7 +189,7 @@ The output corresponds to the schedule depicted by the following diagram:
 ### Run 3: Implicit time integration method
 Now we switch to an implicit method ([Crank-Nicolson](https://en.wikipedia.org/wiki/Crank–Nicolson_method)) using fixed stepsize, which is the default setting in the code. At each time step, a nonlinear system is solved by the PETSc nonlinear solver `SNES`.
 ```
-mpirun -n 12 ./ex5adj -da_grid_x 1024 -da_grid_y 1024 -ts_max_steps 10 -snes_monitor -log_view -ts_monitor
+mpiexec -n 12 ./ex5adj -da_grid_x 1024 -da_grid_y 1024 -ts_max_steps 10 -snes_monitor -log_view -ts_monitor
 ```
 * `-snes_monitor` shows the progress of `SNES`
 * `-log_view` prints a summary of the logging

@@ -71,7 +71,7 @@ hypre.print_level = 1
 
 Use the following command to solve our problem using conjugate gradient (CG):
 ```
-/usr/bin/time -p mpirun -np 8 ./amrex pcg
+/usr/bin/time -p mpiexec -n 8 ./amrex pcg
 ```
 
 You should get some output that looks like this
@@ -90,7 +90,7 @@ sys 1.07
 
 Now we solve the same problem using PFMG, the structured multigrid solver from hypre:
 ```
-/usr/bin/time -p mpirun -np 8 ./amrex pfmg
+/usr/bin/time -p mpiexec -n 8 ./amrex pfmg
 ```
 
 You should get some output that looks like this
@@ -129,7 +129,7 @@ Examine the number of iterations and the time listed in the line starting with '
 
 Now use the following command:
 ```
-/usr/bin/time -p mpirun -np 8 ./amrex pfmgpcg
+/usr/bin/time -p mpiexec -n 8 ./amrex pfmgpcg
 ```
 
 You should get some output that looks like this
@@ -168,7 +168,7 @@ We now solve the larger problem using first CG and then PFMG-PCG.
 
 Now use the following command:
 ```
-/usr/bin/time -p mpirun -np 8 ./amrex pcg.large
+/usr/bin/time -p mpiexec -n 8 ./amrex pcg.large
 ```
 
 You should get some output that looks like this
@@ -187,7 +187,7 @@ sys 2.47
 
 Now use the following command:
 ```
-/usr/bin/time -p mpirun -np 8 ./amrex pfmgpcg.large
+/usr/bin/time -p mpiexec -n 8 ./amrex pfmgpcg.large
 ```
 
 You should get some output that looks like this
@@ -225,7 +225,7 @@ We now go back to the smaller problem using AMG-PCG.
 
 Now use the following command:
 ```
-/usr/bin/time -p mpirun -np 8 ./amrex amgpcg
+/usr/bin/time -p mpiexec -n 8 ./amrex amgpcg
 ```
 
 You should get some output that looks like this
@@ -341,7 +341,7 @@ The memory complexity also includes the number of nonzeroes of all interpolation
 Now, let us use AMG-PCG with aggressive coarsening turned on for the first level.
 
 ```
-/usr/bin/time -p mpirun -np 8 ./amrex amgpcg2
+/usr/bin/time -p mpiexec -n 8 ./amrex amgpcg2
 ```
 
 You should get some output that looks like this
