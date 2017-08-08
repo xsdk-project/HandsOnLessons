@@ -275,9 +275,13 @@ Floating point ops = 455350
 Memory used        = 1636 bytes
 ```
 
+Plots from some early times in the run are shown below...
+
+|Time 0| Time 0.01| Time 0.02|
+|:---:|:---:|:---:|
 |[<img src="hr_spikes0000.png" width="300">](hr_spikes0000.png)|[<img src="hr_spikes0001.png" width="300">](hr_spikes0001.png)|[<img src="hr_spikes0002.png" width="300">](hr_spikes0002.png)|
 
-Note the Y-axis range in these two plots. It gets out of control!
+Note the Y-axis range in these plots. It gets out of control!
 
 > **What do you think happened?**
 
@@ -330,7 +334,11 @@ Floating point ops = 18165900
 Memory used        = 1636 bytes
 ```
 
-|[<img src="hr_spikes_smalldt0000.png" width="300">](hr_spikes_smalldt0000.png)|[<img src="hr_spikes_smalldt0001.png" width="300">](hr_spikes_smalldt0001.png)|[<img src="hr_spikes_smalldt0002.png" width="300">](hr_spikes_smalldt0002.png)
+Plots from some early times in the run are shown below...
+
+|Time 0| Time 0.05| Time 0.1|
+|:---:|:---:|:---:|
+|[<img src="hr_spikes0000.png" width="300">](hr_spikes0000.png)|[<img src="hr_spikes_smalldt0000.png" width="300">](hr_spikes_smalldt0000.png)|[<img src="hr_spikes_smalldt0001.png" width="300">](hr_spikes_smalldt0001.png)
 
 > **Where do you estimate the local minimum occurs?**
 
@@ -556,7 +564,7 @@ one of the key values of _numerical packages_.  Many of the details of these
 issues have been resolved and _vetted_ within the scientific computing community
 within widely used software packages. Numerical packages can help to simplify the development of
 highly sophisticated scientific computing applications and provide a much more solid,
-flexible, and sustainable foundation than code that is completely written from scratch.  
+flexible, and sustainable foundation than code that is completely written from scratch.
 Moreover, well-designed numerical software packages enable users to build custom
 solution strategies that leverage application-specific knowledge.
 
