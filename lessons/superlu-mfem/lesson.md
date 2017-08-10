@@ -20,8 +20,8 @@ cd handson/mfem/examples/atpesc/superlu
 The [convdiff.c](https://github.com/mfem/mfem/blob/atpesc-dev/examples/atpesc/superlu/convdiff.cpp)
 application is modeling the steady state convection-diffusion equation in 2D
 with a constant velocity.  This equation is used to model the concentration
-of something like a _die_ in a _moving_ fluid as it diffuses and flows th  the fluid.
-The equation is as follows:
+of something like a _die_ in a _moving_ fluid as it diffuses and flows through 
+he fluid.  The equation is as follows:
 
 |![](http://latex.codecogs.com/gif.latex?%5Cnabla%20%5Ccdot%20%28%5Ckappa%20%5Cnabla%20u%29%20-%20%5Cnabla%20%5Ccdot%20%28%5Coverrightarrow%7Bv%7Du%29%2BR%3D0)|(1)|
 
@@ -29,8 +29,8 @@ Where _u_ is the concentration that we are tracking,
 ![](http://latex.codecogs.com/gif.latex?%5Ckappa) is the diffusion rate,
 _v_ is the velocity of the flow and _R_ is a concentration source.
  
-In the application we use here, the velocity vector is pointing at _+x_ and
-the magnitude is set by the user (default of 100),
+In the application we use here, the velocity vector _direction_ is fixed in the _+x_ 
+direction. However, the _magnitude_ is set by the user (default of 100),
 ![](http://latex.codecogs.com/gif.latex?%5Ckappa) is fixed at 1.0, and the
 source is 0.0 everywhere except for a small disc centered at the middle of the
 domain where it is 1.0.
@@ -39,9 +39,9 @@ domain where it is 1.0.
 |:---:|
 |[<img src="mfem-superlu0000.png" width="400">](mfem-superlu0000.png)|
  
-This problem is well known to cause convergence problems for iterative solvers,
-for larger v. We use MFEM as a vehicle to demonstrate the use of distributed,
-to show the use of a direct solver to solve very ill-conditioned linear systems. 
+Solving this PDE is well known to cause convergence problems for iterative solvers,
+for larger _v_. We use MFEM as a vehicle to demonstrate the use of a distributed,
+direct solver to solve very ill-conditioned linear systems.
 parallel [SuperLU_DIST](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
 
 ## The Example Source Code
@@ -294,6 +294,12 @@ Final L2 norm of residual: 3.06951e-18
 Final L2 norm of residual: 3.06951e-18
 Final L2 norm of residual: 3.06951e-18
 ```
+
+> **Can you explain the processor times _relative_ to the previous, single processor run?**
+
+|<font color="white">We've increased the mesh size by 16x here. But, we've also added 16x processors. Yet, the time for those processors to run ranged between 10 and 20 seconds with an average of 12.7 seconds. The smaller, single processor run took 0.786936 and taking the ratio of these numbers, we get ~16. However, recall that the matrix size goes up as the SQUARE of the mesh size and this accounts for this additional factor of 16.</font>|
+
+---
 
 ## Out-Brief
 
