@@ -98,14 +98,15 @@ is the a URL-encoded form of the latex commands to generate the equation. Here a
 
 ## Adding a Hands On Example
 
+1. Be sure to start from the [lesson template](lessons/lesson_template/lesson.md)
 1. Add a new directory to `./lessons/<new-example-name>`
 1. Add a new line to `./lessons/lessons.md` for the new example
-1. Copy `./lessons/lesson_template/lesson.md` to `./lessons/<new-example-name>`.
+1. Copy the [lesson template](lessons/lesson_template/lesson.md), `./lessons/lesson_template/lesson.md` to `./lessons/<new-example-name>`.
 1. Edit/revise the copied `lesson.md` file to create the new lesson
 1. You can link to images, source code files that you place in `./lessons/<new-example-name>`
    using standard Markdown links.
 
-I think it would be best put all content related to each hands-on example we develop here
+I think it would be best put all content related to each hands-on lesson we develop here
 into its own separate directory. That means all images, example codes, markdown pages, etc.
 Then, we can have a separate page (or page hierarchy) that indexes the examples.
 
@@ -113,7 +114,8 @@ I know Jekyll has a built-in concept of a `posts` object. That is because Jekyll
 around the notion of supporting blogging. It may make sense to handle each hands-on kinda
 sorta like a `post` in Jekyll. But, I think that also means that content related to each
 lesson gets scattered across multiple directories (at least given the **default**) way that
-Jekyll seems to handle `posts`.
+Jekyll seems to handle `posts`. We need to investigate proper use of Jekyll further **after**
+we've completed ATPESC.
 
 ## GitHub Style Primer
 

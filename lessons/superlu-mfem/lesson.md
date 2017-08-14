@@ -41,8 +41,8 @@ domain where it is 1.0.
  
 Solving this PDE is well known to cause convergence problems for iterative solvers,
 for larger _v_. We use MFEM as a vehicle to demonstrate the use of a distributed,
-direct solver to solve very ill-conditioned linear systems.
-parallel [SuperLU_DIST](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/)
+direct solver, [SuperLU_DIST](http://crd-legacy.lbl.gov/~xiaoye/SuperLU/),
+to solve very ill-conditioned linear systems.
 
 ## The Example Source Code
 
